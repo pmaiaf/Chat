@@ -1,0 +1,120 @@
+.group-name-input-wrap > input[type="text"] {
+    // min-width: 307px !important;
+    height: 36px;
+    font-size: 14px;
+    width: 100%;
+    margin-bottom: 10px;
+    -webkit-appearance: none;
+    background: #fff;
+    border: 1px solid #e5effe !important;
+    padding: 0 8px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border-radius: 3px;
+    background-color: #fff !important;
+}
+
+.create-group-right-side-bar {
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    // width: 33%;
+    // min-width: 33%;
+    max-width: 90%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fff;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+}
+
+.create-group-right-side-bar-title-wrap {
+    border-bottom: 1px solid #eeeeee;
+    background-color: #3c4252 !important;
+    color: #fff !important;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-top: -15px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.create-group-right-side-bar-title {
+    font-weight: 400;
+    text-transform: none;
+    margin-top: 0px;
+    font-size: 16px;
+    padding-top: 15px;
+    padding-left: 8px;
+    text-transform: uppercase;
+}
+
+.close-right-side-bar {
+    float: right;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin-right: 11px;
+    border-radius: 50%;
+    padding: 5px;
+    position: relative;
+    top: -5px;
+}
+
+.close-right-side-bar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.th-right-sidebar-col-title {
+    font-family:'Poppins','Roboto', 'Arial', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.add-teammates-to-group-wrap {
+    // position: fixed;
+    // bottom: 0px;
+    // width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+    .table-responsive {
+        border: unset !important;
+    }
+}
+
+.teammates-list-table > thead > tr > th {
+    padding-top: 6px;
+    padding-bottom: 6px !important;
+}
+
+.custom-label-in-sidebar {
+    color: #303f9f;
+    padding-top: 16px;
+}
+
+.warning-msg {
+    color: #f44336;
+    font-size: 12px;
+    // font-weight: 400;
+}
+
+.create-new-group-note {
+    display: table;
+}
+.create-new-group-note .material-icons,
+.create-new-group-note h5 {
+    display: table-cell;
+}
+
+.user-img-in-create-group-right-sidebar {
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #eee;
+    margin-right: 3px;
+    object-fit: cover;
+}

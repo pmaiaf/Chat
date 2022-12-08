@@ -1,0 +1,83 @@
+
+<!-- tabindex="2000"-->
+<div #homeComponent id='chat21-home-component' tabindex="2002" onFocus="document.querySelector('[aflistconv]').focus()">
+
+    <!-- HEADER -->
+    <div class="c21-header" (click)="hideMenuOptions()" [ngStyle]="{'color': g.themeForegroundColor, 'background-image': g.colorGradient }" >
+
+        <div class="c21-header-container">
+            <!-- ICON CLOSE CHAT -->
+            <div class="c21-header-button" [ngStyle]="{'display': (g.hideHeaderCloseButton)?'none':'block'}">
+                <div class="c21-close-button">
+                    <button tabindex="2001" aria-label="    chiudi chat" class="c21-close-button-body" (click)="f21_close()">
+                        <svg role="img" aria-labelledby="altIconTitle" [ngStyle]="{'fill': g.themeForegroundColor }" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
+                            <path fill="none" d="M0 0h24v24H0V0z"/>
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                            <title id="altIconTitle">{{g.BUTTON_CLOSE_TO_ICON}}</title>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- CONTENT HEADER -->
+            <div class="c21-header-content">
+                <!-- LOGO HEADER -->
+                <div *ngIf="g.project.logoChat !== 'nologo'" class='avatar-project' item-start>
+                    <!-- <div *ngIf="g.project.logoChat == 'tiledesklogo'" #avatarPlaceholder class="avatar-placeholder" [style.background-color]="g.project.color" [innerHTML]="g.project.avatar"></div>
+                    <div *ngIf="g.project.logoChat !== 'tiledesklogo'" #avatarImage class="avatar-image" [style.background-image]="'url(' + g.project.logoChat + ')'"></div> -->
+                    <div #avatarImage class="avatar-image" [style.background-image]="'url(' + g.project.logoChat + ')'"></div>
+                </div>
+
+                <!-- MESSAGE HEADER -->
+                <div class="c21-text fade-in-bottom">
+                    <div class="c21-text-welcome">{{g?.welcomeTitle}}</div>          
+                    <div *ngIf="g.welcomeMsg" class="c21-text-intro">{{g.welcomeMsg}}</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+
+
+    <!-- CONTENT -->
+    <div class="c21-body" (click)="hideMenuOptions()">
+
+        <!-- <div class="c21-body-container"> -->
+            <div class="c21-body-content" [class.nologo]="g.project.logoChat === 'nologo'">
+                <div class="c21-cards">
+                    <div class="c21-card-blank fade-in-top"></div>
+                    <div class="c21-card fade-in-top ">
+                        <chat-home-conversations 
+                            [listConversations]="listConversations"
+                            [archivedConversations]="archivedConversations"
+                            [hideNewConversationButton]="hideNewConversationButton"
+                            [stylesMap]="stylesMap"
+                            (onNewConversation)="onNewConversationFN()" 
+                            (onConversationSelected)="onConversationSelectedFN($event)"
+                            (onOpenAllConvesations)="onOpenAllConversation()"
+                            (onImageLoaded)="onImageLoadedFN($event)"
+                            (onConversationLoaded)="onConversationLoadedFN($event)">
+                        </chat-home-conversations>
+                    </div>
+                </div>
+            </div>
+        <!-- </div> -->
+        
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <div class="c21-footer fade-in-bottom-footer">
+        <div id="c21-powered-by" (mouseover)="hover=true" (mouseleave)="hover=false">
+            <div tabindex="-1" class="c21-powered-by" [innerHTML]="g.poweredBy"></div>
+            <!-- <div class="build_version">{{g.BUILD_VERSION}}</div> -->
+        </div>
+        <chat-menu-options *ngIf="!hideSettings"
+            [isHover]="hover"
+            (onSignOut)="onSignOutFN()">
+        </chat-menu-options>
+    </div>
+
+</div>

@@ -1,0 +1,2049 @@
+<!-- margin-top:6px; -->
+<p *ngIf="IS_HERE_FOR_HISTORY" style="z-index: 1050;position: relative; padding-left:30px" class="navbar-brand"
+  [ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-64px' : '6px' }">
+  {{ "History" | translate }}
+</p>
+<!-- margin-top:6px; -->
+<div *ngIf="!IS_HERE_FOR_HISTORY" class="navbar-brand" style="z-index: 1050;position: relative; padding-left:30px"
+  [ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-64px' : '6px' }">
+  <i class="material-icons" style="vertical-align: middle !important; cursor: pointer;"
+    (click)="goBackToMonitorPage()">keyboard_arrow_left</i>
+
+  {{ "Requests" | translate }} ( {{'NotInRealTime' | translate }})
+</div>
+
+
+<div class="main-content" style="padding-top:0px">
+  <div class="container-fluid">
+
+    <!-- ---------------------------------------------------------------- -->
+    <!-- No real-time conversation info background: rgb(231, 241, 255); -->
+    <!-- ---------------------------------------------------------------- -->
+    <div class="row filter-row">
+      <div class="col-md-12">
+        <div class="filter-bar">
+
+          <!-- ---------------------------------------------------------------- -->
+          <!-- Filters - left section -->
+          <!-- ---------------------------------------------------------------- -->
+          <div class="filters-on-left" *ngIf="!showAdvancedSearchOption">
+
+            <span *ngIf="!IS_HERE_FOR_HISTORY" style="padding-right: 16px; font-weight: 400;">
+              {{'FilterFor' | translate}}
+            </span>
+
+            <div *ngIf="!IS_HERE_FOR_HISTORY" class="dropdown">
+              <a style="font-weight: 400;" href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+                <span *ngIf="requests_status === 'all'">
+                  <a>{{ "All" | translate }}</a>
+                </span>
+
+                <span *ngIf="requests_status === '200'">
+                  <a>{{ "Served" | translate }}</a>
+                </span>
+
+                <span *ngIf="requests_status === '100'">
+                  <a>{{ "Unserved" | translate }}</a>
+                </span>
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu" style="min-width: 195px;">
+                <li (click)="requestsStatusSelect('all')">
+
+                  <div class="parent" style="display: flex; align-items: center;">
+                    <div class="left" style="padding:12px 6px">
+                      <input type="radio" id="all" name="status" value="all" [(ngModel)]="requests_status">
+                    </div>
+                    <div class="right" style="flex-grow: 1;">
+                      <a class="custom-dropdown-a">{{ "AllConversations" | translate }}</a>
+                    </div>
+                  </div>
+                </li>
+
+                <li (click)="requestsStatusSelect('200')">
+                  <!-- <a>{{ "VisitorsPage.ServedRequests" | translate }} </a> -->
+
+                  <div class="parent" style="display: flex; align-items: center;">
+                    <div class="left" style="padding:12px 6px">
+                      <input type="radio" id="200" name="status" value="200" [(ngModel)]="requests_status">
+                    </div>
+                    <div class="right" style="flex-grow: 1;">
+                      <a class="custom-dropdown-a">{{ "VisitorsPage.ServedRequests" | translate }}</a>
+                    </div>
+                  </div>
+
+                </li>
+
+                <li (click)="requestsStatusSelect('100')">
+                  <!-- <a>{{ "VisitorsPage.UnservedRequests" | translate }}</a> -->
+
+                  <div class="parent" style="display: flex; align-items: center;">
+                    <div class="left" style="padding:12px 6px">
+                      <input type="radio" id="100" name="status" value="100" [(ngModel)]="requests_status">
+                    </div>
+                    <div class="right" style="flex-grow: 1;">
+                      <a class="custom-dropdown-a">{{ "VisitorsPage.UnservedRequests" | translate }}</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+          <!-- ---------------------------------------------------------------- -->
+          <!-- Filters - central section -->
+          <!-- ---------------------------------------------------------------- -->
+          <div class="filters-on-center" [ngClass]="{'filters-on-center-then-on-left' : showAdvancedSearchOption}">
+            <div class="input-group full-text-search"
+              [ngClass]="{'full-text-search-full-width' : showAdvancedSearchOption}">
+              <!-- // SEARCH FULL-TEXT BTN -->
+              <span class="input-group-btn" style="padding-right: 2px;">
+                <button class="custom-input-group---btn tool_tip" type="submit">
+                  <i class="fa fa-search fa-search-btn" (click)="search()" style="color:grey; font-size: 18px;"></i>
+                  <span class="bottom" style="min-width: fit-content; padding: 5px 10px;border-radius: 4px;">
+                    {{ 'Search' | translate}}
+                    <i></i>
+                  </span>
+                </button>
+              </span>
+              <!-- {{ 'HistoryPage.ContainsTheWords' | translate }} -->
+              <input name="fullText" [(ngModel)]="fullText" (ngModelChange)="fulltextChange($event)" autocomplete="off"
+                class="search-field" placeholder=" {{ 'HistoryPage.SearchByWordsOrByTicketID' | translate }} "
+                (keypress)="searchOnEnterPressed($event)">
+
+              <!-- // CLEAR SEARCH FULL-TEXT BTN -->
+              <span *ngIf="fullText?.length > 0 && showAdvancedSearchOption === false" class="input-group-btn"
+                style="padding-right: 2px;">
+                <button class="custom-input-group---btn tool_tip" type="button">
+                  <i class="fa fa-times fa-clear-search-btn" (click)="clearFullText()"
+                    style="color:grey; font-size: 18px;"></i>
+
+                  <span class="bottom" style="min-width: fit-content; padding: 5px 10px;border-radius: 4px;">
+                    {{ 'HistoryPage.ClearSearch' | translate }}
+                    <i></i>
+                  </span>
+                </button>
+              </span>
+
+              <!-- // OPEN ADVANCED OPTION BTN -->
+              <span class="input-group-btn" style="padding-left: 2px;">
+                <button class="custom-input-group---btn tool_tip" type="button">
+                  <i class="fa fa-caret-down fa-advanced-option-btn" (click)="toggle()"
+                    style="color:grey; font-size: 18px;"></i>
+
+                  <span class="bottom" style="min-width: fit-content; padding: 5px 10px;border-radius: 4px;">
+                    {{ 'AdvancedSearch' | translate }}
+                    <i></i>
+                  </span>
+
+                </button>
+              </span>
+            </div><!-- /input-group -->
+
+          </div>
+
+
+          <!-- ---------------------------------------------------------------- -->
+          <!-- Filters - right section -->
+          <!-- ---------------------------------------------------------------- -->
+          <div class="filters-on-right">
+            <button class="btn pull-right export-to-csv-btn btn-gray-no-boxshadow"
+              style="max-height: 38px; margin-top: 20px;" (click)="exportRequestsToCSV()">
+              <span class="material-icons" style="vertical-align: middle; margin-bottom: 0px; margin-top: 0px;">
+                save_alt
+              </span>
+              {{ 'ExportToCSV' | translate }}
+            </button>
+          </div>
+
+        </div>
+
+
+        <div class="request_filter" style="margin-top: -15px; margin-right: 180px;">
+          <div class="filter-bar-advanced-options" *ngIf="showAdvancedSearchOption">
+            <div style="margin-top: 6px;">
+              <div class="row">
+
+                <!-- ---------------------------------------------------------- -->
+                <!-- Select DEPARTMENTS -->
+                <!-- ---------------------------------------------------------- -->
+                <div class="col-sm-6">
+                  <label class="col-sm-12 label-7695a5">
+                    {{ 'HistoryPage.FilterByDepartment' | translate }}
+                  </label>
+                  <div class="col-sm-12">
+                    <ng-select class="custom" name="dept" [(ngModel)]="selectedDeptId" [clearable]="false"
+                      (change)="depSelected(selectedDeptId)">
+                      <!-- <ng-option [value]="''">{{ 'HistoryPage.AllDepts' | translate }}</ng-option> -->
+                      <ng-option [value]="''">{{ allDeptsLabel }}</ng-option>
+                      <ng-option *ngFor="let dept of departments" [value]="dept._id">
+                        {{dept.name}}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+
+
+                <!-- ---------------------------------------------------------- -->
+                <!-- Select DATE RANGE -->
+                <!-- ---------------------------------------------------------- -->
+                <div class="col-sm-6">
+                  <label for="contain" class="col-sm-12 label-7695a5">
+                    {{ 'HistoryPage.DateRange' | translate }}
+                    <span *ngIf="date_picker_is_disabled" class="pro-only-badge" style="top:-1px !important">
+                      {{'ProOnly' | translate }}
+                    </span>
+                  </label>
+
+                  <div class="col-sm-12 left-date-picker">
+                    <!-- <my-date-picker placeholder="{{ 'From' | translate }}" name="mydate"
+                      (dateChanged)="startDateSelected($event)" [options]="myDatePickerOptions" [(ngModel)]="startDate"
+                      [disabled]="date_picker_is_disabled">
+                    </my-date-picker>
+                  </div>
+                  <div class="col-sm-6 right-date-picker">
+                    <my-date-picker placeholder="{{ 'To' | translate }}" name="mydate"
+                      (dateChanged)="endDateSelected($event)" [options]="endDatePickerOptions" [(ngModel)]="endDate"
+                      [disabled]="date_picker_is_disabled || start_date_is_null">
+                    </my-date-picker> -->
+
+                    <!-- ---------------------------------------- -->
+                    <!-- New date picker -->
+                    <!-- ---------------------------------------- -->
+                    <!-- <mat-form-field appearance="fill">
+                    <mat-label>Enter a date range</mat-label> 
+                      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                        <input matStartDate formControlName="start" placeholder="Start date">
+                        <input matEndDate formControlName="end" placeholder="End date">
+                      </mat-date-range-input>
+                      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-date-range-picker #picker></mat-date-range-picker>
+                    
+                      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                      <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                   </mat-form-field>
+                    
+                    <p>Selected range: {{range?.value | json}}</p> -->
+
+                    <mat-form-field class="custom-date-range-picker" appearance="standard">
+                      <!-- <mat-label>Enter a date range</mat-label> -->
+                      <!-- (dateInput)="addEventStartDate('input', $event)" -->
+                      <!-- (dateInput)="addEventEndDate('input', $event)" -->
+                      <mat-date-range-input [rangePicker]="picker">
+                        <input (dateChange)="addEventStartDate($event.value)"
+                          (ngModelChange)="onChangeStartDate($event)" [(ngModel)]="startDateDefaultValue" matStartDate
+                          placeholder="Start date">
+                        <input (dateChange)="addEventEndDate($event.value)" [(ngModel)]="endDateDefaultValue" matEndDate
+                          placeholder="End date">
+                      </mat-date-range-input>
+                      <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker-toggle matSuffix (click)="clearDateRange()">
+                        <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                      </mat-datepicker-toggle>
+
+                      <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- ---------------------------------------------------------- -->
+              <!-- Select USERS/BOTS -->
+              <!-- ---------------------------------------------------------- -->
+              <div class="row" style="margin-bottom:8px">
+                <div class="col-sm-6">
+                  <label class="col-sm-12 label-7695a5">
+                    {{ 'HistoryPage.Agent' | translate }}
+                  </label>
+                  <div class="col-sm-12">
+                    <ng-select name="agent" [(ngModel)]="selectedAgentId" [clearable]="false"
+                      (change)="agentSelected(selectedAgentId)">
+                      <ng-option [value]="''">{{ 'HistoryPage.AllAgents' | translate }}</ng-option>
+                      <ng-option *ngFor="let agent of user_and_bot_array" [value]="agent._id">
+                        {{ agent.firstname }} {{ agent.lastname }}
+
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <label class="col-sm-12 label-7695a5">
+                    {{ "Tags.Tags" | translate }}
+                  </label>
+                  <div class="col-sm-12">
+                    <ng-select [items]="tags_array" bindLabel="name" bindValue="name"
+                      placeholder="{{'Tags.SelectTag' | translate}}" [(ngModel)]="selecteTagName"
+                      (change)="tagNameSelected()" [clearable]='false' [loading]=loadingTags loadingText='Loading...'>
+                      <ng-template ng-label-tmp let-item="item">
+                        <!-- <img height="15" width="15" [src]="item.avatar" /> -->
+                        <div class="tag--color" [ngStyle]="{'background-color': item.color }"></div>
+                        <span>{{item.name}}</span>
+                      </ng-template>
+                      <ng-template ng-option-tmp let-item="item" let-index="index">
+                        <!-- <img height="15" width="15" [src]="item.avatar" /> -->
+                        <div class="tag--color" [ngStyle]="{'background-color': item.color }"></div>
+                        <span>{{item.name}}</span>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6" *ngIf="!IS_HERE_FOR_HISTORY">
+                  <label class="col-sm-12 label-7695a5">
+                    {{ "Status" | translate }}
+                  </label>
+                  <div class="col-sm-12">
+                    <ng-select name="requeststatus" [(ngModel)]="requests_status"
+                      (change)="requestsStatusSelectFromAdvancedOption(requests_status)"
+                      [items]="status | selectOptionsTranslate" bindLabel="name" [clearable]='false'
+                      [searchable]="false" bindValue="id" placeholder="Select status">
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <label class="col-sm-12 label-7695a5">
+                    {{ 'ConversationType' | translate }}
+                  </label>
+                  <div class="col-sm-12">
+                    <ng-select name="conversationtype" [(ngModel)]="conversation_type"
+                      style="text-transform: capitalize;" (change)="requestsTypeSelectFromAdvancedOption()"
+                      [items]="conversationType | selectOptionsTranslate" bindLabel="name" [clearable]='false'
+                      [searchable]="false" bindValue="id" placeholder="{{'SelectConversationType' | translate }}">
+                    </ng-select>
+                  </div>
+
+                </div>
+              </div>
+
+
+              <!-- ------------------------------------------ -->
+              <!-- BTNS SEARCH & CLEAR SEARCH -->
+              <!-- ------------------------------------------ -->
+              <div class="row">
+                <div class="col-sm-12" style="margin-top: 16px;">
+                  <button #searchbtnbottom id="search_in_advanced_filter" type="submit"
+                    class="btn btn-tdblu-no-boxshadow pull-right" (click)="search()"
+                    style="padding:9px 30px;     margin-right: 15px;">
+
+                    {{ 'Search' | translate}}
+                  </button>
+                  <button type="submit" class="btn btn-gray-no-boxshadow  clearsearchbtn pull-right"
+                    (click)="clearSearch()" style="margin-right: 12px;">
+
+                    <!-- {{ 'HistoryPage.ClearSearch' | translate }} -->
+                    {{ 'ResetFilters' | translate }}
+
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <span class="msg-alert">
+          Conversations in this page are not real time. Click the refresh button to update
+        </span> -->
+    </div>
+  </div>
+
+
+  <!-- ---------------------------------------------------------------- -->
+  <!-- History info 'Upgrade Your Plan for unlimited chat history' -->
+  <!------------------------------------------------------------------ -->
+  <div class="row" *ngIf="IS_HERE_FOR_HISTORY">
+    <div class="col-md-12">
+      <div
+        *ngIf="prjct_profile_type === 'payment' && subscription_is_active === false ||  prjct_profile_type === 'free' && trial_expired === true">
+        <!-- card--no-border -->
+        <div class="card " style="margin-top: 6px; margin-bottom: 0px;">
+          <div class="card-content">
+
+            <i class="material-icons" style="vertical-align: middle; color: #3ea9f5;">info</i>
+            <span class="msg-alert">
+              <!-- History is only available for the past 14 days. Renew your subscription for unlimited chat history -->
+              {{ 'HistoryPage.HistoryIsOnlyAvailableForThePast14Days' | translate }}.
+              <span *ngIf="payIsVisible">
+                <span class="upgrade-plan-for-unlimited-history" style="color: #039be5; cursor:pointer"
+                  (click)="openModalSubsExpiredOrGoToPricing()">
+                  {{ "Pricing.UpgradeYourPlan" | translate }}
+                </span>
+                {{ 'HistoryPage.ForUnlimitedChatHistory' | translate }}
+              </span>
+            </span>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!--  ---------------------------------------------------------------- -->
+  <!--  Applied filter -->
+  <!--  ---------------------------------------------------------------- -->
+  <!-- <p style=" margin-top: 23px;"> fullText_applied_filter: {{ fullText_applied_filter }}</p>    
+  <p> startDateFormatted: {{ startDateFormatted }}   </p>  
+  <p> selectedAgentFirstname: {{ selectedAgentFirstname }}   </p>   
+  <p> selectedDeptName: {{ selectedAgentFirstname }}   </p>  
+  <p> requests_status: {{ requests_status }}   </p>  
+  <p> selecteTagColor: {{ selecteTagColor }}   </p>  
+  <p> conversation_type: {{ conversation_type }}   </p> 
+  <p> conversationTypeValue: {{ conversationTypeValue }}   </p>  -->
+
+  <!-- <div style="margin-top: 16px; display: flex; position: relative;margin-bottom: 9px;"
+    *ngIf="fullText_applied_filter || startDateFormatted || selectedAgentFirstname || selectedDeptName || requests_status === '200' || requests_status === '100' || requests_status !== 'all' || selecteTagColor 
+    || (conversation_type && conversation_type !== 'all') || (conversationTypeValue && conversationTypeValue !== 'all')  || conversationTypeValue !== undefined "> -->
+
+  <div style="margin-top: 16px; display: flex; position: relative;margin-bottom: 9px;" *ngIf="
+    fullText_applied_filter || 
+    startDateFormatted || 
+    selectedAgentFirstname || 
+    requests_status_temp === '200' || 
+    requests_status_temp === '100' || 
+    selecteTagColor  || 
+    conversationTypeValue || 
+    selectedDeptName">
+
+    <!-- conversation_type {{ conversation_type }} - conversationTypeValue {{conversationTypeValue}} -->
+    <div class="applied-filter-title">
+      {{'AppliedFilters' | translate}}
+    </div>
+
+
+    <!-- 
+    <div *ngIf="requests_status === '200'" class="applied-filter">
+      {{ "VisitorsPage.ServedRequests" | translate }}
+    </div>
+
+    <div *ngIf="requests_status === '100'" class="applied-filter">
+      {{ "VisitorsPage.UnservedRequests" | translate }}
+    </div> -->
+
+
+    <div id="full-text" *ngIf="fullText_applied_filter" class="applied-filter">
+      {{fullText_applied_filter}}
+    </div>
+
+    <div id="date-range" *ngIf="startDateFormatted" class="applied-filter">
+      <span *ngIf="startDateFormatted && !endDateFormatted">
+        after
+      </span>
+      {{startDateFormatted}}
+      <span *ngIf="endDateFormatted">
+        - {{endDateFormatted}}
+      </span>
+    </div>
+
+    <div id="teammate" *ngIf="selectedAgentFirstname" class="applied-filter">
+      {{selectedAgentFirstname}} {{ selectedAgentLastname }}
+    </div>
+
+    <div id="dept" *ngIf="selectedDeptName" class="applied-filter">
+      {{selectedDeptName}}
+    </div>
+
+    <div id="served-200" *ngIf="requests_status === '200'" class="applied-filter">
+      {{'Served' | translate}}
+    </div>
+
+    <div id="served-100" *ngIf="requests_status === '100'" class="applied-filter">
+      {{'Unserved' | translate}}
+    </div>
+
+    <div id="tag" *ngIf="selecteTagColor" class="applied-filter">
+      <div class="tag--color" [ngStyle]="{'background-color': selecteTagColor }"> </div>
+      {{selecteTagNameValue}}
+    </div>
+
+    <!-- || conversation_type  === 'chat21'  && conversation_type !== 'all'-->
+    <div id="conversation-type" *ngIf="
+          conversationTypeValue  === 'chat21' ||
+          conversationTypeValue  === 'form' ||
+          conversationTypeValue  === 'messenger' ||
+          conversationTypeValue  === 'telegram' || 
+          conversationTypeValue  === 'whatsapp' || 
+          conversationTypeValue  === 'email'" class="applied-filter">
+      <span *ngIf="conversationTypeValue === 'chat21' ">
+        Chat
+      </span>
+      <!-- || conversation_type  === 'form' -->
+      <span *ngIf="conversationTypeValue === 'form' ">
+        Ticket
+      </span>
+      <!-- || conversation_type  === 'messenger' -->
+      <span *ngIf="conversationTypeValue === 'messenger'">
+        Facebook messenger
+      </span>
+
+      <!-- || conversation_type  === 'telegram' -->
+      <span *ngIf="conversationTypeValue === 'telegram'">
+        Telegram
+      </span>
+      <!-- || conversation_type  === 'whatsapp' -->
+      <span *ngIf="conversationTypeValue === 'whatsapp'">
+        WhatsApp
+      </span>
+
+      <!-- || conversation_type  === 'email' -->
+      <span *ngIf="conversationTypeValue === 'email' ">
+        Email
+      </span>
+
+
+    </div>
+
+
+    <!-- <div class="applied-filter">
+      <span
+        *ngIf="!fullText_applied_filter || !startDateFormatted || !selectedAgentFirstname || !selectedDeptName || !requests_status === '200' || !requests_status === '100' || !selecteTagColor">
+        {{ 'TotalConversations' | translate }}: {{requestsCount}}
+      </span>
+      <span
+      *ngIf="fullText_applied_filter || startDateFormatted || selectedAgentFirstname || selectedDeptName || requests_status === '200' || requests_status === '100' || selecteTagColor">
+      {{ 'ConversationsFound' | translate }}: {{requestsCount}}
+    </span>
+    </div> -->
+
+  </div>
+  <!-- style="display: flex; position: relative; float: right;top: 51px;z-index: 99; " -->
+  <div class="row" *ngIf="!IS_HERE_FOR_HISTORY" style="font-size: 16px;margin-bottom: 8px ">
+    <div class="col-xs-12 conversations-count">
+      <span
+        *ngIf="requests_status === 'all' && !fullText_applied_filter && !startDateFormatted && !selectedAgentFirstname && !selectedDeptName && !selecteTagColor && !conversation_type">
+        {{ 'TotalConversations' | translate }}:
+        <!-- https://stackoverflow.com/questions/13014808/is-there-anyway-to-animate-an-ellipsis-with-css-animations -->
+        <span *ngIf="showSpinner" class="loading">{{'ProcessingNoDot' | translate}} </span>
+        <span *ngIf="!showSpinner">
+          {{requestsCount}}
+        </span>
+      </span>
+
+      <span
+        *ngIf="fullText_applied_filter || startDateFormatted || selectedAgentFirstname || selectedDeptName || requests_status === '200' || requests_status === '100' || selecteTagColor || conversation_type">
+        {{ 'ConversationsFound' | translate }}:
+        <span *ngIf="showSpinner" class="loading">{{'ProcessingNoDot' | translate}} </span>
+        <span *ngIf="!showSpinner">
+          {{requestsCount}}
+        </span>
+      </span>
+    </div>
+  </div>
+  <!-- style="display: flex; position: relative; float: right;top: 51px;z-index: 99; " -->
+  <div class="row" *ngIf="IS_HERE_FOR_HISTORY" style="font-size: 16px;margin-bottom: 8px">
+    <div class="col-xs-12 conversations-count">
+      <span
+        *ngIf="!fullText_applied_filter && !startDateFormatted && !selectedAgentFirstname && !selectedDeptName && !selecteTagColor  && !conversation_type">
+        {{ 'TotalConversations' | translate }}:
+        <span *ngIf="showSpinner" class="loading">{{'ProcessingNoDot' | translate}} </span>
+        <span *ngIf="!showSpinner">
+          {{requestsCount}}
+        </span>
+      </span>
+
+      <span
+        *ngIf="fullText_applied_filter || startDateFormatted || selectedAgentFirstname || selectedDeptName || selecteTagColor || conversation_type">
+        {{ 'ConversationsFound' | translate }}:
+        <span *ngIf="showSpinner" class="loading">{{'ProcessingNoDot' | translate}} </span>
+        <span *ngIf="!showSpinner">
+          {{requestsCount}}
+        </span>
+      </span>
+    </div>
+  </div>
+
+
+  <!-- <div
+    style="width: 96%; height: 40px; background-color: #b5bdc0; border-radius: 0px 30px 30px 0px; margin-left: -15px;">
+
+    <div class="row" style="padding-top: 7px">
+      <div class="col-sm-1" style="margin-left: 8vh;">
+        <div class="checkbox" style="margin: auto !important; margin-left: 5vh; width: auto;">
+          <label>
+            <input [disabled]="project_user?.is_group_member" [checked]="project_user?.is_group_member" type="checkbox"
+              class="form-check-input" style="width: 16px;height: 16px;" value="{{project_user?.id_user?._id}}"
+              (click)="change(project_user?.id_user?._id)">
+          </label>
+        </div>
+      </div>
+
+      <div class="col-sm-1" style="width: 6%;">
+        <span class="material-icons" style="vertical-align:middle; color: #000000; cursor: pointer;">
+          refresh
+        </span>
+      </div>
+    </div>
+  </div> -->
+  <!-- <div style="margin-left: auto;" *ngIf="request_selected.length > 0">
+    <button type="button" class="btn btn-danger">
+      Elimina Selezionati
+    </button>
+  </div> -->
+
+  <div class="row">
+    <div class="col-md-12 table-wrapper-col">
+      <div class="card card--no-border" style="margin-top: 0px;">
+
+        <!-- ---------------------------------------------------------------- -->
+        <!-- Table -->
+        <!-- ---------------------------------------------------------------- -->
+        <div class="card-content table-responsive">
+
+          <!-- OPTION TABLE -->
+          <table class="table">
+            <thead class="text">
+              <tr>
+
+                <!-- --------------------------------------------------- -->
+                <!-- Checkbox select all displayed in HISTORY -->
+                <!-- --------------------------------------------------- -->
+                <th *ngIf="IS_HERE_FOR_HISTORY" class="table-header-option" style="text-align: center; width: 25px;">
+                  <div class="checkbox-wpr" *ngIf="CURRENT_USER_ROLE === 'owner'">
+                    <label for="allCheckbox">
+                      <input id="allCheckbox" [disabled]="project_user?.is_group_member" [checked]="allChecked"
+                        type="checkbox" class="form-check-input" style="cursor: pointer; width: 20px; height: 20px;"
+                        (click)="selectAll($event)">
+                    </label>
+                  </div>
+                </th>
+
+
+                <!-- --------------------------------------------------- -->
+                <!-- Checkbox select all displayed in NORT -->
+                <!-- --------------------------------------------------- -->
+                <th *ngIf="!IS_HERE_FOR_HISTORY" class="table-header-option" style="text-align: center; width: 25px;">
+                  <div class="checkbox-wpr" *ngIf="CURRENT_USER_ROLE !== 'agent'">
+                    <label for="allCheckbox">
+                      <input id="allCheckbox" [disabled]="project_user?.is_group_member" [checked]="allChecked"
+                        type="checkbox" class="form-check-input" style="cursor: pointer; width: 20px; height: 20px;"
+                        (click)="selectAll($event)">
+                    </label>
+                  </div>
+                </th>
+
+                <th class="table-header-option" style="text-align: center" (click)="search()">
+                  <div class="refresh-icon-wpr"
+                    [ngClass]="{'not_is_owner': CURRENT_USER_ROLE !== 'owner' && IS_HERE_FOR_HISTORY, 'is_agent': CURRENT_USER_ROLE === 'agent' && !IS_HERE_FOR_HISTORY }">
+                    <button class="custom-input-group---btn tool_tip" type="button" style="height: 37px;"
+                      matTooltipClass="mat-white-tooltip" matTooltip="{{ 'Refresh' | translate }}" #tooltip="matTooltip"
+                      matTooltipPosition='below' matTooltipHideDelay="100">
+                      <span class="material-icons refresh-page-icon" style="vertical-align:middle; cursor: pointer;position: relative;
+                    top: 1px; color:grey;">
+                        refresh
+                      </span>
+                      <!-- <span class="bottom" style="min-width: fit-content; padding: 5px 10px;border-radius: 4px;">
+                        {{ 'Refresh' | translate }}
+                        <i></i>
+                      </span> -->
+                    </button>
+                  </div>
+                </th>
+
+
+                <th *ngIf="IS_HERE_FOR_HISTORY" class="table-header-option" style="text-align: center;">
+                  <!-- --------------------------------------------------- -->
+                  <!-- Action Delete selected if IS_HERE_FOR_HISTORY -->
+                  <!-- --------------------------------------------------- -->
+                  <div *ngIf="request_selected.length > 0 && CURRENT_USER_ROLE === 'owner'" class="delete-selected-wpr">
+                    <button class="custom-input-group---btn tool_tip" type="button" style="height: 37px;"
+                      (click)="deleteSelected()" matTooltipClass="mat-white-tooltip"
+                      matTooltip="{{ 'Delete' | translate }}" #tooltip="matTooltip" matTooltipPosition='below'
+                      matTooltipHideDelay="100">
+
+                      <span class="material-icons delete-forever-icon"
+                        style="vertical-align:middle; cursor: pointer; color:grey;">
+                        delete_forever
+                      </span>
+                      <!-- <span class="bottom" style="min-width: fit-content; padding: 5px 10px;border-radius: 4px;">
+                        {{ 'Delete' | translate }}
+                        <i></i>
+                      </span> -->
+                    </button>
+                  </div>
+                </th>
+
+
+
+                <th *ngIf="!IS_HERE_FOR_HISTORY" class="table-header-option" style="text-align: center;">
+                  <!-- ---------------------------------------------------------------------------------------- -->
+                  <!-- Action archive selected if IS HERE FOR NO REAL TIME REQUESTS (!IS_HERE_FOR_HISTORY) -->
+                  <!-- ---------------------------------------------------------------------------------------- -->
+                  <div *ngIf="request_selected.length > 0" class="archive-selected-wpr">
+                    <button class="custom-input-group---btn tool_tip" type="button" style="height: 37px;"
+                      (click)="archiveSelected()" matTooltipClass="mat-white-tooltip"
+                      matTooltip="{{ 'VisitorsPage.Resolve' | translate }}" #tooltip="matTooltip"
+                      matTooltipPosition='below' matTooltipHideDelay="100">
+
+                      <span class="material-icons delete-forever-icon"
+                        style="vertical-align:middle; cursor: pointer; color:grey;">
+                        archive
+                      </span>
+                      <!-- <span class="bottom" style="min-width: fit-content; padding: 5px 10px;border-radius: 4px;">
+                        {{ 'VisitorsPage.Resolve' | translate }}
+                        <i></i>
+                      </span> -->
+                    </button>
+                  </div>
+
+                  <!-- ---------------------------------------------------------------------------------------- -->
+                  <!-- Delete selected if IS HERE FOR NO REAL TIME REQUESTS (!IS_HERE_FOR_HISTORY) -->
+                  <!-- ---------------------------------------------------------------------------------------- -->
+                  <div *ngIf="request_selected.length > 0 && CURRENT_USER_ROLE === 'owner'"
+                    class="delete-selected-wpr-in-nort">
+                    <button class="custom-input-group---btn tool_tip" type="button" style="height: 37px;"
+                      (click)="deleteSelected()" matTooltipClass="mat-white-tooltip"
+                      matTooltip="{{ 'Delete' | translate }}" #tooltip="matTooltip" matTooltipPosition='below'
+                      matTooltipHideDelay="100">
+                      <!-- [ngClass]="{'is_visible-delete-selected': request_selected.length > 0}" -->
+                      <span class="material-icons delete-forever-icon"
+                        style="vertical-align:middle; cursor: pointer; color:grey;">
+                        delete_forever
+                      </span>
+                      <!-- <span class="bottom" style="min-width: fit-content; padding: 5px 10px;border-radius: 4px;">
+                        {{ 'Delete' | translate }}
+                        <i></i>
+                      </span> -->
+                    </button>
+                  </div>
+                </th>
+
+                <th class="table-header-text"> </th>
+                <th class="table-header-text"> </th>
+                <th></th>
+                <!-- <th class="table-header-text"> </th> -->
+                <!-- <th class="table-header-text"> </th> -->
+                <!-- <th class="table-header-text"> </th> -->
+
+
+                <!-- ----------------------------- -->
+                <!-- Conversation count -->
+                <!-- ----------------------------- -->
+                <th colspan="4">
+                  <!-- <div class="conversation-count-wpr">
+                    <div class="conversation-count-wpr" style="position: absolute; top: 7px; font-weight: 400;">
+                      {{ 'TotalConversations' | translate }}: {{requestsCount}}
+                    </div>
+                  </div> -->
+                </th>
+              </tr>
+            </thead>
+          </table>
+
+
+
+          <!-- REQUEST TABLE -->
+          <table class="table table-hover">
+            <thead class="text">
+              <tr>
+
+                <th class="table-header-option"> </th>
+
+                <th class="table-header-option" style="text-align: center;"
+                  *ngIf="CURRENT_USER_ROLE === 'owner' && IS_HERE_FOR_HISTORY">
+                  <!-- <span class="material-icons" style="vertical-align:middle; color: #1877f2; cursor: pointer;">
+                    refresh
+                  </span> -->
+                </th>
+
+                <th class="table-header-option" style="text-align: center;"
+                  *ngIf="!IS_HERE_FOR_HISTORY && CURRENT_USER_ROLE !== 'agent'">
+                  <!-- <span class="material-icons" style="vertical-align:middle; color: #1877f2; cursor: pointer;">
+                    refresh
+                  </span> -->
+                </th>
+
+                <!--  ----------------------------- -->
+                <!--  REQUEST ID  -->
+                <!--  ----------------------------- -->
+                <!-- <th>
+                    <span style="color: #566787">
+                      <strong>
+                        Id
+                      </strong>
+                    </span>  
+                  </th> -->
+
+                <!--  ----------------------------- -->
+                <!--  REQUEST FIRST TEXT  -->
+                <!--  ----------------------------- -->
+                <th class="table-header-text">
+                  <span class="column-th-span">
+                    {{ 'HistoryPage.Message' | translate }}
+                  </span>
+                </th>
+
+                <!-- ----------------------------- -->
+                <!-- CHANNNEL  -->
+                <!--  ----------------------------- -->
+                <th> </th>
+
+                <!--  ----------------------------- -->
+                <!--  Ticket id  -->
+                <!--  ----------------------------- -->
+                <!-- <th class="table-header-text" style="text-align: center;">
+                  <span class="column-th-span">
+                    {{ 'TicketId' | translate }}
+                  </span>
+                </th> -->
+
+                <!--  ----------------------------- -->
+                <!--  REQUESTER  -->
+                <!--  ----------------------------- -->
+                <th class="table-header-text">
+                  <span class="column-th-span">
+                    {{ 'HistoryPage.Requester' | translate }}
+                  </span>
+                </th>
+
+                <!--  ------------------------------------------------- -->
+                <!--  USER AGENT BROWSER & OPERATING SYSTEM  -->
+                <!--  ------------------------------------------------- -->
+                <th></th>
+
+
+                <!-- ===== DEPARTMENT NAME ===== -->
+                <th class="table-header-text">
+                  <span class="column-th-span">
+                    <!-- {{ 'VisitorsPage.Department' | translate }} -->
+                    {{ 'Department' | translate }}
+                  </span>
+                </th>
+
+                <!--  ----------------------------- -->
+                <!--  SERVED BY  -->
+                <!--  ----------------------------- -->
+                <th class="table-header-text">
+                  <span class="column-th-span">
+                    <!-- {{ 'HistoryPage.ServedBy' | translate }} -->
+                    {{ 'ServedBy' | translate }}
+                  </span>
+                </th>
+
+                <!--  ----------------------------- -->
+                <!--  RATING  -->
+                <!--  ----------------------------- -->
+                <!-- <th>
+                    <span style="color: #566787">
+                      <strong> 
+                        {{ 'HistoryPage.Rating' | translate }}
+                      </strong>
+                    </span>
+                  </th> -->
+                <!--  ----------------------------- -->
+                <!-- MEMBERS  -->
+                <!--  ----------------------------- -->
+                <!-- <th>
+                    <span style="color: #566787">
+                      <strong> Membri </strong>
+                      </span>
+                  </th> -->
+
+                <!--  ----------------------------- -->
+                <!--  PUBLISHED  -->
+                <!--  ----------------------------- -->
+                <th class="table-header-text">
+                  <span class="column-th-span">
+                    <!-- {{ 'HistoryPage.Published' | translate }} -->
+                    {{ "Created" | translate }}
+                  </span>
+                </th>
+
+
+                <!--  ----------------------------- -->
+                <!--  Actions -->
+                <!--  ----------------------------- -->
+                <th>
+                  <span class="column-th-span">
+                    {{ 'Actions' | translate }}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody *ngIf="showSpinner">
+              <tr>
+                <td colspan="10">
+                  <loading-spinner *ngIf="showSpinner"></loading-spinner>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+            <tbody *ngIf="!showSpinner">
+
+              <!-- ------------------------------ -->
+              <!--  IF THERE ISN'T REQUEST -->
+              <!--  ------------------------------ -->
+              <tr *ngIf="requestList && requestList?.length === 0">
+                <td colspan="10" style="text-align: center; padding-top: 16px; height: 150px;">
+
+                  <span class="material-icons no-request-icon" style="vertical-align: middle;">
+                    sms_failed
+                  </span>
+
+                  <p class="no-request-text">
+
+                    {{ 'HistoryPage.NoRequests' | translate }}
+                  </p>
+                </td>
+              </tr>
+
+              <tr *ngFor="let request of requestList">
+                <!--  ----------------------------------------------- -->
+                <!--  ******* CHECKBOX in the REQUEST LIST ******* -->
+                <!--  ----------------------------------------------- -->
+
+                <!--  --------------------------------------------------------------------- -->
+                <!--  checkbox displayed in history  (only if user as role owner) -->
+                <!--  --------------------------------------------------------------------- -->
+                <td style="text-align: center;width: 46px;"
+                  *ngIf="CURRENT_USER_ROLE === 'owner' && IS_HERE_FOR_HISTORY">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" class="form-check-input" [checked]="allChecked"
+                        style="width: 16px;height: 16px;" value="{{ request.request_id }}"
+                        (click)="change(request.request_id)">
+                    </label>
+                  </div>
+                </td>
+
+
+                <!--  --------------------------------------------------------------------- -->
+                <!--  checkbox displayed in NORT  (only if user as role owner or admin) -->
+                <!--  --------------------------------------------------------------------- -->
+                <td style="text-align: center;width: 46px;"
+                  *ngIf="!IS_HERE_FOR_HISTORY && CURRENT_USER_ROLE !== 'agent'">
+                  <!-- *ngIf="request?.participants.length > 0" -->
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" class="form-check-input" [checked]="allChecked"
+                        style="width: 16px;height: 16px;" value="{{ request.request_id }}"
+                        (click)="change(request.request_id)"
+                        [disabled]="request?.currentUserIsJoined === false && ROLE_IS_AGENT === true">
+                    </label>
+                  </div>
+
+                  <!-- <div class="checkbox" *ngIf="request?.participants.length === 0">
+                    <label>
+                      <input type="checkbox" class="form-check-input" [checked]="allChecked"
+                        style="width: 16px;height: 16px;" value="{{ request.request_id }}"
+                        (click)="change(request.request_id)"
+                        [disabled]="ROLE_IS_AGENT === true">
+                    </label>
+                  </div> -->
+                  <!-- <mat-checkbox [(ngModel)]="subtask.completed" (ngModelChange)="updateAllComplete()">
+                    {{subtask.name}}
+                  </mat-checkbox> -->
+                </td>
+
+
+
+                <!-- ------------------------------ -->
+                <!-- ******* ICONS ******* -->
+                <!-- ------------------------------ -->
+                <td class="request-type-icon" style="text-align:center; width: 1%; white-space: nowrap;">
+                  <span (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer">
+
+                    <!--  ------------------------------ -->
+                    <!--  HISTORY ICONS -->
+                    <!--  ------------------------------ -->
+                    <span *ngIf="request?.status === 1000">
+                      <span *ngIf="!request?.subject">
+                        <img style="width: 30px;" src="assets/img/request_icons/statusClosed.svg" class="img-fluid"
+                          matTooltipClass="mat-white-tooltip"
+                          matTooltip="{{ 'RequestMsgsPage.RequestResolved' | translate }}" #tooltip="matTooltip"
+                          matTooltipPosition='right' matTooltipHideDelay="100">
+                      </span>
+
+                      <span *ngIf="request?.subject">
+                        <img style="width: 30px;" src="assets/img/request_icons/statusClosed_internal.svg"
+                          class="img-fluid" matTooltipClass="mat-white-tooltip"
+                          matTooltip="{{ 'RequestMsgsPage.InternalRequestResolved' | translate }}" #tooltip="matTooltip"
+                          matTooltipPosition='right' matTooltipHideDelay="100">
+                      </span>
+                    </span>
+                  </span>
+
+                  <!-- --------------------------------------------------------------------------------------------- -->
+                  <!-- IF THE REQUEST SUPPORT STATUS IS 200 (SERVED REQUEST) AND THE CURRENT USER UID IS BETWEEN -->
+                  <!-- THE UID KEYS OF THE OBJECT MEMBER (i.e. the current user has joined to the request) -->
+                  <!-- ---------------------------------------------------------------------------------------------- -->
+                  <!-- rel="tooltip" title="{{ 'VisitorsPage.ViewRequestDetails' | translate}}: {{request?.request_id}}" -->
+                  <span *ngIf="request?.status == 200 && request?.currentUserIsJoined === true">
+                    <span (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer">
+
+                      <!-- ------------------------------ -->
+                      <!-- SERVED BY ME REQUEST -->
+                      <!-- ------------------------------ -->
+                      <span *ngIf="!request?.subject">
+
+                        <img style="width: 30px;" src="assets/img/request_icons/status200_joined.svg" class="img-fluid"
+                          matTooltipClass="mat-white-tooltip"
+                          matTooltip="{{ 'RequestMsgsPage.ConversationAssignedToYou' | translate }}"
+                          #tooltip="matTooltip" matTooltipPosition='right' matTooltipHideDelay="100">
+
+                      </span>
+
+
+                      <!-- ------------------------------ -->
+                      <!-- SERVED BY ME REQUEST internal -->
+                      <!-- ------------------------------ -->
+                      <span *ngIf="request?.subject">
+                        <img style="width: 30px;" src="assets/img/request_icons/status200_joined_internal.svg"
+                          class="img-fluid" matTooltipClass="mat-white-tooltip"
+                          matTooltip="{{ 'RequestMsgsPage.TicketAssignedToYou' | translate }}" #tooltip="matTooltip"
+                          matTooltipPosition='right' matTooltipHideDelay="100">
+
+                      </span>
+                    </span>
+                  </span>
+
+
+                  <!--  --------------------------------------------------------------------------------------------------- -->
+                  <!--  IF THE REQUEST SUPPORT STATUS IS 200 (SERVED REQUEST) BUT THE CURRENT USER UID IS NOT BETWEEN -->
+                  <!--  THE UID KEYS OF THE OBJECT MEMBER (i.e. the current user has not joined to the request) -->
+                  <!--  --------------------------------------------------------------------------------------------------- -->
+                  <!-- rel="tooltip"  title="{{ 'VisitorsPage.ViewRequestDetails' | translate}}: {{request?.request_id}}" -->
+                  <span *ngIf="request?.status == 200 && !request?.currentUserIsJoined">
+                    <span (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer">
+
+
+                      <!--  ------------------------------ -->
+                      <!--  SERVED !NOT BY ME REQUEST -->
+                      <!--  ------------------------------ -->
+                      <span *ngIf="!request?.subject">
+                        <img style="width: 30px;" src="assets/img/request_icons/status200_no_joined.svg"
+                          class="img-fluid" matTooltipClass="mat-white-tooltip"
+                          matTooltip="{{ 'RequestMsgsPage.RequestServedBy' | translate }}" #tooltip="matTooltip"
+                          matTooltipPosition='right' matTooltipHideDelay="100">
+                      </span>
+
+
+                      <!-- ---------------------------------- -->
+                      <!-- SERVED !NOT BY ME REQUEST INTERNAL -->
+                      <!-- ---------------------------------- -->
+                      <span *ngIf="request?.subject">
+                        <img style="width: 30px;" src="assets/img/request_icons/status200_no_joined_internal.svg"
+                          class="img-fluid" matTooltipClass="mat-white-tooltip"
+                          matTooltip="{{ 'RequestMsgsPage.InternalRequestServedBy' | translate }}" #tooltip="matTooltip"
+                          matTooltipPosition='right' matTooltipHideDelay="100">
+                      </span>
+                    </span>
+                  </span>
+
+
+
+                  <!-- ---------------------------------- -->
+                  <!-- UNSERVED -->
+                  <!-- ---------------------------------- -->
+                  <span *ngIf="request?.status === 100 && !request?.subject">
+                    <span (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer">
+
+                      <img style="width: 30px;" src="assets/img/request_icons/status100.svg" class="img-fluid"
+                        matTooltipClass="mat-white-tooltip"
+                        matTooltip="{{ 'RequestMsgsPage.RequestUnserved' | translate }}" #tooltip="matTooltip"
+                        matTooltipPosition='right' matTooltipHideDelay="100">
+
+                    </span>
+                  </span>
+
+
+                  <!-- ---------------------------------- -->
+                  <!-- UNSERVED internal -->
+                  <!-- ---------------------------------- -->
+                  <span *ngIf="request?.status === 100 && request?.subject">
+                    <span (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer">
+
+                      <img style="width: 30px;" src="assets/img/request_icons/status100_internal.svg" class="img-fluid"
+                        matTooltipClass="mat-white-tooltip"
+                        matTooltip="{{ 'RequestMsgsPage.InternalRequestUnserved' | translate }}" #tooltip="matTooltip"
+                        matTooltipPosition='right' matTooltipHideDelay="100">
+
+                    </span>
+                  </span>
+                </td>
+
+                <!-- ===== REQUEST ID ===== -->
+                <!-- <td (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer">
+                     <p style="font-size:0.8em;" >
+                       {{ request?.recipient }}
+                     </p>
+                  </td> -->
+                <!-- --------------------------------------- -->
+                <!--  REQUEST FIRST TEXT  -->
+                <!-- --------------------------------------- -->
+                <td [ngClass]="{'padding_5' : request?.tags?.length > 0}" (click)='goToRequestMsgs(request?.request_id)'
+                  style="cursor:pointer">
+                  <span *ngIf="request?.ticket_id " class="ticket-id-badge" style="float: left;"
+                    matTooltipClass="mat-white-tooltip" matTooltip="{{ 'TicketId' | translate }}" #tooltip="matTooltip"
+                    matTooltipPosition='right' matTooltipHideDelay="100">
+                    #{{request?.ticket_id }}
+                  </span>
+                  <p class="column-td request-first-text" [innerHTML]="getRequestText(request?.first_text)"
+                    [tooltip]="HtmlContent" contentType="template" (mouseover)='overfirstTextGetRequestMsg(request)'>
+                  </p>
+
+                  <ng-template #HtmlContent>
+                    <div class="ng2-tooltip-header">
+                      <span class="ng2-tooltip-badge--assigned-to-cu"
+                        *ngIf="request?.status == 200 && request?.currentUserIsJoined === true && !request?.subject">
+                        {{ 'RequestMsgsPage.ConversationAssignedToYou' | translate }}
+                      </span>
+                      <span class="ng2-tooltip-badge--assigned-to-cu"
+                        *ngIf="request?.status == 200 && request?.currentUserIsJoined === true && request?.subject">
+                        {{ 'RequestMsgsPage.TicketAssignedToYou' | translate }}
+                      </span>
+                      <span class="ng2-tooltip-badge--assigned"
+                        *ngIf="request?.status == 200 && !request?.currentUserIsJoined === true && !request?.subject">
+                        {{ 'RequestMsgsPage.RequestServedBy' | translate }}
+                      </span>
+                      <span class="ng2-tooltip-badge--assigned"
+                        *ngIf="request?.status == 200 && !request?.currentUserIsJoined === true && request?.subject">
+                        {{ 'RequestMsgsPage.InternalRequestServedBy' | translate }}
+                      </span>
+                      <span class="ng2-tooltip-badge--unassigned" *ngIf="request?.status === 100 && !request?.subject">
+                        {{ 'RequestMsgsPage.RequestUnserved' | translate }}
+                      </span>
+                      <span class="ng2-tooltip-badge--unassigned" *ngIf="request?.status === 100 && request?.subject">
+                        {{ 'RequestMsgsPage.InternalRequestUnserved' | translate }}
+                      </span>
+                      <span class="ng2-tooltip-badge--resolved" *ngIf="request?.status === 1000 && !request?.subject">
+                        {{ 'RequestMsgsPage.RequestResolved' | translate }}
+                      </span>
+                      <span class="ng2-tooltip-badge--resolved" *ngIf="request?.status === 1000 && request?.subject">
+                        {{ 'RequestMsgsPage.InternalRequestResolved' | translate }}
+                      </span>
+
+                      <span class="ng2-tooltip-ticket-id">#{{request?.ticket_id}}</span>
+                      <span class="ng2-tooltip-priority">
+                        <span style="color: #68737d; font-weight:300"> {{'Priority' | translate }}:</span>
+                        {{request?.priority | translate}}
+                      </span>
+                      <span class="ng2-tooltip-channel">
+                        <span style="color: #68737d; font-weight:300"> {{'MessageChannel' | translate }}:</span>
+                        <span *ngIf="request?.channel?.name === 'chat21'"> Chat </span>
+                        <span *ngIf="request?.channel?.name === 'telegram'"> Telegram </span>
+                        <span *ngIf="request?.channel?.name === 'whatsapp'"> WhatsApp </span>
+                        <span *ngIf="request?.channel?.name === 'messenger'">Facebook Messenger </span>
+                        <span *ngIf="request?.channel?.name === 'email'"> Email </span>
+                        <span *ngIf="request?.channel?.name === 'form'"> Form </span>
+
+                      </span>
+                    </div>
+                    <p class='ng2-tooltip-subject' *ngIf='request?.subject'>
+                      <span style="color: #68737d; font-weight:300"> {{'Subject' | translate }}:</span>
+                      {{request?.subject}}
+                    </p>
+                    <div class='ng2-tooltip-firt-text' [innerHTML]="request?.first_text  | htmlEntitiesEncode | marked">
+                    </div>
+                    <span>
+                      <p class='ng2-most-recent-comment-section-title'>{{'MostRecentComment' | translate}}</p>
+                      <hr class='ng2-tooltip-divider-line'>
+                      <div *ngIf="request?.msgsArray?.length > 0" class='ng2-latest-comment-sender-and-date-wpr'>
+                        <p class='ng2-comment-sender'> {{ request?.msgsArray[0]?.senderFullname}} </p>
+                        <p class='ng2-comment-date'> {{ request?.msgsArray[0]?.createdAt | date: 'dd/MM/yyyy'}} </p>
+                      </div>
+                      <p *ngIf="request?.msgsArray?.length > 0" class='ng2-latest-comment'
+                        [innerHTML]="request?.msgsArray[0]?.text  | htmlEntitiesEncode | marked"> </p>
+
+                      <div *ngIf="!request?.msgsArray?.length">
+                        <span class="ng2-latest-comment-loading">{{'ProcessingNoDot' | translate}} </span>
+                      </div>
+
+                    </span>
+                  </ng-template>
+                  <!-- --------------------------------------- -->
+                  <!-- Request Tag -->
+                  <!-- --------------------------------------- -->
+                  <section style="max-width: 210px;" *ngIf="request?.tags?.length > 0">
+                    <div style="display: inline-block;" *ngFor="let tag of request?.tags;  let i=index">
+                      <div *ngIf="i<2">
+                        <div class="icon-container" style="display: inline-block;">
+                          <svg style="width: 10px; height: auto;" aria-hidden="true" focusable="false" data-prefix="fas"
+                            data-icon="tag" class="svg-inline--fa-tag-icon fa-tag fa-w-16" role="img"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+                            <path [ngStyle]="{'fill':tag.color}" class="tag_icon_in_ws_msgs"
+                              d="M0 252.118V48C0 21.49 21.49 0 48 0h204.118a48 48 0 0 1 33.941 14.059l211.882 211.882c18.745 18.745 18.745 49.137 0 67.882L293.823 497.941c-18.745 18.745-49.137 18.745-67.882 0L14.059 286.059A48 48 0 0 1 0 252.118zM112 64c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z">
+                            </path>
+                          </svg>
+
+                          <span style="font-size: 11px; color: #7695a5; position: relative; top: -2px; left: -2px;">
+                            {{ tag.tag}}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <!-- -------------------------------------------------------------------- -->
+                    <!-- Display more tags -->
+                    <!-- -------------------------------------------------------------------- -->
+                    <div [id]="'more_tags_btn_for_request_' + request?.request_id" style="display: inline-block;"
+                      *ngIf="request?.tags?.length > 2">
+                      <a (click)="$event.stopPropagation(); displayMoreTags(request?.request_id)"
+                        style="font-size: 11px; color: rgba(0, 0, 0, 0.54) !important; position: relative;top: -2px;">
+                        ... {{request?.tags?.length - 2}} {{'more' | translate}}
+                      </a>
+                    </div>
+
+
+                    <!-- -------------------------------------------------------------------- -->
+                    <!-- Tag from 3 to ... -->
+                    <!-- -------------------------------------------------------------------- -->
+                    <div (click)="$event.stopPropagation(); displayLessTag(request?.request_id)"
+                      [id]="'more_tags_for_request_' + request?.request_id" style="display: none"
+                      *ngIf="request?.tags?.length > 2">
+                      <div style="display: inline-block;" *ngFor="let tag of request?.tags;  let i=index">
+                        <div *ngIf="i >= 2">
+                          <div class="icon-container" style="display: inline-block;">
+                            <svg style="width: 10px; height: auto;" aria-hidden="true" focusable="false"
+                              data-prefix="fas" data-icon="tag" class="svg-inline--fa-tag-icon fa-tag fa-w-16"
+                              role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+                              <path [ngStyle]="{'fill':tag.color}" class="tag_icon_in_ws_msgs"
+                                d="M0 252.118V48C0 21.49 21.49 0 48 0h204.118a48 48 0 0 1 33.941 14.059l211.882 211.882c18.745 18.745 18.745 49.137 0 67.882L293.823 497.941c-18.745 18.745-49.137 18.745-67.882 0L14.059 286.059A48 48 0 0 1 0 252.118zM112 64c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z">
+                              </path>
+                            </svg>
+
+                            <span style="font-size: 11px; color: #7695a5; position: relative; top: -2px; left: -2px;">
+                              {{ tag.tag}}
+                            </span>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <!-- -------------------------------------------------------------------- -->
+                    <!-- Display more tags -->
+                    <!-- -------------------------------------------------------------------- -->
+                    <!-- <div  [id]="'less_tags_btn_for_request_' + request?.request_id" style="display: none" *ngIf="request?.tags?.length > 2">
+                      <a  (click)="$event.stopPropagation(); displayLessTag(request?.request_id)" style="font-size: 11px;
+                      color: rgba(0, 0, 0, 0.54) !important;
+                      position: relative;
+                      top: -2px;"> display less
+                      </a>
+                    </div> -->
+                  </section>
+                </td>
+
+                <!-- ---------------------------------------- -->
+                <!-- @ Priority & Message Channel  -->
+                <!-- ---------------------------------------- -->
+                <td style="width: 1%;padding-left: 4px!important;">
+                  <div class="priority_and_channel_wpr" style="display: flex;">
+                    <!-- ---------------------------------------- -->
+                    <!-- @ Priority WRAPPER -->
+                    <!-- ---------------------------------------- -->
+                    <div *ngIf="request?.priority !== 'medium'" class="priority_wpr"
+                      style="flex: 1;; text-align: right;">
+                      <!-- ---------------------------------------- -->
+                      <!-- Priority High -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.priority === 'high'" class="tool_tip" matTooltipClass="mat-white-tooltip"
+                        matTooltip="{{'Priority' | translate}}: {{'high' | translate}}" #tooltip="matTooltip"
+                        matTooltipPosition='above' matTooltipHideDelay="100">
+                        <img style="width: 15px;height: 15px;" src="assets/img/priority_icons/high_v2.svg"
+                          class="img-fluid">
+                        <!-- <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'Priority' | translate}}:
+                          </span>
+                          <span style="font-weight: 400;">{{ 'high' | translate }} </span>
+                          <i></i>
+                        </span> -->
+                      </span>
+                      <!-- ---------------------------------------- -->
+                      <!-- Priority Urgent -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.priority === 'urgent'" class="tool_tip" matTooltipClass="mat-white-tooltip"
+                        matTooltip="{{'Priority' | translate}}: {{'urgent' | translate}}" #tooltip="matTooltip"
+                        matTooltipPosition='above' matTooltipHideDelay="100">
+                        <img style="width: 15px;height: 15px;" src="assets/img/priority_icons/urgent_v2.svg"
+                          class="img-fluid">
+                        <!-- <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'Priority' | translate}}:
+                          </span>
+                          <span style="font-weight: 400;">{{ 'urgent' | translate }} </span>
+                          <i></i>
+                        </span> -->
+                      </span>
+                      <!-- ---------------------------------------- -->
+                      <!-- Priority Low -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.priority === 'low'" class="tool_tip" matTooltipClass="mat-white-tooltip"
+                        matTooltip="{{'Priority' | translate}}: {{'low' | translate}}" #tooltip="matTooltip"
+                        matTooltipPosition='above' matTooltipHideDelay="100">
+                        <img style="width: 15px;height: 15px;" src="assets/img/priority_icons/low_v2.svg"
+                          class="img-fluid">
+                        <!-- <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'Priority' | translate}}:
+                          </span>
+                          <span style="font-weight: 400;">{{ 'low' | translate }} </span>
+                          <i></i>
+                        </span> -->
+                      </span>
+                    </div>
+
+                    <!-- ---------------------------------------- -->
+                    <!-- Channel WRAPPER -->
+                    <!-- ---------------------------------------- -->
+                    <div *ngIf="request?.channel?.name !== 'chat21'" class="channel_wpr"
+                      style="flex: 1; text-align: right;"
+                      [ngClass]="{'channel-wpr-padding-left' : request?.priority !== 'medium'}">
+                      <!-- ---------------------------------------- -->
+                      <!-- Channel - Telegram -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.channel?.name === 'telegram'" class="tool_tip">
+
+                        <img style="width: 24px;height: 24px;" src="assets/img/channel_icons/Telegram-01.svg"
+                          class="img-fluid">
+                        <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'MessageChannel' | translate}}:
+                          </span>
+                          <span style="font-weight: 400;">Telegram </span>
+                          <i></i>
+                        </span>
+                      </span>
+                      <!-- ---------------------------------------- -->
+                      <!-- Channel - WhatsApp -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.channel?.name === 'whatsapp'" class="tool_tip">
+
+                        <img style="width: 24px;height: 24px;" src="assets/img/channel_icons/whatsapp-logo_green.svg"
+                          class="img-fluid">
+                        <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'MessageChannel' | translate}}:
+                          </span>
+                          <span style="font-weight: 400;">WhatsApp </span>
+                          <i></i>
+                        </span>
+                      </span>
+
+                      <!-- ---------------------------------------- -->
+                      <!-- Channel - Messenger -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.channel?.name === 'messenger'" class="tool_tip">
+
+                        <img style="width: 24px;height: 24px;"
+                          src="assets/img/channel_icons/Facebook_Messenger_logo_2020.svg" class="img-fluid">
+
+                        <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'MessageChannel' | translate}}:
+                          </span>
+
+                          <span style="font-weight: 400;">Facebook Messenger </span>
+                          <i></i>
+                        </span>
+                      </span>
+
+                      <!-- ---------------------------------------- -->
+                      <!-- Channel - Email -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.channel?.name === 'email'" class="tool_tip email-wpr">
+
+                        <img style="padding:5px !important" src="assets/img/channel_icons/email-logo_white.svg"
+                          class="img-fluid channel-img-in-conversations">
+
+                        <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'MessageChannel' | translate}}:
+                          </span>
+                          <span style="font-weight: 400;">Email </span>
+
+                          <i></i>
+                        </span>
+                      </span>
+
+                      <!-- ---------------------------------------- -->
+                      <!-- Channel - Form -->
+                      <!-- ---------------------------------------- -->
+                      <span *ngIf="request?.channel?.name === 'form'" class="tool_tip form-wpr">
+                        <img style="padding:4px !important" src="assets/img/channel_icons/form-logo_v2_white.svg"
+                          class="img-fluid channel-img-in-conversations">
+
+                        <span class="bottom tool-tip-bottom--custom">
+                          <span style="font-weight: 400;">
+                            {{'MessageChannel' | translate}}:
+                          </span>
+                          <span style="font-weight: 400;">Form </span>
+                          <i></i>
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- ------------------------------------------------- -->
+                <!-- Ticket id  -->
+                <!-- ------------------------------------------------- -->
+                <!-- <td style="text-align: center;">
+                  <p *ngIf="request?.ticket_id" class="column-td">
+                   {{request?.ticket_id }}
+                  </p>
+                  <p *ngIf="!request?.ticket_id" class="column-td">
+                   n/a
+                  </p>
+                </td> -->
+
+                <!-- ------------------------------------------------- -->
+                <!-- REQUESTER FULL NAME  -->
+                <!-- ------------------------------------------------- -->
+                <td (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer;white-space: nowrap;
+                  width: 1%;" rel="tooltip" title="{{ request?.requester_id }}">
+
+                  <!-- [ngStyle]="{'background-color': request?.requester_fullname_fillColour }" -->
+                  <span class="requester-avatar-wrapper">
+                    <span class="requester-avatar--in-history"
+                      [ngStyle]="{'background':  'linear-gradient(rgb(255,255,255) -125%,' + request?.requester_fullname_fillColour + ')'}"
+                      [ngClass]="{'requester_fullname_undefined' : !request?.lead?.fullname}">
+                      <span style="color: #ffffff"> {{ request?.requester_fullname_initial }} </span>
+                    </span>
+                    <span *ngIf="request?.requester_is_verified === true" class="tooltipx">
+                      <svg [ngClass]="{'verified-icon-requester-undefined': !request?.lead?.fullname }" version="1.1"
+                        id="Livello_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        x="0px" y="0px" viewBox="0 0 26.6 26.6" width="17" height="17"
+                        style="position: relative;left: -38px;top: 1px;" xml:space="preserve">
+                        <style type="text/css">
+                          .st0 {
+                            fill: none;
+                          }
+
+                          .st1 {
+                            fill: #FFFFFF;
+                          }
+
+                          .st2 {
+                            fill: #18BDF7;
+                          }
+                        </style>
+                        <path class="st0" d="M1.3,1.3h24v24h-24V1.3z" />
+                        <path class="st1"
+                          d="M13.3,0L2.4,4.9v7.3c0,6.7,4.6,13,10.9,14.5c6.2-1.5,10.9-7.8,10.9-14.5V4.9L13.3,0z" />
+                        <path class="st2" d="M13.3,2.3l-9,4v6c0,5.5,3.8,10.7,9,12c5.2-1.3,9-6.5,9-12v-6L13.3,2.3z M11.3,18.3l-4-4l1.4-1.4l2.6,2.6
+                                l6.6-6.6l1.4,1.4L11.3,18.3z" />
+                      </svg>
+
+                      <span class="tooltiptext"> {{ "VisitorsPage.AuthenticatedUser" | translate }} </span>
+                    </span>
+                  </span>
+
+                  <!--  -->
+                  <span class="column-td" style="white-space: nowrap;">
+
+                    <span class="lead_data"
+                      [ngClass]="{'requester-verified' : request?.requester_is_verified === true}">
+                      {{ request?.lead?.fullname }}
+                      <span *ngIf="!request?.lead?.fullname"
+                        [ngClass]="{'requester_fullname_initial-undefined' : !request?.lead?.fullname}">
+                        N/A
+                      </span>
+
+                      <!--  -->
+                      <span class="requester-email"
+                        [ngClass]="{'requester-verified-email' : request?.requester_is_verified === true}">
+                        {{ request?.lead?.email }}
+                      </span>
+
+                      <span class="requester-email-undefined" *ngIf="!request?.lead?.email"
+                        [ngClass]="{'requester-verified-email' : request?.requester_is_verified === true}">
+                        n/a
+                      </span>
+                    </span>
+
+                  </span>
+                </td>
+
+                <!-- ------ ====== USER AGENT BROWSER & OPERATING SYSTEM (in served requests)====== ------ -->
+                <td>
+                  <span *ngIf="request?.userAgent" class="tooltipx">
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // @ OS - if not is
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="(request?.ua_os?.indexOf('Android') === -1) && 
+                                    (request?.ua_os?.indexOf('Mac OS') === -1) && 
+                                    (request?.ua_os?.indexOf('iOS') === -1) &&
+                                    (request?.ua_os?.indexOf('Windows') === -1) &&
+                                    (request?.ua_os?.indexOf('Ubuntu') === -1)">
+
+                      <img style="width: 13px;margin-top: 2px; margin-right: 6px;" class=""
+                        src="assets/img/user_agent/laptop.svg" />
+                    </span>
+
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // if is Android
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_os.indexOf('Android') !== -1">
+                      <img style="width: 13px; margin-right: 6px;" class="" src="assets/img/user_agent/android.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // if is Mac OS or iOS
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_os.indexOf('Mac OS') !== -1 || request?.ua_os.indexOf('iOS') !== -1">
+                      <img style="width: 13px;margin-bottom: 2px;margin-right: 6px;" class=""
+                        src="assets/img/user_agent/apple.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // if is Windows
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_os.indexOf('Windows') !== -1">
+                      <img style="width: 12px; margin-top: 2px;margin-right: 6px;" class=""
+                        src="assets/img/user_agent/windows.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // if is Ubuntu
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_os.indexOf('Ubuntu') !== -1">
+                      <img style="width: 13px;margin-right: 6px;" class="" src="assets/img/user_agent/ubuntu.svg" />
+                    </span>
+
+                    <span class="tooltiptext" style="font-size: 10px !important; padding: 3px;">
+                      <span *ngIf="request?.ua_os !== 'undefined undefined'"> {{ request?.ua_os }} </span>
+                      <span *ngIf="request?.ua_os === 'undefined undefined'"> {{'Unavailable' | translate}} </span>
+                    </span>
+                  </span>
+
+                  <span *ngIf="request?.userAgent" class="tooltipx">
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // @ Browser - if not is
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="(request?.ua_browser.indexOf('Chrome') === -1) && 
+                                  (request?.ua_browser.indexOf('Chromium') === -1) &&
+                                  (request?.ua_browser.indexOf('Firefox') === -1) &&
+                                  (request?.ua_browser.indexOf('Edge') === -1) &&
+                                  (request?.ua_browser.indexOf('Opera') === -1) &&
+                                  (request?.ua_browser.indexOf('Safari') === -1) &&
+                                  (request?.ua_browser.indexOf('IE') === -1)">
+
+                      <img class="ua_browser_icon" src="assets/img/user_agent/globe.svg" />
+
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // Chrome or Chromium
+                      // ---------------------------------------------------------------- -->
+                    <span
+                      *ngIf="request?.ua_browser.indexOf('Chrome') !== -1 || request?.ua_browser.indexOf('Chromium') !== -1">
+                      <img class="ua_browser_icon" src="assets/img/user_agent/chrome.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // Firefox
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_browser.indexOf('Firefox') !== -1">
+                      <img class="ua_browser_icon" src="assets/img/user_agent/firefox.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // Edge
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_browser.indexOf('Edge') !== -1">
+                      <img class="ua_browser_icon" src="assets/img/user_agent/edge.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // Opera
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_browser.indexOf('Opera') !== -1">
+                      <img class="ua_browser_icon" src="assets/img/user_agent/opera.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // Safari
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_browser.indexOf('Safari') !== -1">
+                      <img class="ua_browser_icon" src="assets/img/user_agent/safari.svg" />
+                    </span>
+
+                    <!-- 
+                      // ----------------------------------------------------------------
+                      // Explorer
+                      // ---------------------------------------------------------------- -->
+                    <span *ngIf="request?.ua_browser.indexOf('IE') !== -1">
+                      <img class="ua_browser_icon" src="assets/img/user_agent/explorer.svg" />
+                    </span>
+
+
+
+                    <span class="tooltiptext" style="font-size: 10px !important; padding: 3px;">
+                      <span *ngIf="request?.ua_browser !== 'undefined undefined'"> {{ request?.ua_browser }} </span>
+                      <span *ngIf="request?.ua_browser === 'undefined undefined'"> n/a </span>
+                    </span>
+                  </span>
+                </td>
+
+                <!-- ===== DEPARTMENT NAME ===== -->
+                <td>
+                  <p *ngIf="request?.dept?.name" class="column-td">
+                    <!-- {{ request?.department?.name }} -->
+                    {{ request?.dept?.name }}
+                  </p>
+                  <p *ngIf="!request?.dept?.name" class="column-td">
+                    n/a
+                  </p>
+                </td>
+
+
+                <!-- ------------------------------------------------------------------------------------------------------ -->
+                <!-- @ Served By (new) - mobile -->
+                <!-- ------------------------------------------------------------------------------------------------------ -->
+                <td *ngIf="isMobile">
+                  <div style="min-width: 105px; position: relative;">
+                    <div *ngFor="let agent of request?.participanting_Agents">
+                      <span *ngIf="agent.is_bot === true">
+
+                        <span (click)="goToBotProfile(agent?._id, agent?.type)" style="cursor:pointer">
+
+                          <!-- --------------------------------------------------- -->
+                          <!-- USECASE uploadEngine Firebase -->
+                          <!-- --------------------------------------------------- -->
+                          <!-- <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fphoto.jpg?alt=media"
+                            onerror="this.src='assets/img/avatar_bot_tiledesk.svg'" /> -->
+                          <!-- --------------------------- -->
+                          <!-- thumb_photo -->
+                          <!-- --------------------------- -->
+                          <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fthumb_photo.jpg?alt=media"
+                            onerror="this.src='assets/img/avatar_bot_tiledesk.svg'" />
+
+                          <!-- --------------------------------------------------- -->
+                          <!-- USECASE uploadEngine Native -->
+                          <!-- --------------------------------------------------- -->
+                          <img *ngIf="!UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="{{baseUrl}}images?path=uploads%2Fusers%2F{{agent?._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                            onerror="this.src='assets/img/avatar_bot_tiledesk.svg'" />
+
+                          <span class="served-by-agent">
+                            {{ agent.name}}
+                          </span>
+                          <div *ngIf="agent.type === 'internal'">
+                            <img class="served-by-bot-type-logo" src="assets/img/tiledesk_logo_no_text.png" />
+                          </div>
+                          <div *ngIf="agent.type === 'external'">
+                            <img class="served-by-bot-type-logo" src="assets/img/external_bot_logo.png" />
+                          </div>
+                          <div *ngIf="agent.type === 'dialogflow'">
+                            <img class="served-by-bot-type-logo" src="assets/img/Dialogflow_logo_no_text.png" />
+                          </div>
+                          <div *ngIf="agent.type === 'rasa'">
+                            <img class="served-by-bot-type-logo" src="assets/img/rasa_bot_logo.png" />
+                          </div>
+                          <div *ngIf="agent.type === 'tilebot'">
+                            <img class="served-by-bot-type-logo" src="assets/img/tilebot_logo_small.png" />
+                          </div>
+                        </span>
+                      </span>
+                      <span *ngIf="agent.is_bot === false">
+                        <span (click)="goToAgentProfile(agent?._id)" style="cursor:pointer">
+
+                          <!-- --------------------------------------------------- -->
+                          <!-- USECASE uploadEngine Firebase -->
+                          <!-- --------------------------------------------------- -->
+                          <!-- <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fphoto.jpg?alt=media"
+                            onerror="this.src='assets/img/no_image_user.png'" /> -->
+                          <!-- --------------------------- -->
+                          <!-- thumb_photo -->
+                          <!-- --------------------------- -->
+                          <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fthumb_photo.jpg?alt=media"
+                            onerror="this.src='assets/img/no_image_user.png'" />
+
+                          <!-- --------------------------------------------------- -->
+                          <!-- USECASE uploadEngine Native -->
+                          <!-- --------------------------------------------------- -->
+                          <img *ngIf="!UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="{{baseUrl}}images?path=uploads%2Fusers%2F{{agent?._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                            onerror="this.src='assets/img/no_image_user.png'" />
+
+                          <span [ngClass]="{'current-user-member' : agent._id === currentUserID}"
+                            class="served-by-agent">
+                            {{ agent?.firstname }}
+                            <span *ngIf="agent?.lastname">
+                              {{ agent?.lastname | slice:0:1 }}.
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                      <span *ngIf="agent._id === 'no_agent'">
+                        <img class="user-img ws-requests-list-servedby-avatar"
+                          src="assets/img/user-alt-slash-solid.svg" />
+                        <span class="served-by-agent">
+                          {{ "RequestMsgsPage." + agent?.firstname | translate }}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+
+                <!-- ------------------------------------------------------------------------------------------------------ -->
+                <!-- @ Served By (new) - desktop -->
+                <!-- ------------------------------------------------------------------------------------------------------ -->
+                <td *ngIf="!isMobile">
+                  <div class="served-by-desktop-a">
+                    <div class="served-by-desktop-b"
+                      *ngFor="let agent of request?.participanting_Agents; let first = first;">
+
+                      <span *ngIf="agent.is_bot === false">
+
+                        <div [ngClass]="{ 'first-served-by': first }" class="served-by-desktop-c tool_tip"
+                          (click)="goToAgentProfile(agent?._id)">
+                          <div class="served-by-desktop-d">
+                            <div size="32" class="served-by-desktop-e">
+                              <!-- --------------------------------------------------- -->
+                              <!-- USECASE uploadEngine Firebase -->
+                              <!-- --------------------------------------------------- -->
+                              <!-- <img *ngIf="agent?.hasImage && UPLOAD_ENGINE_IS_FIREBASE"
+                                [ngClass]="{'current-user-member-border' : agent._id === currentUserID}"
+                                src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fphoto.jpg?alt=media"
+                                alt="" onerror="this.src='assets/img/no_image_user.png'"
+                                (error)="updateUrl($event, agent)"> -->
+                              <!-- --------------------------- -->
+                              <!-- thumb_photo.jpg -->
+                              <!-- --------------------------- -->
+                              <img *ngIf="agent?.hasImage && UPLOAD_ENGINE_IS_FIREBASE"
+                                [ngClass]="{'current-user-member-border' : agent._id === currentUserID}"
+                                src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fthumb_photo.jpg?alt=media"
+                                alt="" onerror="this.src='assets/img/no_image_user.png'"
+                                (error)="updateUrl($event, agent)">
+
+                              <!-- --------------------------------------------------- -->
+                              <!-- USECASE uploadEngine Native -->
+                              <!-- --------------------------------------------------- -->
+                              <img *ngIf="agent?.hasImage && !UPLOAD_ENGINE_IS_FIREBASE"
+                                [ngClass]="{'current-user-member-border' : agent._id === currentUserID}"
+                                src="{{baseUrl}}images?path=uploads%2Fusers%2F{{agent?._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                                alt="" onerror="this.src='assets/img/no_image_user.png'"
+                                (error)="updateUrl($event, agent)">
+
+
+                              <div *ngIf="!agent?.hasImage"
+                                [ngClass]="{'current-user-member-border' : agent._id === currentUserID}"
+                                class="altenative-avatar-wrap" [ngStyle]="{'background-color': agent?.fillColour }">
+
+                                <span class="altenative-avatar">
+                                  {{ agent?.fullname_initial }}
+                                </span>
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <span
+                            style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px; white-space: nowrap;"
+                            class="top">
+                            <span style="text-transform: capitalize;"> {{ agent?.firstname }}
+                              <span *ngIf="agent?.lastname">
+                                {{ agent?.lastname | slice:0:1 }}.
+                              </span>
+                            </span>
+                            <i></i>
+                          </span>
+                        </div>
+                      </span>
+
+
+                      <span *ngIf="agent.is_bot === true">
+                        <span (click)="goToBotProfile(agent?._id, agent?.type)"
+                          [ngClass]="{'disable-link-if-is-agent' : ROLE_IS_AGENT}" class="bot---avatar tool_tip">
+
+                          <!-- --------------------------------------------------- -->
+                          <!-- USECASE uploadEngine Firebase -->
+                          <!-- --------------------------------------------------- -->
+                          <!-- <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fphoto.jpg?alt=media"
+                            onerror="this.src='assets/img/avatar_bot_tiledesk.svg'" /> -->
+
+                          <!-- ------------------------------------- -->
+                          <!-- thumb_photo -->
+                          <!-- ------------------------------------- -->
+                          <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?._id}}%2Fthumb_photo.jpg?alt=media"
+                            onerror="this.src='assets/img/avatar_bot_tiledesk.svg'" />
+
+                          <!-- --------------------------------------------------- -->
+                          <!-- USECASE uploadEngine Native -->
+                          <!-- --------------------------------------------------- -->
+                          <img *ngIf="!UPLOAD_ENGINE_IS_FIREBASE" class="user-img ws-requests-list-servedby-avatar"
+                            src="{{baseUrl}}images?path=uploads%2Fusers%2F{{agent?._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                            onerror="this.src='assets/img/avatar_bot_tiledesk.svg'" />
+
+                          <span
+                            style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px; white-space: nowrap;"
+                            class="top">
+                            <span style="text-transform: capitalize;"> {{ agent.name}} </span>
+                            <i></i>
+                          </span>
+                          <div *ngIf="agent.type === 'internal'">
+                            <img class="served-by-bot-type-logo" src="assets/img/tiledesk_logo_no_text.png" />
+                          </div>
+                          <div *ngIf="agent.type === 'external'">
+                            <img class="served-by-bot-type-logo" src="assets/img/external_bot_logo.png" />
+                          </div>
+                          <div *ngIf="agent.type === 'dialogflow'">
+                            <img class="served-by-bot-type-logo" src="assets/img/Dialogflow_logo_no_text.png" />
+                          </div>
+
+                          <div *ngIf="agent.type === 'rasa'">
+                            <img class="served-by-bot-type-logo" src="assets/img/rasa_bot_logo.png" />
+                          </div>
+
+                          <div *ngIf="agent.type === 'tilebot'">
+                            <img class="served-by-bot-type-logo" src="assets/img/tilebot_logo_small.png" />
+                          </div>
+
+                        </span>
+                      </span>
+
+
+                      <span *ngIf="agent._id === 'no_agent'">
+                        <img class="user-img ws-requests-list-servedby-avatar"
+                          src="assets/img/user-alt-slash-solid.svg" />
+                        <span class="served-by-agent">
+                          {{ "RequestMsgsPage." + agent?.firstname | translate }}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+
+                <!-- ===== RATING ===== -->
+                <!-- <td (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer" >
+                    <p *ngIf="request?.rating" style="font-size:0.8em;">
+                        {{ request?.rating }} / 5
+                    </p>
+                    <p *ngIf="!request?.rating" style="font-size:0.8em;">
+                        - / 5
+                    </p>
+                  </td> -->
+
+                <!-- ===== LIST OF MEMBERS ===== -->
+                <!-- <td (click)='openViewMsgsModal(request?.recipient)' style="cursor:pointer">
+                    <p style="font-size:0.8em; min-width: 220px;"  [innerHTML]="request?.members_as_string"></p>
+                  </td> -->
+
+                <!-- ===== PUBLISHED ===== -->
+                <td (click)='goToRequestMsgs(request?.request_id)' style="cursor:pointer">
+                  <p class="column-td">
+                    <!-- {{ request?.timestamp | date: 'd/M/y HH:mm:ss'}} -->
+                    <!-- {{ request?.request_date_fromnow }} -->
+                    <!-- {{ request?.created_on | date: 'd/M/y HH:mm:ss' }} -->
+                    <span> {{ request?.createdAt | amTimeAgo }} </span> <br>
+                    <span style="font-size: 11px;color: #7695a5;">
+                      <!-- {{ request?.fulldate }} -->
+                      {{ request?.createdAt | date: 'd/M/y HH:mm:ss' }}
+                    </span>
+                  </p>
+                </td>
+
+                <!-- --------------------------------------------------- -->
+                <!-- Action Delete and Reopen if IS_HERE_FOR_HISTORY -->
+                <!-- --------------------------------------------------- -->
+                <td class="td-actions text-right" *ngIf="IS_HERE_FOR_HISTORY">
+                  <button type="button" class="btn btn-danger btn-simple btn-xs tool_tip"
+                    (click)='deleteArchivedRequest(request?.request_id)' [disabled]="CURRENT_USER_ROLE !== 'owner'">
+
+                    <i class="material-icons">delete_forever</i>
+
+                    <span style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px;" class="top">
+                      <span style="text-transform: capitalize;"> {{ 'Delete' | translate }} </span>
+                      <i></i>
+                    </span>
+
+                  </button>
+
+                  <button type="button" class="btn btn-danger btn-simple btn-xs tool_tip"
+                    (click)='reopenArchivedRequest(request, request?.request_id)'
+                    [disabled]="CURRENT_USER_ROLE === 'agent'">
+
+
+                    <i class="material-icons" style="color: #3ea9f5; transform: rotate(180deg);">archive</i>
+                    <!-- <svg style="height: 15px; width:auto;" aria-hidden="true" focusable="false" data-prefix="fas"
+                      data-icon="comments" class="svg-inline--fa fa-comments fa-w-18" role="img"
+                      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                      <path fill="#3ea9f5"
+                        d="M416 192c0-88.4-93.1-160-208-160S0 103.6 0 192c0 34.3 14.1 65.9 38 92-13.4 30.2-35.5 54.2-35.8 54.5-2.2 2.3-2.8 5.7-1.5 8.7S4.8 352 8 352c36.6 0 66.9-12.3 88.7-25 32.2 15.7 70.3 25 111.3 25 114.9 0 208-71.6 208-160zm122 220c23.9-26 38-57.7 38-92 0-66.9-53.5-124.2-129.3-148.1.9 6.6 1.3 13.3 1.3 20.1 0 105.9-107.7 192-240 192-10.8 0-21.3-.8-31.7-1.9C207.8 439.6 281.8 480 368 480c41 0 79.1-9.2 111.3-25 21.8 12.7 52.1 25 88.7 25 3.2 0 6.1-1.9 7.3-4.8 1.3-2.9.7-6.3-1.5-8.7-.3-.3-22.4-24.2-35.8-54.5z">
+                      </path>
+                    </svg> -->
+
+                    <span style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px;" class="top">
+                      <span style="text-transform: capitalize;"> {{ 'Reopen' | translate }} </span>
+                      <i></i>
+                    </span>
+
+                  </button>
+                </td>
+
+                <!-- ----------------------------------------------------------------------------- -->
+                <!-- Action archive if IS HERE FOR NO REAL TIME REQUESTS (!IS_HERE_FOR_HISTORY) -->
+                <!-- ------------------------------------------------------------------------------ -->
+
+                <td class="td-actions text-right" *ngIf="!IS_HERE_FOR_HISTORY">
+
+
+                  <!-- ----------------------------------------------------------------------------- -->
+                  <!-- Action JOIN if IS HERE FOR NO REAL TIME REQUESTS (!IS_HERE_FOR_HISTORY) -->
+                  <!-- ------------------------------------------------------------------------------ -->
+                  <section *ngIf="!IS_HERE_FOR_HISTORY">
+                    <button *ngIf="request?.currentUserIsJoined === false" type="button" rel="tooltip"
+                      style="padding-top: 9px !important;" title="{{ 'RequestMsgsPage.Enter' | translate }}"
+                      class="btn btn-tdblu btn-simple btn-xs tool_tip"
+                      (click)='joinRequest(request ,request?.request_id)'
+                      [disabled]="request?.currentUserIsJoined === true">
+
+                      <!-- ------------------------------------------------------------------------------------------------------ -->
+                      <!-- SVG font-awesome link icon -->
+                      <!-- ------------------------------------------------------------------------------------------------------ -->
+                      <svg style="height: 15px; width:auto;" aria-hidden="true" focusable="false" data-prefix="fas"
+                        data-icon="link" class="svg-inline--fa fa-link fa-w-16" role="img"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path fill="currentColor"
+                          d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z">
+                        </path>
+                      </svg>
+                      <span
+                        style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px; left: -16px;"
+                        class="top">
+                        <span style="text-transform: capitalize;"> {{ 'RequestMsgsPage.Enter' | translate }} </span>
+                        <i style="left: 54%;"></i>
+                      </span>
+                    </button>
+
+                    <!-- (click)='openChatInNewWindow(request?.request_id, request?.lead?.fullname) -->
+                    <button *ngIf="request?.currentUserIsJoined === true" type="button" rel="tooltip"
+                      title="{{ 'RequestMsgsPage.Enter' | translate }}" class="btn btn-tdblu btn-simple btn-xs tool_tip"
+                      (click)='openChatAtSelectedConversation(request?.request_id, request?.lead?.fullname)'>
+
+
+                      <!-- ------------------------------------------------------------------------------------------------------ -->
+                      <!-- SVG font-awesome chat icon icon -->
+                      <!-- ------------------------------------------------------------------------------------------------------ -->
+                      <svg style="height: 15px; width:auto;position: relative; top: 4px;" aria-hidden="true"
+                        focusable="false" data-prefix="fas" data-icon="comments"
+                        class="svg-inline--fa fa-comments fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512">
+                        <path fill="currentColor"
+                          d="M416 192c0-88.4-93.1-160-208-160S0 103.6 0 192c0 34.3 14.1 65.9 38 92-13.4 30.2-35.5 54.2-35.8 54.5-2.2 2.3-2.8 5.7-1.5 8.7S4.8 352 8 352c36.6 0 66.9-12.3 88.7-25 32.2 15.7 70.3 25 111.3 25 114.9 0 208-71.6 208-160zm122 220c23.9-26 38-57.7 38-92 0-66.9-53.5-124.2-129.3-148.1.9 6.6 1.3 13.3 1.3 20.1 0 105.9-107.7 192-240 192-10.8 0-21.3-.8-31.7-1.9C207.8 439.6 281.8 480 368 480c41 0 79.1-9.2 111.3-25 21.8 12.7 52.1 25 88.7 25 3.2 0 6.1-1.9 7.3-4.8 1.3-2.9.7-6.3-1.5-8.7-.3-.3-22.4-24.2-35.8-54.5z">
+                        </path>
+                      </svg>
+                      <span
+                        style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px; left: -16px;"
+                        class="top">
+                        <span style="text-transform: capitalize;"> {{ 'RequestMsgsPage.OpenTheChat' | translate }}
+                        </span>
+                        <i style="left: 54%;"></i>
+                      </span>
+
+                    </button>
+
+                  </section>
+
+
+                  <!-- // ARCHIVE X ASSIGNED REQUEST IS ENABLED WHEN THE CONVERSATION IS ASSIGNED TO THE USER AND THE ROLE NOT IS AGENT -->
+                  <button *ngIf="request?.participants.length > 0" type="button" rel="tooltip"
+                    style="padding-top: 9px !important;" title="{{ 'VisitorsPage.tootipArchiveRequest' | translate }}"
+                    class="btn btn-tdblu btn-simple btn-xs tool_tip" (click)='archiveRequest(request?.request_id)'
+                    [disabled]="request?.currentUserIsJoined === false && ROLE_IS_AGENT === true">
+                    <i class="material-icons">archive</i>
+                    <span style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px;" class="top">
+                      <span style="text-transform: capitalize;"> {{ 'VisitorsPage.Resolve' | translate }} </span>
+                      <i></i>
+                    </span>
+                  </button>
+
+
+                  <!-- // ARCHIVE X UNASSIGNED REQUEST is ALLOWED TO USER WITH ADMIN AND OWNER ROLE SO IS DISABLED WHEN THE USER ROLE IS AGENT-->
+                  <button *ngIf="request?.participants.length === 0" type="button" rel="tooltip"
+                    style="padding-top: 9px !important;" title="{{ 'VisitorsPage.tootipArchiveRequest' | translate }}"
+                    class="btn btn-tdblu btn-simple btn-xs tool_tip" (click)='archiveRequest(request?.request_id)'
+                    [disabled]="CURRENT_USER_ROLE === 'agent'">
+                    <i class="material-icons">archive</i>
+                    <span style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px;" class="top">
+                      <span style="text-transform: capitalize;"> {{ 'VisitorsPage.Resolve' | translate }} </span>
+                      <i></i>
+                    </span>
+                  </button>
+
+
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div> <!-- ./ card-content table-responsive -->
+
+        <div *ngIf="displaysFooterPagination === true" class="card-footer" style="text-align:center">
+          <div class="stats">
+
+            <div style="width: 120px; margin: 0 auto; margin-top: 10px ">
+              <div class="input-group" style="background: unset; border: unset;">
+
+                <!-- -------====== BTN DECREASE PAGE  ======------ -->
+                <span class="input-group-btn" style="padding-right:0px;  padding-left: 0px;">
+                  <button [disabled]="pageNo + 1 === 1" class="btn btn-tdblu" type="button"
+                    (click)="decreasePageNumber()" style="padding: 6px 8px">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                  </button>
+                </span>
+
+                <!-- -------====== DISPLAY No PAGE / No TOTAL PAGES   ======------ -->
+                <span class="input-group-btn" style="padding-right:0px;">
+                  <button class="btn btn-tdblu" type="button" style="padding: 6px 8px">
+                    {{ pageNo + 1 }} / {{ totalPagesNo_roundToUp }}
+                  </button>
+                </span>
+
+                <!-- -------====== BTN INCREASE PAGE  ======------ -->
+                <span class="input-group-btn" style="padding-right:0px">
+                  <button [disabled]="pageNo + 1 === totalPagesNo_roundToUp || totalPagesNo_roundToUp === 0"
+                    class="btn btn-tdblu" type="button" (click)="increasePageNumber()" style="padding: 6px 8px">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                  </button>
+                </span>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div> <!-- ./ card -->
+    </div> <!-- ./ col-md-12 -->
+
+  </div> <!-- ./ main-content -->

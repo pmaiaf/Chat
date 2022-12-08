@@ -1,0 +1,30 @@
+{
+  "t2y12PruGU9wUtEGzBJfolMIgK": "${FEATURES_TOKEN}",
+  "widgetUrl": "${WIDGET_LOCATION}",
+  "botcredendialsURL": "${BOT_CREDENTIAL_URL}",
+  "rasaBotCredentialsURL": "${RASA_BOT_CREDENTIAL_URL}",
+  "SERVER_BASE_URL": "${SERVER_BASE_URL}",
+  "CHAT_BASE_URL": "${CHAT_BASE_URL}",
+  "testsiteBaseUrl": "${WIDGET_TEST_LOCATION}",
+  "wsUrl": "${WS_URL}",
+  "wsUrlRel": "${WS_URL_RELATIVE}",
+  "brandSrc": "${BRAND_SRC}",
+  "globalRemoteJSSrc": "${REMOTE_JS_SRC}",
+  "chatEngine": "${CHAT21_ENGINE}",
+  "firebaseAuth": "${FIREBASE_AUTH}",
+  "uploadEngine": "${UPLOAD_ENGINE}",
+  "pushEngine": "${PUSH_ENGINE}",
+  "logLevel": "${LOG_LEVEL}",
+  "appsUrl":  "${APPS_URL}",
+  "promoBannerUrl": "${PROMO_BANNER_URL}",
+  "firebase": {
+    "apiKey": "AIzaSyDCjkIAJgq_soUSPuuOiCDRhT4ulgnGgMY",
+   "authDomain": "panel-keep.firebaseapp.com",
+    "databaseURL": "https://panel-keep-default-rtdb.firebaseio.com",
+   "projectId": "panel-keep",
+    "storageBucket": "panel-keep.appspot.com",
+   "messagingSenderId": "639644894720",
+    "appId": "1:639644894720:web:cb35d11c9b059983557ae5",
+    "measurementId": "G-RH71RP8H4T"
+  }
+}

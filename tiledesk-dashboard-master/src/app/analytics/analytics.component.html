@@ -1,0 +1,50 @@
+<!-- margin-top:6px;  -->
+<p style="padding-left:30px;position: relative;z-index: 1050;" class="navbar-brand"
+    [ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-64px' : '6px' }">
+    {{ 'Analytics.AnalyticsTITLE' | translate }}
+</p>
+
+<ul class="bottom-nav-analytics">
+    <li class="btn-with-border-effect "
+        [ngClass]="{'li-active' : selected === 'panoramica', 'border-from-center': selected !== 'panoramica'}"
+        (click)="goTo('panoramica')">
+        <a>{{ 'Analytics.PanoramicaComponentTitle' | translate }}</a>
+    </li>
+    <li class="btn-with-border-effect "
+        [ngClass]="{'li-active' : selected === 'metriche', 'border-from-center': selected !== 'metriche'}"
+        (click)="goTo('metriche')">
+        <a>{{ 'Analytics.MetricsComponentTitle' | translate }}</a>
+    </li>
+    <li class="btn-with-border-effect "
+        [ngClass]="{'li-active' : selected === 'realtime', 'border-from-center': selected !== 'realtime'}"
+        (click)="goTo('realtime')">
+        <a>{{ 'Analytics.RealTimeComponentTitle' | translate }}</a>
+    </li>
+    <!-- Moved to Metrics -->
+    <!-- 
+        <li class="btn-with-border-effect " [ngClass]="{'li-active' : selected === 'visitors', 'border-from-center': selected !== 'visitors'}" (click)="goTo('visitors')">
+            <a>{{ 'Analytics.VisitorsComponentTitle' | translate }}</a>
+        </li> 
+        <li class="bnt-with-border-effect " [ngClass]="{'li-active' : selected === 'messages', 'border-from-center': selected !== 'visitors'}" (click)="goTo('messages')">
+            <a>{{ 'Analytics.MessagesComponentTitle' | translate }}</a>
+        </li>
+        -->
+</ul>
+
+
+<div class="main-content" style="padding-top:0px">
+
+    <div class="container-fluid">
+
+        <appdashboard-panoramica *ngIf="selected=='panoramica'"></appdashboard-panoramica>
+        <appdashboard-metrics [autoselected]="childToSelect" *ngIf="selected=='metriche'"></appdashboard-metrics>
+        <appdashboard-realtime *ngIf="selected=='realtime'"></appdashboard-realtime>
+        <!-- Moved to Metrics -->
+        <!-- 
+            <appdashboard-visitors-analytics *ngIf="selected=='visitors'"></appdashboard-visitors-analytics> 
+            <appdashboard-messages *ngIf="selected=='messages'"></appdashboard-messages>
+            -->
+
+
+    </div>
+</div>

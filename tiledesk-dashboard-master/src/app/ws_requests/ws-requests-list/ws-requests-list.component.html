@@ -1,0 +1,1378 @@
+<!-- margin-top:6px; -->
+<p style=" padding-left:30px;position: relative;z-index: 1050;" class="navbar-brand"
+  [ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-19px' : '6px' }">
+  {{ 'Requests' | translate }}
+</p>
+
+
+<ul class="bottom-nav" *ngIf="OPEN_RIGHT_SIDEBAR === false">
+  <li *ngIf="ROLE_IS_AGENT === false" (click)="seeIamAgentRequests(seeAll = !seeAll)" class="btn-with-border-effect"
+    [ngClass]="
+          { 'disabled-li' : displayBtnLabelSeeYourRequets === false, 
+            'border-from-center' : displayBtnLabelSeeYourRequets === true,
+            'li-active' : displayBtnLabelSeeYourRequets === false
+          }">
+
+    <a href="javascript:;" role="button"> {{ "AllAgentsRequests" | translate }} </a>
+  </li>
+
+  <li (click)="seeIamAgentRequests(seeAll = !seeAll)" class="btn-with-border-effect" [ngClass]="
+      { 'disabled-li' : displayBtnLabelSeeYourRequets === true, 
+        'border-from-center' : displayBtnLabelSeeYourRequets === false, 
+        'li-active' : displayBtnLabelSeeYourRequets === true
+      }">
+    <a href="javascript:;" role="button"> {{ "YourRequests" | translate }} </a>
+  </li>
+  <!-- 
+  <li class="right-li right-li-simulate-visitor" style="float: right !important;padding-top: 10px!important">
+    <button #testwidgetbtn (click)="testWidgetPage()" class="btn btn-success navbar-btn">
+      {{ 'VisitorsPage.SimulateVisitor' | translate }}
+    </button>
+  </li> -->
+  <!-- CREATE TICKET -->
+  <li class="right-li" style="float: right !important;padding-top: 3px!important; margin-right: 10px;">
+    <button attr.aria-label="{{ 'CreateTicket' | translate }}" #createticket
+      (click)="presentCreateInternalRequestModal()" class="btn btn-tdblu-no-boxshadow"
+      style="font-size: 12px;  margin-left: 15px;">
+
+      <span aria-hidden="true" class="material-icons"
+        style="vertical-align: middle; margin-bottom: 0px; margin-top: 0px;">
+        add_circle
+      </span>
+      {{ 'CreateTicket' | translate }}
+      <!-- {{ 'Ticket' | translate }} -->
+    </button>
+  </li>
+
+  <!--OPERATING HOURS -->
+  <!-- <li class="operating-hours right-li" style="float: right;padding-left: 5px;">
+    <a attr.aria-label="{{ 'OperatingHoursAreDisabled' | translate }}" href="javascript:;" role="button"
+      class="tool_tip" style="cursor: pointer; display: unset;" *ngIf="!OPERATING_HOURS_ACTIVE"
+      (click)="goToOperatingHours()">
+      <i class="material-icons" style="color:#AAA; margin-top: 3px;">access_time</i>
+
+      <div class="bottom"
+        style="text-align: center; padding: 4px; border-radius: 3px; text-transform: none; min-width: fit-content; white-space: nowrap;">
+        {{ 'OperatingHoursAreDisabled' | translate }}
+        <i></i>
+      </div>
+    </a>
+    <a attr.aria-label="{{ 'OperatingHoursAreEnabled' | translate }}" href="javascript:;" role="button" class="tool_tip"
+      style="cursor: pointer;display: unset;" *ngIf="OPERATING_HOURS_ACTIVE" (click)="goToOperatingHours()">
+      <i aria-hidden="true" class="material-icons" style="color:#3ea9f5; margin-top: 3px;">access_time</i>
+
+      <div class="bottom" style="text-align: center; padding: 4px; border-radius: 3px;">
+        {{ 'OperatingHoursAreEnabled' | translate }}
+
+        <i></i>
+      </div>
+    </a>
+  </li> -->
+
+  <!-- NO REALTIME REQUESTS -->
+  <li class="see-no-realtime-request right-li" style="float: right; padding-right: 5px;"
+    (click)='goToNoRealtimeConversations()'>
+    <a attr.aria-label="{{ 'GoToNotRealTimeRequests' | translate }}" href="javascript:;" role="button" class="tool_tip"
+      style="cursor: pointer; display: unset;" [ngClass]="{ 'has-reached-100' : served_unserved_sum >= 100 }"
+      matTooltipClass="mat-white-tooltip" matTooltip="{{'ClickHereForMoreAdvancedSearches' | translate}}"
+      #tooltip="matTooltip" matTooltipPosition='below' matTooltipHideDelay="100">
+      <span aria-hidden="true" class="material-icons" style="margin-top: 3px; color:#3ea9f5; font-size: 27px;
+      position: relative;
+      top: -3px;">
+        manage_search
+      </span>
+      <!-- <div class="bottom"
+        style="text-align: center; padding: 4px; border-radius: 3px; text-transform: none; min-width: 200px;">
+        {{ 'ThisScreenDisplayAMaximumOf100RealTime' | translate }}
+        <i></i>
+      </div> -->
+    </a>
+
+    <span *ngIf="served_unserved_sum >= 100" class="served-unserved-sum">
+      <span>
+        {{ served_unserved_sum }}
+      </span>
+    </span>
+  </li>
+
+  <!-- SHOW SERVED REQUEST MAP -->
+  <li class="see-no-realtime-request right-li" style="float: right; padding-right: 5px;" (click)='openRightSideBar()'>
+    <a attr.aria-label="{{ 'ViewServedRequestsMap' | translate }}" class="tool_tip"
+      style="cursor: pointer; display: unset;" matTooltipClass="mat-white-tooltip"
+      matTooltip="{{'ViewServedRequestsMap' | translate}}" #tooltip="matTooltip" matTooltipPosition='below'
+      matTooltipHideDelay="100">
+      <span class="material-icons" style="margin-top: 3px; color:#3ea9f5">
+        pin_drop
+      </span>
+      <!-- <div class="bottom" style="text-align: center; padding: 4px; border-radius: 3px; text-transform: none; min-width: fit-content;
+        white-space: nowrap;">
+        {{'ViewServedRequestsMap' | translate}}
+        <i></i>
+      </div> -->
+    </a>
+  </li>
+</ul>
+
+<!-- 
+// ---------------------------------------------------------
+// @ FOR SMALL SCREEN 
+// --------------------------------------------------------- -->
+<!-- CREATE TICKET * FOR SMALL SCREEN  -->
+<ul class="bottom-bottom-nav" *ngIf="OPEN_RIGHT_SIDEBAR === false" style="display: none;">
+  <li class="" style="padding-top: 3px!important; padding-left: 10px!important">
+    <!-- btn-primary navbar-btn  -->
+    <button attr.aria-label="{{ 'CreateTicket' | translate }}" #createticket
+      (click)="presentCreateInternalRequestModal()" class="btn btn-tdblu-no-boxshadow" style="font-size: 12px;">
+
+      <span aria-hidden="true" class="material-icons"
+        style="vertical-align: middle; margin-bottom: 0px; margin-top: 0px;">
+        add_circle
+      </span>
+      {{ 'CreateTicket' | translate }}
+    </button>
+  </li>
+
+  <!-- SIMULATE VISITOR * FOR SMALL SCREEN  -->
+  <li style="padding-top: 3px!important;margin-left: 15px;">
+    <button attr.aria-label="{{ 'VisitorsPage.SimulateVisitor' | translate }}" #testwidgetbtn (click)="testWidgetPage()"
+      class="btn btn-success-no-boxshadow" style="font-size: 12px;">
+      <span class="material-icons" style="vertical-align: middle; margin-bottom: 0px; margin-top: 0px;">
+        play_circle_filled
+      </span>
+      {{ 'VisitorsPage.SimulateVisitor' | translate }}
+    </button>
+  </li>
+
+  <!-- NO REALTIME REQUESTS * FOR SMALL SCREEN -->
+  <li class="see-no-realtime-request" style="float: right; padding-right: 5px;" (click)='goToNoRealtimeConversations()'>
+    <a attr.aria-label="{{ 'GoToNotRealTimeRequests' | translate }}" href="javascript:;" role="button" class="tool_tip"
+      style="cursor: pointer; display: unset; color:#3ea9f5;"
+      [ngClass]="{ 'has-reached-100' : served_unserved_sum >= 100 }" matTooltipClass="mat-white-tooltip"
+      matTooltip="{{'ClickHereForMoreAdvancedSearches' | translate}}" #tooltip="matTooltip" matTooltipPosition='below'
+      matTooltipHideDelay="100">
+      <span class="material-icons" style="font-size: 27px;
+      position: relative;
+      top: -2px;">
+        manage_search
+      </span>
+      <!-- <div class="bottom"
+        style="text-align: center; padding: 4px; border-radius: 3px; text-transform: none; min-width: 200px;">
+        {{ 'ThisScreenDisplayAMaximumOf100RealTime' | translate }}
+        <i></i>
+      </div> -->
+    </a>
+    <span *ngIf="served_unserved_sum >= 100" class="served-unserved-sum">
+      <span>
+        {{ served_unserved_sum }}
+      </span>
+    </span>
+  </li>
+
+  <!--OPERATING HOURS * FOR SMALL SCREEN -->
+  <!-- <li class="operating-hours" style="float: right;padding-left: 5px;">
+    <a attr.aria-label="{{ 'OperatingHoursAreDisabled' | translate }}" href="javascript:;" role="button"
+      class="tool_tip" style="cursor: pointer; display: unset;color: #797979;" *ngIf="!OPERATING_HOURS_ACTIVE"
+      (click)="goToOperatingHours()">
+      <i class="material-icons">access_time</i>
+       <div class="bottom"
+        style="text-align: center; padding: 4px; border-radius: 3px; text-transform: none; min-width: fit-content; white-space: nowrap;">
+        {{ 'OperatingHoursAreDisabled' | translate }}
+        <i></i>
+      </div>
+    </a>
+    <a attr.aria-label="{{ 'OperatingHoursAreEnabled' | translate }}" href="javascript:;" role="button" class="tool_tip"
+      style="cursor: pointer;display: unset;" *ngIf="OPERATING_HOURS_ACTIVE" (click)="goToOperatingHours()">
+      <i class="material-icons" style="color:#3ea9f5; margin-top: 1px;">access_time</i>
+
+      <div class="bottom" style="text-align: center; padding: 4px; border-radius: 3px;">
+        {{ 'OperatingHoursAreEnabled' | translate }}
+
+        <i></i>
+      </div>
+    </a>
+  </li> -->
+
+  <!-- SHOW SERVED REQUEST MAP * FOR SMALL SCREEN -->
+  <li class="see-no-realtime-request" style="float: right; padding-right: 5px; " (click)='openRightSideBar()'>
+    <a attr.aria-label="{{ 'ViewServedRequestsMap' | translate }}" class="tool_tip"
+      style="cursor: pointer; display: unset;" matTooltipClass="mat-white-tooltip"
+      matTooltip="{{'ViewServedRequestsMap' | translate}}" #tooltip="matTooltip" matTooltipPosition='below'
+      matTooltipHideDelay="100">
+      <span class="material-icons" style="margin-top: 0px;color:#3ea9f5">
+        pin_drop
+      </span>
+      <!-- <div class="bottom" style="text-align: center; padding: 4px; border-radius: 3px; text-transform: none; min-width: fit-content;
+        white-space: nowrap;">
+        {{ 'ViewServedRequestsMap' | translate }}
+        <i></i>
+      </div> -->
+    </a>
+
+    <!-- <span *ngIf="served_unserved_sum >= 100" class="served-unserved-sum">
+      <span>
+        {{ served_unserved_sum }}
+      </span>
+    </span> -->
+  </li>
+</ul>
+
+<div class="main-content" style="padding-top:0px; margin-top: 25px;padding-left: 0px;padding-right: 0px;">
+  <div class="container-fluid">
+
+    <!-- <div class="row"> -->
+    <div class="row">
+
+      <div class="col-sm-12">
+        <div class="open-chat-tool-wpr">
+          <div class="open-chat-tool-text">
+            {{'ThisIsTheRealTimeConversationsMonitoringPanel' | translate }}
+            <!--  -->
+            <span class="chat-tool-link" style="color:#03a5e8; cursor: pointer;" (click)="openChat()">
+              <!-- <span class="material-icons" style="vertical-align:middle; font-size: 16px;">
+                open_in_new
+              </span> -->
+              {{'chatTool' | translate}}
+            </span>
+            <!-- (click)="openChat()" -->
+            <span class="open-chat-tool-chat-logo-wpr" style="margin-left: 4px;">
+              <svg version="1.1" id="Livello_1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 175.7 175.7"
+                style="enable-background:new 0 0 175.7 175.7;" xml:space="preserve" style="width: 19px;
+              height: auto;
+              vertical-align: middle;">
+                <style type="text/css">
+                  .st0 {
+                    fill: #F17467;
+                  }
+
+                  .st1 {
+                    fill: #F6746C;
+                  }
+                </style>
+                <path class="st0" d="M146.8,28.3C131,12.3,109.9,3.6,87.5,3.6C41.2,3.6,3.6,41.4,3.6,87.9c0,14.8,3.9,29.3,11.2,42.1l-5.9,35.7
+             l38.5-3.7c12.2,6.7,26,10.3,40.1,10.3h0c46.2,0,84.7-37.8,84.7-84.3C172.2,65.4,162.6,44.2,146.8,28.3z M87.5,158
+             c-12.5,0-24.8-3.4-35.5-9.8l-2.5-1.5L27,148.6l3-20.9l-1.7-2.7c-7-11.2-10.7-24-10.7-37.3c0-38.6,31.3-70,69.8-70
+             c18.6,0,36.1,7.3,49.3,20.5S158,69.2,158,87.9C158,126.5,125.9,158,87.5,158z" />
+                <path class="st1" d="M124,106.1c-5.6,9.6-19.4,16.3-35.6,16.3c-16,0-29.7-6.6-35.4-16.1c-4.9,2.5-9.6,5.2-14.6,7.3
+             c9,15,27.8,25.3,49.5,25.3c21.6,0,40.4-10.2,49.4-25.1C132.9,111.3,128.4,108.8,124,106.1z" />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- style="padding-left: 10px !important;" -->
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+
+
+        <!-- // --- Test - COUNT OF REQUESTS: ACTIVE, SERVED & UNSERVED as graph -->
+        <!-- style="display: none;" -->
+        <!-- ---------------------------------------------------------- -->
+        <!-- LEGEND OF COUNT OF REQUESTS: ACTIVE, SERVED & UNSERVED -->
+        <!-- ---------------------------------------------------------- -->
+        <div class="row">
+          <div class="col-xs-5">
+            <div class="graph-legend" style="padding-left: 10px;">
+              <div class="advanced-pie-legend-wrapper" style="display: inline-block;height: 107px;">
+                <!--  width: 420px;float: left; -->
+                <div class="advanced-legend" style="position: relative;top: 50%;transform: translate(0,-50%);">
+                  <div class="total-value"
+                    style="font-family: 'Lato', sans-serif; font-weight: 400;font-size: 40px; color: rgba(0, 0, 0, 0.54) !important; margin-bottom: 8px;">
+
+                    <span class="total-value-number-of-conversation" style="position: relative;top: 2px;">
+                      {{ wsRequestsServed?.length + wsRequestsUnserved?.length }}
+                    </span>
+
+                    <span class="total-label" style="font-family: 'Poppins';
+                          font-size: 18px;
+                          font-weight: 400;
+                          color: rgba(0, 0, 0, 0.54) !important; margin-bottom: 10px; margin-top: 14px">
+                      {{'TotalConversations' | translate}}
+                      <!-- conversations  -->
+                    </span>
+                  </div>
+
+                  <div class="legend-items-container" style="width: 100%;">
+                    <div class="legend-items" style="white-space: nowrap; overflow: auto;">
+                      <div class="legend-item" style="margin-right: 45px;display: inline-block;">
+                        <div class="item-color"
+                          style="border-left: 4px solid #05BDD4; width: 4px; height: 42px;float: left; margin-right: 7px;">
+                        </div>
+                        <div class="item-value"
+                          style="font-family: 'Lato', sans-serif; font-weight: 400;font-size: 24px; color: rgba(0, 0, 0, 0.54) !important;">
+                          {{ wsRequestsServed?.length }}
+                        </div>
+                        <div class="item-label" style="font-size: 14px;
+                                font-family: 'Poppins','Roboto', 'Arial', sans-serif;
+                                font-weight: 400;
+                                color: rgba(0, 0, 0, 0.54);
+                                line-height: 2;">{{'Served' | translate}}</div>
+                        <!-- <div class="item-percent">42%</div> -->
+                      </div>
+                      <div class="legend-item" style="margin-right: 20px;display: inline-block;">
+                        <div class="item-color"
+                          style="border-left: 4px solid #ED4537; width: 4px;height: 42px;float: left; margin-right: 7px;">
+                        </div>
+                        <div class="item-value"
+                          style="font-family: 'Lato', sans-serif; font-weight: 400;font-size: 24px; color: rgba(0, 0, 0, 0.54) !important;">
+                          {{ wsRequestsUnserved?.length }}
+                        </div>
+                        <div class="item-label" style="font-size: 14px;
+                                font-family: 'Poppins','Roboto', 'Arial', sans-serif;
+                                font-weight: 400;
+                                color: rgba(0, 0, 0, 0.54);
+                                line-height: 2;">{{'Unserved' | translate}}</div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div> <!-- ./ col-xs-4 -->
+
+          <div class="col-xs-7" style="margin-top: 8px;">
+            <!-- <div class="card" style="margin-top:0px"> -->
+            <!-- <div class="card-content"> -->
+            <!-- <div class="requests-chart-container" style="  width: 150px; height: 150px;float: left;"> -->
+            <!-- <canvas id="doughnutChart"></canvas> -->
+
+
+            <!-- // questo è buono -->
+            <!-- <div class="stackedbar-wpr" style="height:80px;">
+              <canvas id="stackedbarChart"></canvas>
+            </div> -->
+
+
+            <!-- <canvas id="MyChart" width="200" height="100"></canvas> -->
+
+            <!-- <div class="grid-container">
+                    <div class="requests-graph">
+                      <div class="graph-wrapper" style=" width:50%;
+                        display:block;
+                        overflow:hidden;
+                        /* margin:0 auto; */
+                        /* padding: 60px 50px; */
+                        max-height: 200px;
+                        background:#fff;
+                        border-radius:4px;">
+                        <canvas id="stacked"></canvas>
+                      </div>
+
+                  </div> -->
+
+            <div class="row" style="margin-bottom: 16px;">
+              <div class="col-sm-12 filter-convs-title-wpr">
+                <div class="filter-convs-title">
+
+                  {{ 'FilterConversations' | translate }}
+                </div>
+              </div>
+              <!-- -------------------------------------------------------- -->
+              <!-- @ Department filter -->
+              <!-- -------------------------------------------------------- -->
+              <div class="col-sm-4 select-dept-wpr">
+
+                <ng-select attr.aria-label="{{ 'FilterBy' | translate }} {{ 'Department' | translate }}" class="custom"
+                  name="dept" [(ngModel)]="selectedDeptId" (change)="onChangeDepts()" (clear)="clearDeptFilter()"
+                  placeholder="{{ 'HistoryPage.AllDepts' | translate }}">
+                  <ng-option *ngFor="let dept of departments" [value]="dept?._id">
+                    {{dept?.name}}
+                  </ng-option>
+                </ng-select>
+              </div>
+
+
+              <!-- -------------------------------------------------------- -->
+              <!-- @ Angent filter -->
+              <!-- -------------------------------------------------------- -->
+              <div class="col-sm-4 select-agent-wpr">
+
+                <ng-select attr.aria-label="{{ 'FilterBy' | translate }} {{ 'HistoryPage.Agent' | translate }}"
+                  name="agent" [(ngModel)]="selectedAgentId" placeholder="{{ 'HistoryPage.AllAgents' | translate }}"
+                  (clear)="clearAgentFilter()" (change)="onChangeAgent()">
+
+                  <ng-option [value]="1">{{ 'HumanAgentsOnly' | translate }}</ng-option>
+                  <ng-option [value]="2">{{ 'BotsOnly' | translate }}</ng-option>
+                  <ng-option *ngFor="let agent of participantsInRequests" [value]="agent?._id">
+                    {{ agent.firstname }} {{ agent.lastname }}
+                  </ng-option>
+                </ng-select>
+              </div>
+
+              <!-- -------------------------------------------------------- -->
+              <!-- @ Conversation type filter -->
+              <!-- -------------------------------------------------------- -->
+              <div class="col-sm-4 select-convtype-wpr">
+
+                <ng-select attr.aria-label="{{ 'FilterBy' | translate }} {{ 'ConversationType' | translate }}"
+                  name="conversationtype" [(ngModel)]="selectedConversationTypeId"
+                  placeholder="{{ 'ConversationType' | translate }}" (clear)="clearConversationTypeFilter()"
+                  (change)="onChangeConversationType()">
+
+                  <ng-option *ngFor="let conversationType of conversationTypeInRequests" [value]="conversationType?.id">
+                    {{ conversationType?.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div> <!-- ./ row -->
+
+        <div class="row">
+
+          <!--  -------------------------------------------------------------------------------------- -->
+          <!--  @ New TEAMMATES SCROLL DIV -->
+          <!-- (ROLE_IS_AGENT === false) || (ROLE_IS_AGENT === true && DISPLAY_ALL_TEAMMATES_TO_AGENT) -->
+          <!-- the last: ngIf="ROLE_IS_AGENT === false" -->
+          <!--  -------------------------------------------------------------------------------------- -->
+          <div class="col-xs-12" style="padding-right: 5px;">
+            <div class="card card--no-border" style="margin: 5px 0;margin-top: 8px;">
+              <div class="card-content"
+                style="padding-top: 0px;padding-left: 0px;padding-right: 0px;padding-bottom: 0px;">
+                <div style="float: left" class="scroll-div-side-btn">
+                  <!-- <button (click)="scrollLeftTeammates()">left</button> -->
+                  <i class="material-icons" (click)="scrollLeftTeammates()">keyboard_arrow_left</i>
+                </div>
+
+                <div #widgetsContent class="middle-nw">
+                  <div class="served-by-conv-a" *ngIf="showRealTeammates === true">
+                    <ng-container class="all-teammates" *ngIf="ONLY_MY_REQUESTS === false">
+                      <div class="served-by-conv-b" *ngFor="let agent of projectUserArray">
+
+                        <div class="served-by-conv-c tool_tip">
+                          <div class="served-by-conv-d">
+
+                            <!-- {{ agent?.id_user?.firstname }} hasImage {{agent.hasImage }} -->
+                            <div *ngIf="agent?.hasImage" size="42" class="served-by-conv-e">
+
+                              <!-- ---------------------------------------- -->
+                              <!-- Usecase Firebase -->
+                              <!-- ---------------------------------------- -->
+                              <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE"
+                                src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?.id_user._id}}%2Fphoto.jpg?alt=media"
+                                alt="" onerror="this.src='assets/img/no_image_user.png'">
+
+                              <!-- ---------------------------------------- -->
+                              <!-- Usecase Native -->
+                              <!-- ---------------------------------------- -->
+                              <img *ngIf="!UPLOAD_ENGINE_IS_FIREBASE"
+                                src="{{baseUrl}}images?path=uploads%2Fusers%2F{{agent?.id_user._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                                alt="" onerror="this.src='assets/img/no_image_user.png'">
+
+                              <div class="teammates-with-picture-status-icon"
+                                [ngClass]="{
+                                  'is-user-online': agent?.user_available_rt === true && (agent?.profileStatus_rt === '' || !agent?.profileStatus_rt),
+                                  'is-user-offline': agent?.user_available_rt === false && (agent?.profileStatus_rt === '' || !agent?.profileStatus_rt),
+                                  'is-user-inactive' : agent?.user_available_rt === false && agent?.profileStatus_rt === 'inactive'}">
+                              </div>
+                            </div>
+
+                            <!-- ---------------------------------------- -->
+                            <!-- Usecase No profile image -->
+                            <!-- ---------------------------------------- -->
+                            <!-- [ngStyle]="{'background-color': agent?.id_user?.fillColour }"  -->
+                            <div *ngIf="!agent?.hasImage" size="42" class="served-by-conv-e">
+                              <div class="altenative-conv-avatar-wrap" style="width: 43px; height: 43px; top: -1px;"
+                                [ngStyle]="{'background':  'linear-gradient(rgb(255,255,255) -125%,' + agent?.id_user?.fillColour + ')'}">
+
+                                <span class="altenative-conv-avatar" style="line-height: 40px;">
+                                  {{ agent?.id_user?.fullname_initial }}
+                                </span>
+
+                                <!-- <div class="teammates-no-picture-assigned_requests_count">
+                                {{agent?.number_assigned_requests_rt}}
+                              </div> -->
+                                <div class="teammates-no-picture-status-icon"
+                                  [ngClass]="{'is-user-online': agent?.user_available_rt === true, 'is-user-offline':agent?.user_available_rt === false   }">
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <span style="min-width: fit-content;
+                          white-space: nowrap;
+                          top: 34px;
+                          padding: 1px 4px;
+                          box-shadow: unset;
+                          border-radius: 4px;
+                          font-size: 11px;" class="bottom">
+                            <span style="text-transform: capitalize;"> {{ agent?.id_user?.firstname }}
+                              <span *ngIf="agent?.id_user?.lastname">
+                                {{ agent?.id_user?.lastname | slice:0:1 }}.
+                              </span>
+
+                            </span>
+                            <!-- <i></i> -->
+                          </span>
+
+                        </div>
+                      </div>
+                    </ng-container>
+                    <!-- ------------------------------------------------------------------ -->
+                    <!-- teammates of the groups to which the current user belongs -->
+                    <!-- ------------------------------------------------------------------ -->
+                    <ng-container class="curren-user-teammates" *ngIf="ONLY_MY_REQUESTS === true">
+                      <div class="served-by-conv-b" *ngFor="let agent of filteredProjectUsersArray">
+
+                        <div class="served-by-conv-c tool_tip">
+                          <div class="served-by-conv-d">
+
+                            <!-- {{ agent?.id_user?.firstname }} hasImage {{agent.hasImage }} -->
+                            <div *ngIf="agent?.hasImage" size="42" class="served-by-conv-e">
+
+                              <!-- ---------------------------------------- -->
+                              <!-- Usecase Firebase -->
+                              <!-- ---------------------------------------- -->
+                              <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE"
+                                src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{agent?.id_user._id}}%2Fphoto.jpg?alt=media"
+                                alt="" onerror="this.src='assets/img/no_image_user.png'">
+
+                              <!-- ---------------------------------------- -->
+                              <!-- Usecase Native -->
+                              <!-- ---------------------------------------- -->
+                              <img *ngIf="!UPLOAD_ENGINE_IS_FIREBASE"
+                                src="{{baseUrl}}images?path=uploads%2Fusers%2F{{agent?.id_user._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                                alt="" onerror="this.src='assets/img/no_image_user.png'">
+
+                              <div class="teammates-with-picture-status-icon"
+                                [ngClass]="{'is-user-online': agent?.user_available_rt === true, 'is-user-offline':agent?.user_available_rt === false   }">
+                              </div>
+                            </div>
+
+                            <!-- ---------------------------------------- -->
+                            <!-- Usecase No profile image -->
+                            <!-- ---------------------------------------- -->
+                            <!-- [ngStyle]="{'background-color': agent?.id_user?.fillColour }"  -->
+                            <div *ngIf="!agent?.hasImage" size="42" class="served-by-conv-e">
+                              <div class="altenative-conv-avatar-wrap" style="width: 43px; height: 43px; top: -1px;"
+                                [ngStyle]="{'background':  'linear-gradient(rgb(255,255,255) -125%,' + agent?.id_user?.fillColour + ')'}">
+
+                                <span class="altenative-conv-avatar" style="line-height: 40px;">
+                                  {{ agent?.id_user?.fullname_initial }}
+                                </span>
+
+                                <!-- <div class="teammates-no-picture-assigned_requests_count">
+                                {{agent?.number_assigned_requests_rt}}
+                              </div> -->
+                                <div class="teammates-no-picture-status-icon"
+                                  [ngClass]="{'is-user-online': agent?.user_available_rt === true, 'is-user-offline':agent?.user_available_rt === false   }">
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <span style="min-width: fit-content;
+                          white-space: nowrap;
+                          top: 34px;
+                          padding: 1px 4px;
+                          box-shadow: unset;
+                          border-radius: 4px;
+                          font-size: 11px;" class="bottom">
+                            <span style="text-transform: capitalize;"> {{ agent?.id_user?.firstname }}
+                              <span *ngIf="agent?.id_user?.lastname">
+                                {{ agent?.id_user?.lastname | slice:0:1 }}.
+                              </span>
+
+                            </span>
+                            <!-- <i></i> -->
+                          </span>
+
+                        </div>
+                      </div>
+                    </ng-container>
+
+                  </div>
+
+                  <!-- ---------------------------------------------- -->
+                  <!-- Skeleton -->
+                  <!-- ---------------------------------------------- -->
+                  <div class="served-by-conv-a" *ngIf="showRealTeammates === false">
+                    <div class="served-by-conv-b" *ngFor="let fake of generateFake(project_user_length)">
+
+                      <div class="served-by-conv-c tool_tip">
+                        <div class="served-by-conv-d">
+
+                          <!-- {{ agent?.id_user?.firstname }} hasImage {{agent.hasImage }} -->
+                          <div size="42" class="served-by-conv-e">
+                            <!-- {{  agent.hasImage }} -->
+                            <div class="skeleton-img"> </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div style="float: right" class="scroll-div-side-btn">
+                  <!-- <button (click)="scrollRightTeammates()">right</button> -->
+                  <i class="material-icons" (click)="scrollRightTeammates()">keyboard_arrow_right</i>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- /.new ********* -->
+        </div>
+      </div>
+
+      <!-- // REQUESTS FOR DEPARTMENTS style="padding-right: 10px !important;"-->
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="card" style="margin: 5px 0; border: unset !important;">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <h4 class="customh4" style="padding-left:22px; font-size:18px; margin-bottom: 0px; white-space: nowrap;">
+                {{ "RequestsForDept" | translate }}
+              </h4>
+            </div>
+          </div>
+          <div class="card-content" style="padding-top:5px; border-left: 1px solid #eff3f5 !important;
+            min-height: 130px;
+            overflow: auto;
+            height: 130px;">
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <table class="table table-hover">
+                  <thead style="background-color: rgba(242, 246, 248, 1);">
+                    <tr>
+                      <th style="padding-top: 4px;padding-bottom: 4px !important;">
+                        <span class="table-head-span">
+                          {{ "Department" | translate }}
+                        </span>
+                      </th>
+                      <th style="padding-top: 4px;padding-bottom: 4px !important;">
+                        <span class="table-head-span">
+                          #
+                          <!-- {{ "Requests" | translate }} -->
+                        </span>
+
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let dept of depts_array_noduplicate">
+                      <td (click)="goToDept(dept?._id)" style="cursor:pointer">
+                        <span style="font-size:13px" class="table-body-span" *ngIf="dept?.deptName !== undefined">
+                          {{ dept?.deptName }}
+                        </span>
+                        <span style="font-size:13px" class="table-body-span" *ngIf="dept?.deptName === undefined">
+                          n.a.
+                        </span>
+                      </td>
+                      <td>
+                        <span class="table-body-span">
+                          {{ dept?.requestsCount }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ------====== / .end CARDS COUNT OF REQUESTS: ACTIVE, SERVED & UNSERVED AND REQUESTS FOR DEPTS ======------ -->
+    <!-- *ngIf="ROLE_IS_AGENT === false" -->
+    <div class="row">
+      <div class="col-xs-12">
+        <!-- style="background: rgb(231,241,255);" -->
+        <div class="smart-assign-and-operatinghours-options">
+
+
+          <!-- --------------------------------------------------- -->
+          <!-- Operating hours -->
+          <!-- --------------------------------------------------- -->
+          <button *ngIf="isVisibleOPH" class="btn btn-primary-active"
+            [ngClass]="{'btn-primary-no-active': !OPERATING_HOURS_ACTIVE || DISPLAY_OPH_AS_DISABLED }"
+            (click)="goToOperatingHours()">
+            <span class="material-icons conv-option-icon"
+              [ngClass]="{'conv-option-icon-active': OPERATING_HOURS_ACTIVE && !DISPLAY_OPH_AS_DISABLED}">
+              access_time_filled
+            </span>
+
+            <span class="btn--text">
+              <span *ngIf="!OPERATING_HOURS_ACTIVE || DISPLAY_OPH_AS_DISABLED">
+                {{ 'OperatingHoursDisabled' | translate }}
+              </span>
+
+              <span *ngIf="OPERATING_HOURS_ACTIVE && !DISPLAY_OPH_AS_DISABLED">
+                {{ 'OperatingHoursEnabled' | translate }}
+              </span>
+            </span>
+            <span class="btn--link">
+              <span>
+                {{'AdjustOperatingHours' | translate}}
+              </span>
+              <span class="material-icons" style="vertical-align: middle;">
+                keyboard_arrow_right
+              </span>
+            </span>
+          </button>
+
+          <!-- --------------------------------------------------- -->
+          <!-- Chat Limit -->
+          <!-- --------------------------------------------------- -->
+          <button *ngIf="isVisibleSmartAssignOption" class="btn btn-primary-active"
+            [ngClass]="{'btn-primary-no-active': !CHAT_LIMIT_IS_ENABLED }" (click)="goToProjectSettings_Advanced()">
+            <span class="material-icons conv-option-icon tool_tip"
+              [ngClass]="{'conv-option-icon-active': CHAT_LIMIT_IS_ENABLED}">
+              sms_failed
+              <span class="top">
+                <h4 style="white-space: normal;
+              line-height: 14px;
+              font-weight: 400;">
+                  {{ "ProjectEditPage.ItLimitChatsNumber" | translate }}.
+                </h4>
+                <h4 *ngIf="maximum_chats" style="font-weight: 400;"> {{'ProjectEditPage.MaximumChats' | translate}}:
+                  {{maximum_chats}} </h4>
+                <i></i>
+              </span>
+            </span>
+
+            <span class="btn--text">
+              <span *ngIf="!CHAT_LIMIT_IS_ENABLED">
+                {{ 'ChatLimitDisabled' | translate }}
+              </span>
+              <span *ngIf="CHAT_LIMIT_IS_ENABLED">
+                {{ 'ChatLimitEnabled' | translate }}
+              </span>
+            </span>
+
+            <span class="btn--link">
+              <span>
+                {{'AdjustSmartAssignment' | translate}}
+              </span>
+              <span class="material-icons" style="vertical-align: middle;">
+                keyboard_arrow_right
+              </span>
+            </span>
+          </button>
+
+          <!-- --------------------------------------------------- -->
+          <!-- Chat reassignment -->
+          <!-- --------------------------------------------------- -->
+          <button *ngIf="isVisibleSmartAssignOption" class="btn btn-primary-active"
+            [ngClass]="{'btn-primary-no-active': !CHAT_REASSIGNMENT_IS_ENABLED }"
+            (click)="goToProjectSettings_Advanced()">
+            <span class="material-icons conv-option-icon tool_tip"
+              [ngClass]="{'conv-option-icon-active': CHAT_REASSIGNMENT_IS_ENABLED}">
+              shuffle_on
+              <span class="top">
+                <h4 style="white-space: normal;
+              line-height: 14px;
+              font-weight: 400;">
+                  {{ "ProjectEditPage.ItReassignChatIf" | translate }}.
+                  {{'ProjectEditPage.TheChatWillBeBetweenTheUnassigned' | translate }}</h4>
+                <h4 *ngIf="reassignment_timeout" style="font-weight: 400;"> Timeout (in sec): {{reassignment_timeout}}
+                </h4>
+                <i></i>
+              </span>
+            </span>
+
+            <span class="btn--text">
+              <span *ngIf="!CHAT_REASSIGNMENT_IS_ENABLED">
+                {{ 'ReassignmentIsDisabled' | translate }}
+              </span>
+              <span *ngIf="CHAT_REASSIGNMENT_IS_ENABLED">
+                {{ 'ReassignmentIsEnabled' | translate }}
+              </span>
+            </span>
+
+            <span class="btn--link">
+              <span>
+                {{'AdjustSmartAssignment' | translate}}
+              </span>
+              <span class="material-icons" style="vertical-align: middle;">
+                keyboard_arrow_right
+              </span>
+            </span>
+          </button>
+
+
+
+
+          <!-- --------------------------------------------------- -->
+          <!-- Automatic unavailable status -->
+          <!-- --------------------------------------------------- -->
+          <button *ngIf="isVisibleSmartAssignOption" class="btn btn-primary-active"
+            [ngClass]="{'btn-primary-no-active': !AUTOMATIC_UNAVAILABLE_STAUS_IS_ENABLED }"
+            (click)="goToProjectSettings_Advanced()">
+            <span class="material-icons conv-option-icon tool_tip"
+              [ngClass]="{'conv-option-icon-active': AUTOMATIC_UNAVAILABLE_STAUS_IS_ENABLED}">
+              person_off
+              <span class="top">
+                <h4 style="white-space: normal;
+              line-height: 14px;
+              font-weight: 400;">
+                  {{ "ProjectEditPage.ItSetAnAgentStatusToUnavailable" | translate }}.
+
+                </h4>
+                <h4 *ngIf="chats_reassigned" style="white-space: normal;  line-height: 14px; font-weight: 400;">
+                  {{'ProjectEditPage.NumberOfChatsReassignedBefore' | translate}}: {{chats_reassigned}} </h4>
+                <i></i>
+              </span>
+            </span>
+
+            <span class="btn--text">
+              <span *ngIf="!AUTOMATIC_UNAVAILABLE_STAUS_IS_ENABLED">
+                {{ 'AutomaticUnavailableStatusDisabled' | translate }}
+              </span>
+              <span *ngIf="AUTOMATIC_UNAVAILABLE_STAUS_IS_ENABLED">
+                {{ 'AutomaticUnavailableeStatusEnabled' | translate }}
+              </span>
+            </span>
+
+            <span class="btn--link">
+              <span>
+                {{'AdjustSmartAssignment' | translate}}
+              </span>
+              <span class="material-icons" style="vertical-align: middle;">
+                keyboard_arrow_right
+              </span>
+            </span>
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- *ngIf="SHOW_SIMULATE_REQUEST_BTN === true && showSpinner === false" -->
+    <section *ngIf="SHOW_SIMULATE_REQUEST_BTN === true && showSpinner === false">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card" style="margin-top:5px">
+            <div class="card-content">
+
+              <div class="no_visitor__placeeholder">
+
+                <svg version="1.1" id="Livello_1" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 40 40"
+                  style="width: 40px;height: 40px;" xml:space="preserve">
+                  <style type="text/css">
+                    .message_rocket {
+                      fill: #737376;
+                    }
+                  </style>
+                  <path class="message_rocket" d="M38.8,2.4c-0.2-0.3-0.6-0.4-1-0.3l-36,9c-0.5,0.1-0.9,0.7-0.7,1.2c0.1,0.2,0.2,0.5,0.4,0.6l13.7,8.8l5.9,15.7
+c0.1,0.4,0.5,0.7,0.9,0.7c0.4,0,0.7-0.2,0.9-0.6l16-34C39.1,3.1,39,2.7,38.8,2.4z M4.5,12.4L33.9,5l-18,14.7L4.5,12.4z M22.1,34.4
+l-4.9-13l18-14.8L22.1,34.4z" />
+                </svg>
+
+                <!-- <span *ngIf="!showSpinner"> -->
+                <span style="display: block; line-height:20px;color:#737376; font-size: 16px;margin-top: 16px;">
+                  {{ 'VisitorsPage.NoVisitor' | translate }}
+                </span>
+
+
+                <span
+                  style="display: block; line-height:20px;color:#737376; font-size: 14px;margin-bottom: 16px;text-decoration: underline;cursor: pointer;"
+                  (click)="testWidgetPage()">
+                  {{ 'VisitorsPage.ClickHereToSimulate' | translate }}
+                </span>
+           
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section *ngIf="SHOW_SIMULATE_REQUEST_BTN === false && showSpinner === false">
+      <div class="row">
+        <div class="col-md-12" style="padding-left:10px !important; padding-right:10px !important;">
+
+          <appdashboard-ws-requests-unserved *ngIf="wsRequestsUnserved && OPEN_RIGHT_SIDEBAR === false"
+            [wsRequestsUnserved]="wsRequestsUnserved" [ws_requests_length]="ws_requests?.length">
+          </appdashboard-ws-requests-unserved>
+          <!-- *ngIf="wsRequestsServed" -->
+          <appdashboard-ws-requests-served *ngIf="wsRequestsServed && OPEN_RIGHT_SIDEBAR === false"
+            [wsRequestsServed]="wsRequestsServed" [current_selected_prjct]="current_selected_prjct"
+            [ws_requests_length]="ws_requests?.length">
+          </appdashboard-ws-requests-served>
+          <!-- Chiamare il componente qui -->
+        </div>
+      </div>
+    </section>
+
+
+    <section *ngIf="SHOW_SIMULATE_REQUEST_BTN === false && showSpinner === true">
+      <div class="card skeleton">
+        <div class="card-header card-header-custom">
+          <h4 class="title customh4" style="margin-bottom:2px;">
+          </h4>
+        </div>
+        <div class="card-content table-responsive" style="padding-top: 0px;">
+          <table class="table table-hover">
+            <thead class="text">
+              <tr>
+                <th></th>
+                <!-- ------ ====== MESSAGE ====== ------ -->
+                <th>
+                  <span class="column-th-span">
+                    {{ 'VisitorsPage.Message' | translate }}
+                  </span>
+                </th>
+                <!-- ------ ====== REQUESTER ====== ------ -->
+                <th>
+                  <span class="column-th-span">
+                    {{ 'VisitorsPage.Requester' | translate }}
+                  </span>
+                </th>
+                <!-- ------ ====== DEPARTMENT ====== ------ -->
+                <th>
+                  <span class="column-th-span">
+                    <!-- {{ 'VisitorsPage.Department' | translate }} -->
+                    {{ 'Department' | translate }}
+                  </span>
+                </th>
+                <!-- ------ ====== CREATED ON ====== ------ -->
+                <th>
+                  <span class="column-th-span">
+                    <!-- {{ 'VisitorsPage.Published' | translate }} -->
+                    {{ 'Created' | translate }}
+                  </span>
+                </th>
+                <!-- ------ ====== ARCHIVE ACTION ====== ------ -->
+                <th>
+                  <span class="column-th-span">
+                    <!-- {{ 'VisitorsPage.Actions' | translate }} -->
+                    {{ 'Actions' | translate }}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let fake of generateFake(5)">
+                <!-- ------ ====== VISIBILITY ICON ====== ------ -->
+                <td style="width: 30px;">
+                  <p style="margin-bottom: 0px;
+                  max-width: 25px;
+                  border-radius: 50%;
+                  height: 25px;"> </p>
+                </td>
+                <!-- ------ ====== MESSAGE ====== ------ -->
+                <td>
+                  <p> </p>
+                </td>
+                <!-- ------ ====== REQUESTER ====== ------ -->
+                <td>
+                  <p> </p>
+                </td>
+                <!-- ------ ============== DEPARTMENT =============== ------ -->
+                <td>
+                  <p> </p>
+                </td>
+                <!-- ------ ====== CREATED ON ====== ------ -->
+                <td style="width: 95px;">
+                  <p style="max-width: 95px;"> </p>
+                </td>
+                <!-- ------ ====== ARCHIVE Action ====== ------ -->
+                <td>
+                  <button type="button" rel="tooltip" title="{{ 'VisitorsPage.tootipArchiveRequest' | translate }}"
+                    class="btn btn-danger btn-simple btn-xs">
+                    <i class="material-icons">clear</i>
+                  </button>
+                </td>
+              </tr>
+              <!-- /. END UNSERVED REQUESTS -->
+            </tbody>
+          </table>
+        </div> <!-- ./ card-content table-responsive -->
+      </div> <!-- ./ card -->
+    </section>
+
+  </div> <!-- ./ container-fluid -->
+</div> <!-- ./ main-content -->
+
+
+
+
+
+
+
+<!-- -------------------------------------------------------- -->
+<!-- Create ticket modal -->
+<!-- -------------------------------------------------------- -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayInternalRequestModal}"
+  style="background-color: rgba(90,90,90,0.5);">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding-bottom:15px">
+        <!-- <button type="button" class="close" aria-label="Close" (click)="closeInternalRequestModal()">
+          <span aria-hidden="true" style="">&times;</span>
+        </button> -->
+
+        <button type="button" class="close" aria-label="Close" (click)="closeInternalRequestModal()"
+          style="position: absolute; right: 14px;top:19px">
+          <span aria-hidden="true">
+
+            <svg class="tide-icon" width="24" height="24" viewBox="0 0 24 24">
+              <path
+                d="M13.357 11.993l10.256 10.295c0.39 0.391 0.39 1.024 0 1.415-0.194 0.195-0.449 0.292-0.704 0.292s-0.51-0.097-0.705-0.292l-10.257-10.295-10.256 10.295c-0.194 0.195-0.449 0.292-0.704 0.292s-0.51-0.097-0.705-0.292c-0.39-0.391-0.39-1.024 0-1.415l10.256-10.295-10.256-10.294c-0.39-0.391-0.39-1.024 0-1.415s1.020-0.391 1.409 0l10.256 10.294 10.256-10.294c0.39-0.391 1.020-0.391 1.41 0 0.389 0.391 0.389 1.024 0 1.415l-10.256 10.294z">
+              </path>
+            </svg>
+          </span>
+        </button>
+        <h4 class="modal-title">
+          <!-- <i class="material-icons" style="vertical-align: middle">info</i> -->
+          <span style="vertical-align: middle; padding-left:8px">
+            {{ "CreateTicket" | translate }}
+          </span>
+        </h4>
+
+      </div>
+      <div class="modal-body" style="min-height: 217px;">
+
+        <!--  ------------------------------------------------------------------------------- -->
+        <!-- Form create internal request - button "create internal request" not yet clicked -->
+        <!--  ------------------------------------------------------------------------------- -->
+        <div *ngIf="hasClickedCreateNewInternalRequest === false" class="row">
+
+          <label class="col-sm-12" style="text-align: left; color:#7695a5;">
+            {{ 'VisitorsPage.Requester' | translate }}
+
+            <!-- // view requester details -->
+            <span style="float: right; cursor: pointer;" (click)="openRequesterDetails()"
+              [ngClass]="{'open-requester-details-disable': !selectedRequester}">
+              <span style="color: #0f62ff;" [ngClass]="{'open-requester-details-disable': !selectedRequester}">
+                {{'ViewRequesterDetails' | translate }}
+              </span>
+
+              <span class="material-icons" style="color: #0f62ff; vertical-align: middle;font-size: 16px;"
+                [ngClass]="{'open-requester-details-disable': !selectedRequester}"> open_in_new </span>
+
+            </span>
+          </label>
+
+
+          <div class="col-sm-12" style="margin-bottom: 20px;">
+
+            <!-- // with custom search -->
+            <ng-select class="internal-request-custom-select" name="users_and_leads" [items]="projectUserAndLeadsArray"
+              bindLabel="name" bindValue="id" [(ngModel)]="selectedRequester" [virtualScroll]="true"
+              [searchFn]="customSearchFn" [clearable]="false" (change)="selectRequester($event)"
+              placeholder="{{'SelectRequester' | translate}}" [loading]=loadingRequesters loadingText='Loading...'>
+
+              <ng-template ng-label-tmp let-item="item">
+                <!-- ---------------------------------------- -->
+                <!-- Usecase Firebase -->
+                <!-- ---------------------------------------- -->
+                <img *ngIf="item.requestertype === 'agent' && UPLOAD_ENGINE_IS_FIREBASE" height="24" width="24"
+                  style="border-radius:50%; object-fit: cover;"
+                  src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{item.id}}%2Fphoto.jpg?alt=media"
+                  alt="" onerror="this.src='assets/img/default-avatar-x-select.png'">
+                <!-- ---------------------------------------- -->
+                <!-- Usecase Native -->
+                <!-- ---------------------------------------- -->
+                <img *ngIf="item.requestertype === 'agent' && !UPLOAD_ENGINE_IS_FIREBASE" height="24" width="24"
+                  style="border-radius:50%;object-fit: cover;"
+                  src="{{baseUrl}}images?path=uploads%2Fusers%2F{{item.id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                  alt="" onerror="this.src='assets/img/default-avatar-x-select.png'">
+
+                <img *ngIf="item.requestertype === 'lead'" height="24" width="24"
+                  style="border-radius:50%;object-fit: cover;" src="assets/img/default-avatar-x-select.png" alt="">
+                <span style="font-weight: 400; margin-left: 4px;">{{ item.name }}</span><span class="requester-role-or-type">
+                  ({{item.role}}) </span>
+
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-search="searchTerm" let-index="index">
+
+                <!-- ---------------------------------------- -->
+                <!-- Usecase Firebase -->
+                <!-- ---------------------------------------- -->
+                <img *ngIf="item.requestertype === 'agent' && UPLOAD_ENGINE_IS_FIREBASE" height="24" width="24"
+                  style="border-radius:50%;object-fit: cover;"
+                  src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{item.id}}%2Fphoto.jpg?alt=media"
+                  alt="" onerror="this.src='assets/img/default-avatar-x-select.png'">
+
+                <!-- ---------------------------------------- -->
+                <!-- Usecase Native -->
+                <!-- ---------------------------------------- -->
+                <img *ngIf="item.requestertype === 'agent' && !UPLOAD_ENGINE_IS_FIREBASE" height="24" width="24"
+                  style="border-radius:50%;object-fit: cover;"
+                  src="{{baseUrl}}images?path=uploads%2Fusers%2F{{item.id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                  alt="" onerror="this.src='assets/img/default-avatar-x-select.png'">
+
+                <img *ngIf="item.requestertype === 'lead'" height="24" width="24"
+                  style="border-radius:50%; object-fit: cover;" src="assets/img/default-avatar-x-select.png" alt="">
+                <span style="font-weight: 400;margin-left: 4px;">{{ item.name }}</span> <span class="requester-role-or-type">
+                  ({{item.role}}) </span> <br />
+                <small style="font-weight:400;font-size: 13px; margin-left: 28px; position: relative;top: -3px;">
+                  {{ item.email }}</small>
+              </ng-template>
+
+              <ng-template ng-footer-tmp>
+                <div style="cursor:pointer" (click)="presentModalAddNewRequester()">
+                  <span class="material-icons" style="vertical-align: middle; color:#0f62ff"> add </span>
+                  <span style="color:#0f62ff"> {{'AddRequester' | translate}}</span>
+                </div>
+              </ng-template>
+            </ng-select>
+            <!-- <ng-select class="custom" name="users_and_leads" [(ngModel)]="selectedRequester" [searchable]="true"
+              (change)="selectRequester()" [clearable]="true" placeholder="Select requester">
+              <ng-option *ngFor="let item of projectUserAndLeadsArray" [value]="item.id">
+                {{item.name}}
+              </ng-option>
+
+              <ng-template ng-footer-tmp>
+                Selected count
+            </ng-template>
+            </ng-select> -->
+
+          </div>
+
+          <!-- [searchable]="true" -->
+          <!-- (change)="selectRequester()"  -->
+          <!-- [(ngModel)]="selectedRequester"> -->
+
+          <label class="col-sm-12" style="text-align: left; color:#7695a5;">
+            {{ 'Subject' | translate }} *
+          </label>
+          <div class="col-sm-12" style="margin-bottom: 10px;">
+            <input [(ngModel)]="internalRequest_subject" class="input" type="text">
+          </div>
+
+          <label class="col-sm-12" style="text-align: left; color:#7695a5;">
+            {{ 'SelectAssignee' | translate }}
+          </label>
+          <div class="col-sm-12" style="margin-bottom: 20px;">
+            <ng-select class="custom" name="dept" [(ngModel)]="assignee_id" [searchable]="true" [clearable]="false"
+              placeholder="{{ 'SelectAssignee' | translate }}" (change)="selectedAssignee()" [loading]=loadingAssignee
+              loadingText='Loading...'>
+              <ng-option *ngFor="let assignee of projectUserBotsAndDeptsArray" [value]="assignee.id">
+                {{assignee.name}}
+              </ng-option>
+            </ng-select>
+          </div>
+
+          <label class="col-sm-12" style="text-align: left; color:#7695a5;">
+            {{ 'Priority' | translate }}
+          </label>
+          <div class="col-sm-12" style="margin-bottom: 20px;">
+
+            <ng-select [items]="priority" bindLabel="name" bindValue="name" [clearable]="false" [hideSelected]="true"
+              [(ngModel)]="selectedPriority" (change)="onChangeSelectedPriority(selectedPriority)">
+              <ng-template ng-label-tmp let-item="item">
+                <img style="width: 15px;height: 15px;" height="15" width="15" [src]="item.avatar" />
+                {{item.name | translate}}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item" let-index="index">
+                <img style="width: 15px;height: 15px;" height="15" width="15" [src]="item.avatar" />
+                {{item.name | translate }}
+              </ng-template>
+            </ng-select>
+          </div>
+
+
+          <label class="col-sm-12" style="text-align: left; color:#7695a5;">
+            <!-- {{ 'Message' | translate }} -->
+            {{ 'VisitorsPage.Message' | translate }} *
+          </label>
+          <div class="col-sm-12">
+            <textarea [(ngModel)]="internalRequest_message" type="text" class="textarea" rows="3"
+              placeholder=''>  </textarea>
+          </div>
+        </div>
+
+        <!-- 
+        // -------------------------------------------------------------------------------
+        // Spinner
+        // - button "create internal request" clicked 
+        // - response not yet arrived
+        // ------------------------------------------------------------------------------- -->
+        <div *ngIf="showSpinner_createInternalRequest" class="row">
+          <div class="stretchspinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+          </div>
+        </div>
+        <!-- 
+        // -------------------------------------------------------------------------------
+        // Banmark
+        // - button "create internal request" clicked 
+        // - error response
+        // ------------------------------------------------------------------------------- -->
+        <div *ngIf="createNewInternalRequest_hasError === true" class="row">
+          <div class="col-sm-12">
+            <div class="error-banmark">
+              <div class="ban-icon">
+                <span class="icon-line line-long-invert"></span>
+                <span class="icon-line line-long"></span>
+                <div class="icon-circle"></div>
+                <div class="icon-fix"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <h3 style="text-align: center;  color: #8894ab; font-size: 22px; margin-bottom: 20px;">
+              {{ "BotsAddEditPage.AnErrorHasOccurred" | translate }}
+            </h3>
+          </div>
+        </div>
+
+        <!-- 
+        // -------------------------------------------------------------------------------
+        // Checkmark
+        // - button "create internal request" clicked 
+        // - success response
+        // ------------------------------------------------------------------------------- -->
+        <div *ngIf="createNewInternalRequest_hasError === false" class="row">
+          <div class="col-sm-12">
+            <div class="success-checkmark">
+              <div class="check-icon">
+                <span class="success-icon-line success-line-tip"></span>
+                <span class="success-icon-line success-line-long"></span>
+                <div class="success-icon-circle"></div>
+                <div class="success-icon-fix"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <h3 style="text-align: center;  color: #8894ab; font-size: 22px; margin-bottom: 20px;">
+              {{ "BotsAddEditPage.Completed" | translate }}
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top: 0px; text-align: center;">
+        <button *ngIf="hasClickedCreateNewInternalRequest === false" style="margin-top:0px" class="btn btn-primary"
+          (click)="createNewInternalRequest()"
+          [disabled]="internalRequest_message === undefined || internalRequest_subject === undefined || internalRequest_message?.length === 0 || internalRequest_subject?.length === 0"
+          style="padding:12px 16px;">
+          {{ "CreateTicket" | translate }}
+        </button>
+
+        <button *ngIf="showSpinner_createInternalRequest" style="margin-top:0px" class="btn btn-primary"
+          style="padding:12px 16px;" disabled>
+          <i class="fa fa-spinner fa-spin" style="margin-right: 5px;"></i>
+          {{ "Processing" | translate }}
+        </button>
+        <!-- (click)="openTheChaForInternalRequest()" -->
+        <button *ngIf="createNewInternalRequest_hasError === false" style="margin-top:0px" class="btn btn-white"
+          style="padding:12px 16px;" (click)="closeInternalRequestModal()">
+          <span style="vertical-align: middle"> {{ 'Cancel' | translate }} </span>
+        </button>
+        <button *ngIf="createNewInternalRequest_hasError === false" style="margin-top:0px" class="btn btn-primary"
+          style="padding:12px 16px;" (click)="goToInternalRequestDetails()">
+          <span style="vertical-align: middle"> {{ 'ViewDetails' | translate }} </span>
+        </button>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  -------------------------------------------------------- -->
+<!--  Create new user -->
+<!--  -------------------------------------------------------- -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayCreateNewUserModal}"
+  style="background-color: rgba(90,90,90,0.5);">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding-bottom:15px">
+
+        <button type="button" class="close" aria-label="Close" (click)="closeCreateNewUserModal()"
+          style="position: absolute; right: 14px;top:19px">
+          <span aria-hidden="true">
+
+            <svg class="tide-icon" width="24" height="24" viewBox="0 0 24 24">
+              <path
+                d="M13.357 11.993l10.256 10.295c0.39 0.391 0.39 1.024 0 1.415-0.194 0.195-0.449 0.292-0.704 0.292s-0.51-0.097-0.705-0.292l-10.257-10.295-10.256 10.295c-0.194 0.195-0.449 0.292-0.704 0.292s-0.51-0.097-0.705-0.292c-0.39-0.391-0.39-1.024 0-1.415l10.256-10.295-10.256-10.294c-0.39-0.391-0.39-1.024 0-1.415s1.020-0.391 1.409 0l10.256 10.294 10.256-10.294c0.39-0.391 1.020-0.391 1.41 0 0.389 0.391 0.389 1.024 0 1.415l-10.256 10.294z">
+              </path>
+            </svg>
+          </span>
+        </button>
+        <h4 class="modal-title">
+          <!-- <i class="material-icons" style="vertical-align: middle">info</i> -->
+          <span style="vertical-align: middle; padding-left:8px">
+            {{'CreateNewRequester' | translate}}
+          </span>
+        </h4>
+
+      </div>
+      <div class="modal-body" style="min-height: 217px;">
+
+        <div class="row">
+          <!-- ss {{ new_user_name?.length }}  -->
+          <label class="col-sm-12" style="text-align: left; color:#7695a5;">
+            {{ 'Name' | translate }} <span style="color:rgb(195,46,42)"> *</span>
+          </label>
+          <div class="col-sm-12" style="margin-bottom: 20px;">
+            <input [(ngModel)]="new_user_name" class="input" type="text">
+            <span *ngIf="new_user_name?.length === 0" style="color: #da491c;">
+              {{ 'NameIsRequired' | translate}}
+            </span>
+          </div>
+
+          <label class="col-sm-12" style="text-align: left; color:#7695a5;">
+            Email
+            <!-- <span style="color:rgb(195,46,42)"> *</span> -->
+          </label>
+          <div class="col-sm-12" style="margin-bottom: 10px;">
+            <input [(ngModel)]="new_user_email" (ngModelChange)="onChangeNewRequesterEmail($event)" class="input"
+              type="email">
+
+            <span *ngIf="new_user_email?.length > 0">
+              <span *ngIf="!new_requester_email_is_valid" style="color: #da491c;">
+                {{ 'Email must be a valid email' | translate}} </span>
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top: 0px; text-align: center;">
+
+        <!-- [disabled]="new_user_name === undefined || new_requester_email_is_valid === false" -->
+        <button *ngIf="HAS_CLICKED_CREATE_NEW_LEAD === false && HAS_COMPLETED_CREATE_NEW_LEAD === false"
+          style="margin-top:0px" class="btn btn-primary" (click)="createProjectUserAndThenNewLead()"
+          style="padding:12px 16px;" [disabled]="new_user_name === undefined">
+          {{'CreateNewRequester' | translate}}
+        </button>
+
+        <button *ngIf="HAS_CLICKED_CREATE_NEW_LEAD === true && HAS_COMPLETED_CREATE_NEW_LEAD === false"
+          style="margin-top:0px" class="btn btn-primary" style="padding:12px 16px;">
+          <i class="fa fa-spinner fa-spin" style="margin-right: 5px;"></i>
+          {{ "Processing" | translate }}
+        </button>
+
+
+        <!-- <button *ngIf="HAS_CLICKED_CREATE_NEW_LEAD === true && HAS_COMPLETED_CREATE_NEW_LEAD === true"
+          style="margin-top:0px" class="btn btn-primary" (click)="closeCreateNewUserModal()" style="padding:12px 16px;">
+          {{'Close' | translate}}
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <app-department-edit-add *ngIf='display_dept_sidebar === true'
+ [display_dept_sidebar]="display_dept_sidebar" [ws_requestslist_deptIdSelected]="ws_requestslist_deptIdSelected"> 
+</app-department-edit-add>  -->
+
+<div *ngIf="OPEN_RIGHT_SIDEBAR === true" class="view-side">
+  <appdashboard-map-request [ngStyle]="{'height': map_sidebar_height }" [wsRequestsServed]="wsRequestsServed"
+    [wsRequestsUnserved]="wsRequestsUnserved" [calling_page]="calling_page"
+    (closeMapsView)='handleCloseRightSidebar($event)'>
+  </appdashboard-map-request>
+</div>

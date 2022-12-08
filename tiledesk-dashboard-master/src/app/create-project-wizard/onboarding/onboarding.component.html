@@ -1,0 +1,71 @@
+<div class="main-content css-onboarding">
+  <img alt="logo" [src]="companyLogoBlack_Url" class="logo" />
+
+    <div class="col-left">
+
+      <appdashboard-chatbot-setup
+      *ngIf="selected=='step0'"
+      (lastPage)="goToInstallWidget()"
+      (nextPage)="goToWelcomeMessage($event)">
+      </appdashboard-chatbot-setup>
+
+      <appdashboard-welcome-message-configuration 
+        *ngIf="selected=='step1'"
+        [welcomeMessage]="welcomeMessage" 
+        [DISPLAY_SPINNER_SECTION]="DISPLAY_SPINNER_SECTION"
+        [primaryColor]="primaryColor"
+        [secondaryColor]="secondaryColor"
+        [projectName]="projectName"
+        (prevPage)="gotToChatbotSetup($event)"
+        (nextPage)="gotToChatbotConfiguration($event)">
+      </appdashboard-welcome-message-configuration>
+
+      <appdashboard-chatbot-configuration 
+        *ngIf="selected=='step2'"
+        [welcomeMessage]="welcomeMessage" 
+        [questions] = "step2Questions"
+        [answers] = "step2Answers"
+        [primaryColor]="primaryColor"
+        [secondaryColor]="secondaryColor"
+        [projectName]="projectName"
+        [DISPLAY_SPINNER_SECTION]="DISPLAY_SPINNER_SECTION"
+        (nextPageNoFaq)="gotToHumanConfigurationWithoutFaq($event)"
+        (nextPage)="gotToHumanConfiguration($event)"
+        (prevPage) = "goToWelcomeMessage($event)"
+      ></appdashboard-chatbot-configuration>
+
+      <appdashboard-human-configuration
+        *ngIf="selected=='step3'"
+        [welcomeMessage]="welcomeMessage" 
+        [questions] = "step3Questions"
+        [answers] = "step3Answers"
+        [questionMsg] = "questionStep4ChatbotConfiguration"
+        [answerMsg] = "answareStep4ChatbotConfiguration"
+        [primaryColor]="primaryColor"
+        [secondaryColor]="secondaryColor"
+        [projectName]="projectName"
+        [DISPLAY_SPINNER_SECTION]="DISPLAY_SPINNER_SECTION"
+        (nextPage)="gotToCreateBot($event)"
+        (lastPage)="gotToCreateBotWithoutAgent($event)"
+        (prevPage) = "gotToChatbotConfiguration($event)"
+      ></appdashboard-human-configuration>
+
+      <appdashboard-error-result
+        *ngIf="DISPLAY_SPINNER_SECTION"
+        [DISPLAY_SPINNER]="DISPLAY_SPINNER"
+        [DISPLAY_BOT]="DISPLAY_BOT"
+        [DISPLAY_FAQ]="DISPLAY_FAQ"
+        [CREATE_BOT_ERROR]="CREATE_BOT_ERROR"
+        [CREATE_FAQ_ERROR]="CREATE_FAQ_ERROR"
+        (cancel)="cancel($event)"
+        (continueToNextStep)="continueToNextStep($event)"
+      ></appdashboard-error-result>
+      
+    </div>
+
+    <div class="col-right">
+      <appdashboard-sidebar-claims></appdashboard-sidebar-claims>
+    </div>
+
+  
+</div>

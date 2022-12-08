@@ -1,0 +1,197 @@
+<!-- <appdashboard-navbar-for-panel></appdashboard-navbar-for-panel> -->
+<!-- border-bottom: 1px solid #3f3f40; -->
+
+
+<div class="selected-project-bar" *ngIf="OPEN_REQUEST_DETAILS === false">
+
+  <div class="flex-container">
+    <!-- <div class="flex-child-project-avatar tooltip-ufp" (click)="goBackToProjectsList()">
+      <span class="pin-another-project">
+        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="list"
+          class="svg-inline--fa fa-list fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" 
+          style="width: 24px; vertical-align: middle;">
+          <style type="text/css">
+            .st-pin-another-project {
+              fill: #a0adb4;
+            }
+          </style>
+          <path class="st-pin-another-project"
+            d="M80 368H16a16 16 0 0 0-16 16v64a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-64a16 16 0 0 0-16-16zm0-320H16A16 16 0 0 0 0 64v64a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16V64a16 16 0 0 0-16-16zm0 160H16a16 16 0 0 0-16 16v64a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-64a16 16 0 0 0-16-16zm416 176H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0-320H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16zm0 160H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16z">
+          </path>
+        </svg>
+      </span>
+      <span class="tooltiptext-ufp">{{'SelectAnotherProject' | translate}}</span>
+    </div> -->
+
+    <div class="flex-child-project-name">
+      <div class="project-name-in-unserved-top-bar">
+        {{ projectName }}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- *ngIf="OPEN_REQUEST_DETAILS === false" -->
+<div class="main-content main-content-projects-for-panel" style="min-height: calc(100% - 40px);">
+  <div class="container-fluid container-projects-for-panel">
+
+    <div class="row">
+
+      <div *ngIf="showSpinner && !SHOW_NO_REQUEST_MSG" class="stretchspinner">
+        <!-- <div *ngIf="showSpinner" class="stretchspinner"> -->
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+      </div>
+
+
+      <div *ngIf="!showSpinner && (wsRequestsUnserved?.length === 0 || !wsRequestsUnserved)">
+        <!-- <div *ngIf="!showSpinner"> -->
+
+
+        <!-- ---------------------------------------------------------------- -->
+        <!-- No request message -->
+        <!-- ---------------------------------------------------------------- -->
+        <div class="no-request-msg-wrapper">
+          <img src="assets/img/disconnected from_social_media.svg" class="img-fluid"
+            style="max-width: 250px; height: auto;" />
+          <!-- <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+            y="0px" viewBox="0 0 499.5 514.5" style="enable-background:new 0 0 499.5 514.5;" xml:space="preserve">
+            <style type="text/css">
+              .st0 {
+                fill: #616E7D;
+              }
+
+              .st1 {
+                fill: #EF806E;
+              }
+            </style>
+            <g id="Bg">
+            </g>
+            <g id="Object">
+              <g>
+                <path class="st0" d="M8.9,319.3L0,326.7l129.6,16.1c18.8,7.5,38.5,12.8,58.7,16.1c6.8-65.9,76.8-117.8,162-117.8
+			c34.5,0,66.5,8.6,92.9,23.1c16.5-24.8,25.8-53,25.8-82.8C468.9,81.4,364.3,0,235.8,0C107.2,0,2.6,81.4,2.6,181.4
+			c0,35.9,13.5,70.5,39,100.3l-0.2,0.2l2.5,2.6C41,290.4,24.2,306.6,8.9,319.3z M80.5,100.9h303.9v16.5H80.5V100.9z M80.5,162.1
+			h303.9v16.5H80.5V162.1z M80.5,223.4h160.9v16.5H80.5V223.4z" />
+                <path class="st1" d="M201,369.5c0,63.4,67,115,149.2,115c18.2,0,36.1-2.6,53.2-7.6l3.6-1.1l41.8,38.7v-58.9l2.8-2
+			c30.4-21.8,47.8-52.4,47.8-84.2c0-63.4-67-115-149.2-115C268,254.5,201,306.1,201,369.5z" />
+                <rect x="80.5" y="100.9" class="st1" width="303.9" height="16.5" />
+                <rect x="80.5" y="162.1" class="st1" width="303.9" height="16.5" />
+                <rect x="80.5" y="223.4" class="st1" width="160.9" height="16.5" />
+              </g>
+            </g>
+          </svg> -->
+          <span class="no-request-msg">
+            {{'NoRequests' | translate}}
+          </span>
+        </div>
+      </div>
+
+      <div *ngIf="!showSpinner && wsRequestsUnserved?.length > 0" class="left-sidebar-unserved-requests-wrapper">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4 class="unserved-for-panel-title">
+              {{wsRequestsUnserved?.length }} {{'VisitorsPage.UnservedRequests' | translate}}
+            </h4>
+          </div>
+        </div>
+        <div class="left-sidebar-unserved-requests" *ngFor="let request of wsRequestsUnserved">
+
+          <!-- GRID ---------------------------------------------------------------- -->
+          <div class="grid-container">
+            <div class="lead-avatar-column" (click)="displayDetails(request)">
+
+              <div class="lead--avatar-wrap">
+                <!-- [ngStyle]="{'background-color': request?.requester_fullname_fillColour }"  -->
+                <div class="lead--avatar"
+                  [ngStyle]="{'background':  'linear-gradient(rgb(255,255,255) -125%,' + request?.requester_fullname_fillColour + ')'}"
+                  [ngClass]="{'requester_fullname-undefined' : !request?.snapshot?.lead?.fullname }">
+                  <span style="color: #ffffff"> {{ request?.requester_fullname_initial }} </span>
+                  <div class="requester-status-in-unserved-list"
+                    [ngClass]="{'requester-is-online' : request?.REQUESTER_IS_ONLINE, 'requester-is-offline' : !request?.REQUESTER_IS_ONLINE }">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="right-column" (click)="displayDetails(request)">
+              <div class="lead-name">
+                <div class="lead--name">
+                  {{ request?.lead?.fullname }}
+                  <!-- {{ request?.lead?.lead_id }} -->
+                  <span *ngIf="!request?.lead?.fullname">
+                    N/A
+                  </span>
+                </div>
+              </div>
+              <div class="time">
+                <div class="request--creation-time">
+                  {{ request?.createdAt | amTimeAgo }}
+                </div>
+              </div>
+              <div class="first-msg">
+                <div class="request--first-message text-truncated" [innerHTML]="request?.first_text">
+                </div>
+              </div>
+              <div class="actions-btns">
+                <div class="join-btn-col">
+                  <div class="tool_tip" style="width: 100%;">
+                    <button class="btn btn-block btn-primary action--btn"
+                      (click)='$event.stopPropagation();joinRequest(request?.request_id)'>
+                      {{'Join' | translate}}
+                    </button>
+                    <span class="top"
+                      style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px; white-space: nowrap;">
+                      <span style="text-transform: capitalize;"> {{ 'RequestMsgsPage.Enter' | translate }} </span>
+                      <i></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="archive-btn-col">
+                  <div class="tool_tip" style="width: 100%;">
+                    <!-- padding: 4px 8px!important; -->
+                    <button class="btn btn-block btn-primary action--btn"
+                      (click)='$event.stopPropagation();archiveRequest(request?.request_id, request)'
+                      style="background-color: #e4e6eb; color: #050505;"
+                      [disabled]="request?.currentUserIsJoined === false && USER_ROLE === 'agent'">
+                      {{'VisitorsPage.Resolve' | translate}}
+                    </button>
+                    <span
+                      style="min-width: fit-content; top:-8px; border-radius: 3px; padding: 3px 10px; white-space: nowrap;"
+                      class="top">
+                      <span *ngIf="USER_ROLE !== 'agent'" style="text-transform: capitalize;">
+                        {{ 'VisitorsPage.Resolve' | translate }}
+                      </span>
+                      <span *ngIf="USER_ROLE === 'agent'" style="text-transform: capitalize;">
+                        {{ 'ActionNotAllowed' | translate }}
+                      </span>
+                      <i></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="arrow-container" (click)="displayDetails(request)">
+                <div id="arrow_3" class="arrow-wrapper">
+                  <div class="arrow arrow--right">
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ./ GRID ---------------------------------------------------------------- -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="OPEN_REQUEST_DETAILS === true" class="view-side">
+  <appdashboard-ws-request-detail-for-panel [ngStyle]="{'height':train_bot_sidebar_height }"
+    (valueChange)='handleCloseRightSidebar($event)' [selectedRequest]="selectedRequest"
+    [wsRequestsUnserved]="wsRequestsUnserved">
+  </appdashboard-ws-request-detail-for-panel>
+</div>

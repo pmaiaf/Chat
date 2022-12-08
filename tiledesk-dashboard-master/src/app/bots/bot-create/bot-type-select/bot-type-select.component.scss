@@ -1,0 +1,140 @@
+// .bot-card {
+//   height: 100%;
+//   display: flex;
+//   flex-direction: column;
+// }
+// @media (min-width: 768px) {
+//     .row.equal {
+//       display: flex;
+//       flex-wrap: wrap;
+//     }
+//   }
+
+.bot-card {
+  cursor: pointer;
+  min-height: 293px;
+  box-shadow: 0 14px 30px 0 rgba(60, 72, 91, 0.22);
+  border-radius: 10px;
+  height: 95%;
+}
+
+.bot-card:hover {
+  /* old hover effect */
+
+  // .dflogo_st2 {
+  //   fill: #a6a6a6 !important;
+  // }
+  // .dflogo_st1 {
+  //   fill: #878787 !important;
+  // }
+
+  // .tdlogo_st0 {
+  //   fill: #9f9f9f !important;
+  // }
+
+  // .extlogo_st1  {
+  //   fill: #7c7c7c !important;
+  // }
+
+  // .identitybot_st0  {
+  //   fill: #7c7c7c !important;
+  // }
+
+  .card---header--external-bot {
+    background-image: linear-gradient(to right, #1391e1, #0f74b4);
+  }
+
+  .card---header--dialogflow-bot {
+    background-image: linear-gradient(to right, #fd8509, #e95507);
+  }
+
+  .card---header--resolution-bot {
+    background-image: linear-gradient(to right, #e9695b, #b62819);
+  }
+
+  .card---header--identity-bot {
+    background-image: linear-gradient(to right, #d5400c, #aa330a);
+  }
+
+  .card---header--rasa-bot {
+    background-image: linear-gradient(to right,#7a45f1, #5a17ee);
+  }
+
+  .card---header--tilebot-bot {
+    background-image: linear-gradient(to right,#F7B0A1, #F38879);
+  }
+}
+
+
+.aligned-row {
+  display: flex;
+  flex-flow: row wrap;
+
+  &::before {
+    display: block;
+  }
+}
+
+.card---header {
+  height: 7px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.bot-image {
+  height: 140px;
+}
+
+.custom__modal__title {
+  color: #262f3c;
+  text-align: center;
+  font-family:'Poppins','Roboto', 'Arial', sans-serif;
+  margin-top: 20px;
+  font-size: 28px;
+}
+
+.is_hidden {
+  display: none;
+}
+
+.link-in-select-bot-card {
+  color: #0f62ff;
+  cursor: pointer;
+}
+
+.link-in-select-bot-card:hover {
+  text-decoration: underline;
+}
+
+.title-in-select-bot-card {
+  font-family: 'Poppins','Roboto', 'Arial', sans-serif;
+  font-weight: 400;
+  margin-top: 8px;
+}
+
+.select-bot-type-page-title {
+  font-size: 20px;
+  line-height: 28px;
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 0px;
+  font-weight: 400;
+}
+
+.select-bot-type-page-subtitle {
+  color: #222222;
+  font-weight: 400;
+  font-family: 'Poppins','Roboto', 'Arial', sans-serif;
+  font-size: 21px;
+  line-height: 28px;
+  margin-top: 28px;
+}
+
+
+.custom-link {
+  color: #0f62ff;
+  cursor: pointer;
+}
+
+.custom-link:hover {
+  text-decoration: underline;
+}

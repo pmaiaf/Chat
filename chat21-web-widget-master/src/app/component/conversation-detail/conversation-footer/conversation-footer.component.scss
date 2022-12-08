@@ -1,0 +1,280 @@
+@import 'src/app/sass/variables';
+
+.visible-text-area {
+    pointer-events: auto;
+    border-radius: $chat-footer-border-radius;
+    background-color: $chat-footer-background-color;
+    &.disabled {
+        background-color: rgb(232, 233, 237);
+    }
+}
+
+.chat21-textarea-button {
+    fill: $icon-fill-color;
+    pointer-events: auto;
+}
+
+textarea,
+textarea:visited,
+textarea:focus,
+textarea:hover,
+textarea:active{
+    all: unset;
+}
+
+#button {
+    position: absolute;
+    bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#button.chat-open:not(.sidebar) {
+    right: 5px;
+    left: auto;
+    background-color: white;
+}
+
+#button:not(.sidebar) .buttonWave {
+    position: absolute;
+    z-index: -1;
+    width: 60px;
+    height: 60px;
+}
+
+#button-body {
+    width: 40px;
+    height: 40px;
+    border-radius: 28px;
+    border-color: transparent;
+    display: inherit;
+    align-items: center;
+    justify-content: center;
+    pointer-events: initial;
+    transition: all 0.2s ease-in-out 0s;
+    position: relative;
+
+    box-shadow: rgba(3, 6, 12, 0.5) 0px 4px 10px;
+}
+
+
+/* resize and hide the text input area */
+// .hidden-text-area {
+//     display: hidden;
+//     height: 0px;
+// }
+
+// /* show and restore the text area size */
+// .visible-text-area {
+//     display: block;
+//     height: 100%;
+// }
+
+/* button scroll to bottom page */
+#chat21-buttonToBottom {
+    display: flex;
+    position: relative;
+    margin-right: -25px;
+    margin-top: -40px;
+    float: right;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 1;
+    cursor: pointer;
+    background-color: #ffffff;
+    border: 1px solid $trasp-light-gray;
+    // -webkit-box-shadow: 0 3px 2px $trasp-light-black;
+    // box-shadow: 0 3px 2px $trasp-light-black;
+    text-align: center;
+    svg {
+        margin: auto;
+        fill: $gray;
+    }
+}
+#chat21-buttonToBottom:hover {
+    background-color: $blue;
+    opacity: 1!important;
+    transition: all .45s ease-in-out!important;
+    -moz-transition: all .45s ease-in-out!important;
+    -webkit-transition: all .45s ease-in-out!important;
+    border: 1px solid #ffffff;
+    svg {
+        fill: #ffffff;
+    }
+}
+
+textarea,
+textarea:visited,
+textarea:focus,
+textarea:hover,
+textarea:active{
+    all: unset;
+}
+
+#chat21-main-message-context {
+    overflow: hidden;
+    word-wrap: break-word;
+    resize: horizontal;
+    overflow-y: auto;
+    box-sizing: border-box;
+    color: $black;
+    min-width: 100%;
+    outline: 0;
+    resize: none;
+    font-size: 1.4em;
+    line-height: 1.4em;
+    font-weight: 300;
+    max-height: 110px;
+    min-height: auto;
+    height: 20px;
+    padding: 0px 12px; //0px 40px 0px 70px; //NEW FOR EMOJII BUTTON
+    margin: 10px 0px 10px;
+    border: none;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+        background-color: #00000000!important;
+    } 
+
+    &:hover {
+        &::-webkit-scrollbar-track {
+            background-color: #f9f9f9 !important;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+            background: #777777; 
+        }
+
+    }
+}
+
+.chat21-textarea-button {
+    position: absolute;
+    display: block;
+    height: $chat-footer-height;
+    bottom: 22px;
+    opacity: 0.3;
+    cursor: initial;
+    &.active {
+        opacity: 1;
+        cursor: pointer;
+    }
+}
+
+.chat21-textarea-button span svg:hover {
+    background: rgba(240,240,240,0.4)!important;
+    opacity: 1!important;
+    transition: all .45s ease-in-out 0s!important;
+    -moz-transition: all .45s ease-in-out 0s!important;
+    -webkit-transition: all .45s ease-in-out 0s!important;
+    padding: 0px;
+    margin: 0px;
+    border-radius: 50%;
+}
+
+.chat21-back-button{
+    position: absolute;
+    display: block;
+    height: $chat-footer-height;
+    cursor: pointer;
+}
+
+.chat21-back-button span svg:hover {
+    background: rgba(240,240,240,0.4)!important;
+    opacity: 1!important;
+    transition: all .45s ease-in-out 0s!important;
+    -moz-transition: all .45s ease-in-out 0s!important;
+    -webkit-transition: all .45s ease-in-out 0s!important;
+    padding: 0px;
+    margin: 0px;
+    border-radius: 50%;
+}
+
+
+#chat21-button-send {
+    right: 8px;
+    bottom: 0;
+}
+#chat21-file{
+    left: 8px;
+    bottom: 0;
+}
+#chat21-emoticon-picker{
+    left: 36px;
+    bottom: 0;
+}
+#chat21-start-upload-doc,
+#chat21-start-mic {
+    left: 8px;
+    bottom: 0;
+}
+#chat21-back-button{
+    left: 8px;
+    bottom: 0;
+}
+
+#floating-container{
+    width: 100%; //not 100% due to vertical scroll bar
+    // margin: 0px auto;
+    // height: 46px;
+    // position: absolute;
+    // bottom: 0px;
+    border-top: 0px solid $light-gray;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    vertical-align: top;
+    text-align: center;
+
+    .c21-label-button {
+        margin-left: 8px;
+        font-weight: 400;
+        font-size: 1.2em;
+    }
+
+    .c21-button-primary {
+        height: 36px;
+        margin: 5px 3px;
+    }
+
+    .c21-waiting-time {
+        font-size: 1.3em;
+        font-weight: 200;
+        padding: 0px 24px 5px 24px;
+    }
+
+}
+
+.fade-in-bottom {
+    -webkit-animation: fade-in-bottom 0.5s cubic-bezier(0.600, -0.280, 0.735, 0.045) 0.0s;
+    animation: fade-in-bottom 0.5s cubic-bezier(0.600, -0.280, 0.735, 0.045) 0.0s;
+}
+
+
+.emoji-container {
+    height: 312px;
+    position: absolute;
+    overflow: hidden;
+    width: 93%;
+    bottom: 100%;
+    z-index: 10;
+    left: 10px;
+    box-shadow: 0px -15px 20px -13px rgba(0, 0, 0 , 0.38);
+    -webkit-box-shadow: 0px -15px 20px -13px rgba(0, 0, 0 , 0.38);
+}
+.emoji-mart {
+    position: absolute;
+    // bottom: 40px;
+    // left: 10px;
+    border: none;
+    margin: -2px -2px 0px;
+
+}
+
+

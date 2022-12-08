@@ -1,0 +1,64 @@
+@import "./src/assets/sass/md/_variables.scss";
+.card-header-custom-bkgrnd {
+  // display:none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  margin: 0px;
+  border-radius: 3px 3px 0px 0px;
+  // background-color: #f2f6f8;
+  background-color: #ffffff;
+  // border-bottom: 1px solid #eff3f5;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.column-th-span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #353f45;
+  // color: #566787;
+}
+
+.main-content-no-padding {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 0px;
+}
+
+.left-col-custom-padding {
+  padding-right: 5px !important;
+  padding-left: 10px !important;
+}
+
+.right-col-custom-padding {
+  padding-right: 10px !important;
+  padding-left: 5px !important;
+}
+
+.card-custom-margin {
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .left-col-custom-padding {
+    padding-right: 10px !important;
+  }
+
+  .right-col-custom-padding {
+    padding-left: 10px !important;
+  }
+}
+
+.isHidden {
+  display: none;
+}
+
+.user-img-in-canned {
+  vertical-align: middle;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 1px solid #eee;
+  object-fit: cover;
+}
+

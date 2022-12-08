@@ -1,0 +1,62 @@
+@import "./src/assets/sass/md/_variables.scss";
+@import "./src/assets/sass/_spinner-section.scss";
+@import "./src/assets/sass/_animations.scss";
+
+// LOCAL COLORS //
+$color-white: #ffffff;
+$color-enterprise-plan: #6772e5;
+$color-pro-plan: #3ea9f5;
+
+//---------------------//
+// STRUCTURE
+//---------------------//
+.css-onboarding {
+  /**  local variables **/ 
+  --width-col-rigth: 360px;
+  //----------------------------------//
+  font-family: "Poppins","Roboto",Arial,sans-serif;
+  background: white;
+  width: 100%;
+  margin: 0px; 
+  padding: 0px;
+  display: flex;
+  .logo {
+    position:absolute;
+    width: 150px;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+  }
+  .row {
+    z-index: 10;
+  }
+  .col-left {
+    min-height: 100vh;
+    height: auto;
+    background: white;
+    width: calc(100% - var(--width-col-rigth));
+    position: relative;
+    float: left;
+    padding: 100px 60px 60px;
+    z-index: 20;
+  }
+  .col-right {
+    min-height: 100vh;
+    height: auto;
+    width: var(--width-col-rigth);
+    position: relative;
+    float: left;
+    overflow: hidden;
+    z-index: 10;
+  }  
+
+  /** **/
+  @media (max-width: 992px) {
+    .col-left {
+      width: 100%;
+    }
+    .col-right {
+      display: none;
+    }
+  }
+}

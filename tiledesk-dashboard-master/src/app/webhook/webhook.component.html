@@ -1,0 +1,248 @@
+
+<!-- margin-top:6px; -->
+<p class="navbar-brand" style="z-index: 1050;position: relative; padding-left:30px;"[ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-64px' : '6px' }">
+  <!-- (click)="goBackToProjectsList() -->
+  <i class="material-icons" style="vertical-align: middle !important; cursor: pointer;"
+    (click)="goBack()">keyboard_arrow_left</i>
+  <!-- Webhook -->
+  Webhook
+</p>
+
+<div class="main-content main-content-no-padding">
+  <div class="container-fluid">
+    
+    <div class="row">
+      <div class="col-xs-12 link-to-automatic-assignment-doc"
+        style="background-color: rgb(241,241,241);margin-top: -17px;	padding: 20px 20px 10px 36px;">
+
+        <div style="font-size: 14px;font-weight: 400;margin-bottom: 6px;line-height: 20px;">
+          <span>
+            <svg style="width: 25px;height:auto; vertical-align: middle;" aria-hidden="true" focusable="false"
+              data-prefix="fab" data-icon="readme" class="svg-inline--fa fa-readme fa-w-18" role="img"
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+              <path fill="#0f62ff"
+                d="M528.3 46.5H388.5c-48.1 0-89.9 33.3-100.4 80.3-10.6-47-52.3-80.3-100.4-80.3H48c-26.5 0-48 21.5-48 48v245.8c0 26.5 21.5 48 48 48h89.7c102.2 0 132.7 24.4 147.3 75 .7 2.8 5.2 2.8 6 0 14.7-50.6 45.2-75 147.3-75H528c26.5 0 48-21.5 48-48V94.6c0-26.4-21.3-47.9-47.7-48.1zM242 311.9c0 1.9-1.5 3.5-3.5 3.5H78.2c-1.9 0-3.5-1.5-3.5-3.5V289c0-1.9 1.5-3.5 3.5-3.5h160.4c1.9 0 3.5 1.5 3.5 3.5v22.9zm0-60.9c0 1.9-1.5 3.5-3.5 3.5H78.2c-1.9 0-3.5-1.5-3.5-3.5v-22.9c0-1.9 1.5-3.5 3.5-3.5h160.4c1.9 0 3.5 1.5 3.5 3.5V251zm0-60.9c0 1.9-1.5 3.5-3.5 3.5H78.2c-1.9 0-3.5-1.5-3.5-3.5v-22.9c0-1.9 1.5-3.5 3.5-3.5h160.4c1.9 0 3.5 1.5 3.5 3.5v22.9zm259.3 121.7c0 1.9-1.5 3.5-3.5 3.5H337.5c-1.9 0-3.5-1.5-3.5-3.5v-22.9c0-1.9 1.5-3.5 3.5-3.5h160.4c1.9 0 3.5 1.5 3.5 3.5v22.9zm0-60.9c0 1.9-1.5 3.5-3.5 3.5H337.5c-1.9 0-3.5-1.5-3.5-3.5V228c0-1.9 1.5-3.5 3.5-3.5h160.4c1.9 0 3.5 1.5 3.5 3.5v22.9zm0-60.9c0 1.9-1.5 3.5-3.5 3.5H337.5c-1.9 0-3.5-1.5-3.5-3.5v-22.8c0-1.9 1.5-3.5 3.5-3.5h160.4c1.9 0 3.5 1.5 3.5 3.5V190z">
+              </path>
+            </svg>
+          </span>
+          <span class="webhook-link-to-doc" (click)="openWebhookDoc()">
+            {{'HowWebhooksWorks' | translate}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-8 left-col-custom-padding">
+        <div class="card card--no-border card-custom-margin">
+          <div class="card-header card-header-custom-bkgrnd">
+
+            <button class="btn btn-primary webhook-add-subscription-btn" style="padding: 8px 16px; margin: 0px;min-width: 146px;"
+              (click)="presentWebhookModal_inAddMode()">
+              <span class="icon" style="padding-right: 8px;">
+                <i class="material-icons">add_circle</i>
+              </span>
+              {{ "Webhook.AddSubscription" | translate }}
+            </button>
+          </div>
+
+          <loading-spinner *ngIf="showSpinner"></loading-spinner>
+          <div *ngIf="!showSpinner" class="card-content table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>
+                    <span class="column-th-span">
+                      {{ "Webhook.Subscriptions" | translate }}
+                    </span>
+                  </th>
+                  <th>
+                    <span class="column-th-span">
+                      <!-- {{ "Webhook.Actions" | translate }} -->
+                      {{ "Actions" | translate }}
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <!-- NO SUBSCRIPTION FOUND FOR SELECTED PROJECT ID -->
+                <tr *ngIf="subscriptionsList && subscriptionsList?.length === 0">
+                  <td colspan="2" style="text-align: center;">
+                    <p style="font-size:1em; margin-bottom: 0px; margin-top: 10px; color:#7695a5; font-weight: 400">
+                      <i class="material-icons" style="vertical-align: middle; margin-bottom: 2px;color: #3ea9f5;"> info
+                      </i>
+                      {{ "Webhook.NoWebhookSubscriptions" | translate }}
+                    </p>
+                  </td>
+                </tr>
+
+                <tr *ngFor="let subscription of subscriptionsList; let id = index">
+
+                  <td>
+                    <span style="display: block; font-weight: 500; font-size: 14px; color: rgba(0, 0,0, 0.87);">
+                      {{subscription?.target}}
+                    </span>
+                    <span style="display: block; color:#7695a5; font-size: 13px;">
+                      {{subscription?.event}}
+                    </span>
+                  </td>
+
+                  <td class="td-actions text-right" style="padding-top:20px">
+                    <button type="button" rel="tooltip" title="" class="btn btn-primary btn-simple btn-xs"
+                      (click)='presentWebhookModal_inEditMode(subscription?._id)'>
+                      <i class="material-icons">edit</i>
+                    </button>
+
+                    <button type="button" rel="tooltip" title="" class="btn btn-danger btn-simple btn-xs"
+                      (click)='showModal_ConfirmDeleteSubscription(subscription?._id)'>
+                      <i class="material-icons">close</i>
+                    </button>
+                  </td>
+
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- // RIGHT SIDEBAR -->
+      <div class="col-sm-4 right-col-custom-padding">
+        <div class="card card--no-border card-custom-margin">
+          <div class="card-content">
+            <!-- <h4 class="card-title" style="text-transform: none; color: #566787; font-weight:400; margin-bottom: 15px">
+              Webhook
+            </h4> -->
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <h3 class="card_title__underlined">
+                  <span class="card_title__underline">
+                    {{ "QuickTips" | translate }}
+                  </span>
+                </h3>
+              </div>
+              <div class="col-sm-12 col-md-12">
+                <div class="section-subtitle"> </div>
+              </div>
+            </div>
+
+            <!-- <p style="color:#7695a5">
+              {{ "Webhook.MoreInfoWebhook" | translate }} <a href="https://developer.tiledesk.com/apis/webhooks"
+                target="_blank">https://developer.tiledesk.com/apis/webhooks</a>
+            </p> -->
+
+            <p style="color:#7695a5">
+              {{ "WebhooksQuickTipsIntroduction" | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SHOW SECRET MODAL -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayModal_SecretGeneratedModal}"
+  style="background-color: rgba(90,90,90,0.5);">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#00bcd4; padding-bottom:24px">
+        <button type="button" class="close" aria-label="Close" (click)="closeModal_JwtSecretGenerated()"
+          style="color: #ffffff;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" style="color: #fff">
+          <i class="material-icons" style="vertical-align: middle">info</i>
+          <span style="vertical-align: middle; padding-left:8px">
+            {{ "Webhook.SharedSecretGenerated" | translate }}
+          </span>
+        </h4>
+        <!-- <h4 class="modal-title" style="color: #fff; padding-top:10px; font-size: 1.1em ">
+            {{ "ProjectEditPage.TheProjectWillBeDeleted" | translate }}
+        </h4> -->
+      </div>
+      <div class="modal-body webhook-modal-body">
+        <label style="color: rgb(118, 149, 165); font-weight:100; text-align: left;" class="col-sm-10 ">
+          {{ "Webhook.ThisIsYourSharedSecret" | translate }}:
+        </label>
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input id="sharedSecretInput" readonly [(ngModel)]="sharedSecret" class="" type="text"
+              style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
+            <span class="input-group-btn" style="padding-right: 0px;padding-left: 0px;">
+              <button class="btn btn-white" (click)="copySharedSecret()"
+                style="padding-bottom: 9px; margin-bottom: 9px; padding-top: 10px; border-top-right-radius: 5px; border-bottom-right-radius: 5px">
+                {{ "Webhook.Copy" | translate }}
+              </button>
+            </span>
+          </div>
+        </div>
+        <label style="color: rgb(118, 149, 165); font-weight:100; text-align: left;" class="col-sm-10 ">
+          {{ "Webhook.UseThisSecret" | translate }}:
+        </label>
+        <label style="color:#f44336; text-align: left; margin-top: 5px;" class="col-sm-10 ">
+          {{ "Webhook.NoteThatWillBeDisplayedOnce" | translate }}.
+        </label>
+      </div>
+      <div class="modal-footer" style="margin-top: 75px; text-align: center">
+        <button class="btn btn-primary" (click)="closeModal_JwtSecretGenerated()" style="padding:12px 16px;">
+          Ok
+        </button>
+        <!-- <button style="margin-top:0px" class="btn btn-danger" disabled (click)="createProject()">
+
+          {{ "ProjectEditPage.DeleteProject" | translate }}
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayModal_ConfirmDeleteModal}"
+  style="background-color: rgba(90,90,90,0.5);">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#00bcd4; padding-bottom:24px">
+        <button type="button" class="close" aria-label="Close" (click)="closeModal_ConfirmDeleteModal()"
+          style="color: #ffffff;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" style="color: #fff">
+          <i class="material-icons" style="vertical-align: middle">info</i>
+          <span style="vertical-align: middle; padding-left:8px">
+            {{ "Webhook.ConfirmSubscriptionDeleteTitle" | translate }}
+          </span>
+        </h4>
+        <!-- <h4 class="modal-title" style="color: #fff; padding-top:10px; font-size: 1.1em ">
+            {{ "ProjectEditPage.TheProjectWillBeDeleted" | translate }}
+        </h4> -->
+      </div>
+      <div class="modal-body">
+        {{ "Webhook.ConfirmSubscriptionDeleteBody" | translate }}
+      </div>
+      <div class="modal-footer" style="margin-top: 25px; text-align: center">
+        <button class="btn btn-secondary" (click)="closeModal_ConfirmDeleteModal()" style="padding:12px 16px;">
+          {{ "Webhook.CancelButton" | translate }}
+        </button>
+        <button class="btn btn-primary" (click)="deleteSubscription()" style="padding:12px 16px;">
+          {{ "Webhook.ConfirmButton" | translate }}
+        </button>
+        <!-- <button style="margin-top:0px" class="btn btn-danger" disabled (click)="createProject()">
+
+          {{ "ProjectEditPage.DeleteProject" | translate }}
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<appdashboard-webhook-add-edit *ngIf="displayModal_AddEditWebhook === 'block'"
+  (closeModal)="closeModal_AddEditWebhook()" (createdWebhook)="showSecretModal($event)"
+  (hasSavedSubscription)='onSaveSubscription()' [modalMode]="modalMode" [selectWebhookId]="selectWebhookId">
+</appdashboard-webhook-add-edit>

@@ -1,0 +1,375 @@
+@import "./src/assets/sass/md/_variables.scss";
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+// PADDING TOP & PADDING BOTTOM CUSTOMIZED FOR THE CONTACT DETAILS TABLE
+.table td {
+  // padding-top: 3px;
+  // padding-bottom: 3px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.table td p {
+  margin-bottom: 0px;
+}
+
+.btn-visibility-custom {
+  padding-top: 2px;
+  padding-bottom: 1px;
+  padding-right: 3px;
+  padding-left: 3px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.card form [class*="col-"] {
+  padding: 0px;
+}
+
+// HOVER ON THE MEMBER LIST OF THE COLUMN SERVED BY
+p.member:hover {
+  background-color: #58c1d6;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.title-attribute {
+  font-family:'Poppins','Roboto', 'Arial', sans-serif;
+  color: #394f5a;
+  font-weight: 500;
+}
+.attribute {
+  color: #7695a5;
+  font-weight: 500;
+}
+
+.ws_requets_msgs__attributes {
+  font-family: 'Poppins','Roboto', 'Arial', sans-serif;
+  color: #394f5a;
+  font-weight: 500;
+}
+
+.attribute_cutted_text {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+.attribute_full_text {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
+.row-header {
+  font-family:'Poppins','Roboto', 'Arial', sans-serif;
+  color: #394f5a;
+  font-weight: 500;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.showPosts {
+  cursor: pointer;
+  display: table;
+}
+.showPosts .greekCross,
+.showPosts h5 {
+  display: table-cell;
+}
+.greekCross {
+  color: #00bff3;
+  font-size: 15px;
+}
+.showPosts > h5 {
+  font-size: 15px;
+  display: inline;
+  padding-left: 5px;
+}
+
+// start TOOLTIP
+/* Tooltip container */
+.tooltipx {
+  position: relative;
+  display: inline-block;
+  // border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltipx .tooltiptext-custom {
+  visibility: hidden;
+  // width: 120px;
+  color: #fff;
+  text-align: center;
+  padding: 5px 5px;
+  border-radius: 5px;
+  font-size: 12px !important;
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  /* Position the tooltip text - TOP */
+  // width: 420px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+
+  max-width: 10em; // only for contacts component
+  overflow-wrap: break-word; // only for contacts component
+  // NEW
+  box-shadow: 0 1em 2em -0.5em rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+  background-color: #394f5a;
+  line-height: 1.5;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipx:hover .tooltiptext-custom {
+  visibility: visible;
+}
+// /.end TOOLTIP
+
+.contact-avatar {
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: center;
+  width: 42px;
+  height: 42px;
+  // padding: 10px 11px;
+  padding-top: 10px;
+  display: inline-block;
+  position: relative;
+}
+
+.contact-avatar-fullname-initials {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 400;
+  display: block;
+  font-family: 'Poppins','Roboto', 'Arial', sans-serif;
+  font-weight: 400;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.contact-verified {
+  position: relative;
+  // left: -20px;
+  margin-top: -24px !important;
+}
+
+.column-th-span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #353f45;
+  // color: #566787;
+}
+
+// start attribute 'accordion' style
+.attribute_cutted_text {
+  width: calc(100% - 120px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attribute_full_text {
+  word-wrap: break-word;
+  transition: background-color 1000ms;
+  background-color: #eee;
+}
+
+.rotate {
+  -moz-transition: all 0.2s linear;
+  -webkit-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+
+.rotate.up {
+  -moz-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+// @media (max-width: 768px){
+//   .truncate {
+//     width: 223px;
+//     white-space: nowrap;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//   }
+
+// }
+
+// ./ end attribute 'accordion' style
+
+// TOOLTIP START
+.White__Tooltip {
+  position: relative;
+  display: inline-block;
+  // border-bottom: 1px dotted black;
+}
+
+.White__Tooltip .White__Tooltiptext {
+  visibility: hidden;
+  width: fit-content;
+  // background-color: #fff;
+  // color: rgba(0,0,0, 0.87);
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  // min-height: 41px;
+  line-height: 1.2;
+  // font-size: 16px;
+  // border: 1px solid #eee;
+
+  /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+  opacity: 0;
+  transition: opacity 1s;
+
+  // NEW
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 1em 2em -0.5em rgba(0, 0, 0, 0.35);
+  background-color: #394f5a;
+}
+
+.White__Tooltip:hover .White__Tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.chat-with-agent {
+  color: #7695a5 !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  vertical-align: middle !important;
+  margin-right: 5px;
+}
+
+
+
+#btn-chat-with {
+  margin-top: 5px;
+  margin-bottom: 0px;
+  padding-left: 6px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  background: #e4e6eb;
+  padding-right: 6px;
+  margin-right: 5px;
+}
+
+.chat-with-fullname {
+  text-transform: none;
+  color: #394f5a;
+  font-size: 12px;
+  font-weight: 500;
+  font-family:'Poppins','Roboto', 'Arial', sans-serif;
+  position:relative;
+  top: 8px;
+}
+
+.contact-details-fullname {
+  display: block;
+  font-size: 18px;
+  margin-left: 5px;
+  white-space: nowrap;
+  position: relative;
+  top: 4px;
+} 
+
+.attributes-accordion {
+  // background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 8px 0px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+}
+
+.attributes-accordion:hover {
+  // background-color: #ccc;
+  background-color: #f7f8fc;
+}
+
+/* 
+ Attributes decoded JWT Accordion 
+ ------------------------------------ */
+ .attributes-jwt-decoded-cntct-accordion-wpr {
+  padding-left: 0px;
+  padding-right: 0px;
+  border-bottom: 1px solid #eeeeee;
+  border-top: 1px solid #eeeeee;
+  margin-top: -18px;
+}
+
+@media only screen and (max-width: 768px) {
+  .attributes-jwt-decoded-cntct-accordion-wpr {
+    margin-top: 0px;
+  }
+
+  .contact-email-col-12 {
+    margin-top: 15px;
+  }
+  // .attributes-decoded-jwt-accordion:after {
+  //   margin-right: -25px;
+  // }
+}
+.attributes-decoded-jwt-cntct-accordion {
+  color: #444;
+  cursor: pointer;
+  padding: 8px 0px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+}
+
+
+
+.attributes-decoded-jwt-cntct-accordion:hover {
+  background-color: #f7f8fc;
+}
+
+.attributes-decoded-jwt-cntct-accordion:after {
+  // content: "\002B";
+  content: "\f107";
+  font-family: FontAwesome;
+  // color: #777;
+  color: #039be5;
+  font-weight: bold;
+  float: right;
+  // margin-left: 5px;
+  font-size: 20px;
+  padding-right: 4px;
+}
+.attributes-decoded-jwt-cntct-accordion.active:after {
+  content: "\f106";
+  font-family: FontAwesome;
+}
+
+.attributes-decoded-jwt-panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  // overflow: hidden;
+  overflow-y: auto;
+  // transition: max-height 0.2s ease-out;
+}
+/* ./ Attributes decoded JWT Accordion  */
+
+
+

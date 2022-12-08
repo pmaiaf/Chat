@@ -1,0 +1,140 @@
+<!-- [ngStyle]="{ 'width': newInnerWidth + px }" -->
+<div class="create-group-right-side-bar">
+
+
+  <div class="create-group-right-side-bar-title-wrap">
+    <h5 class="create-group-right-side-bar-title">
+      {{ "DeptsAddEditPage.orCreateAGroup" | translate }}
+      <i class="material-icons close-right-side-bar" (click)="closeCreateGroupRightSideBar()">close</i>
+    </h5>
+  </div>
+
+  <div lass="create-new-group-note-wpr" style="margin-top: 6px;">
+    <div class="create-new-group-note">
+      <span class="material-icons" style="color: #3ea9f5;font-size: 18px;position: relative;top: 4px;"> info </span>
+      <h5 style="font-size: 13px; font-weight:400;color: rgba(0,0,0,0.5);">{{ "TheNewGroupCreatedCanAlso" | translate }}
+      </h5>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 15px;">
+    <label *ngIf="!deptName_toUpdate" class="col-xs-12 custom-label-in-sidebar" style="margin-bottom: 0px;">
+      {{ "GroupName" | translate}}
+    </label>
+    <label *ngIf="deptName_toUpdate" class="col-xs-12 custom-label-in-sidebar" style="margin-bottom: 0px;">
+      {{ "GroupName" | translate}} ({{'suggested' | translate }})
+    </label>
+    <div class="col-xs-12">
+      <div class="group-name-input-wrap">
+        <input [(ngModel)]="group_name" class="input" (ngModelChange)="onChangeGroupName($event)" type="text"
+          style="margin-top: 2px;margin-bottom: 0px;" placeholder="{{'EnterTheGroupName' | translate}}">
+
+        <span *ngIf="group_name_already_exist" class="warning-msg">{{'GroupWithThisNameAlreadyExists' | translate}}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card" style="margin-top: 10px; margin-bottom: 0px;">
+
+        <loading-spinner *ngIf="showSpinner"></loading-spinner>
+
+        <div *ngIf="!showSpinner" class="card-content table-responsive " style="padding: 10px 10px;">
+          <table class="table table-hover teammates-list-table">
+            <!-- style="color: #f9f9f9" -->
+            <thead>
+              <tr>
+                <th style="text-align: center;">
+                  <span class="th-right-sidebar-col-title">
+                    {{ "GroupsAddEditPage.Select" | translate }}
+                  </span>
+                </th>
+                <th>
+                  <span class="th-right-sidebar-col-title" style="text-transform: capitalize;">
+                    {{ "Teammate" | translate }}
+                  </span>
+                </th>
+                <th>
+                  <span class="th-right-sidebar-col-title">
+                    {{ "GroupsAddEditPage.Role" | translate }}
+                  </span>
+                </th>
+                <th>
+                  <span class="th-right-sidebar-col-title">
+                    Email
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody style="font-weight:400">
+              <tr *ngFor="let project_user of projectUsersList">
+                <td style="text-align: center;">
+
+                  <!-- *ngIf="!project_user?.is_group_member" -->
+                  <div class="checkbox" style="margin: auto !important;">
+                    <label>
+                      <input [disabled]="project_user?.is_group_member" [checked]="project_user?.is_group_member"
+                        type="checkbox" class="form-check-input" style="width: 16px;height: 16px;"
+                        value="{{project_user?.id_user?._id}}" (click)="addMembersToArray(project_user?.id_user?._id)">
+                    </label>
+                  </div>
+                </td>
+
+
+                <td style="padding-left:10px;" rel="tooltip" title="{{ project_user?.id_user?._id }}">
+                  <!-- --------------------------------------------------- -->
+                  <!-- USECASE uploadEngine Firebase -->
+                  <!-- --------------------------------------------------- -->
+                  <img *ngIf="UPLOAD_ENGINE_IS_FIREBASE"
+                    class="user-img-in-create-group-right-sidebar"
+                    src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{project_user?.id_user?._id}}%2Fphoto.jpg?alt=media"
+                    onerror="this.src='assets/img/no_image_user.png'" />
+
+                  <!-- --------------------------------------------------- -->
+                  <!-- USECASE uploadEngine Native -->
+                  <!-- --------------------------------------------------- -->
+                  <img *ngIf="!UPLOAD_ENGINE_IS_FIREBASE"
+                    class="user-img-in-create-group-right-sidebar"
+                    src="{{baseUrl}}images?path=uploads%2Fusers%2F{{project_user?.id_user?._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                    onerror="this.src='assets/img/no_image_user.png'" />
+
+                  <span class="teammate-fullname" style="font-size:12px">
+                    <span> {{ project_user?.id_user?.firstname }} </span>
+                    <span style="text-transform: uppercase">
+                      {{project_user?.id_user?.lastname}}
+                    </span>
+                  </span>
+                </td>
+                <td style="padding-left:10px; max-width: 150px; font-size:12px">
+                  {{ project_user?.role | translate }}
+                </td>
+                <td style="padding-left:10px;font-size:12px">
+                  {{project_user?.id_user?.email}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="add-teammates-to-group-wrap">
+        <!-- group_name.length  {{ group_name?.length }} -->
+        <button #searchbtnbottom type="submit" class="btn btn-tdblu-no-boxshadow pull-right"
+          (click)="createGroupAndAddMembers()" style="padding:9px 30px; width: 100%;"
+          [disabled]="(create_group_and_add_members_btn_disabled) || (!group_name) || (group_name?.length === 0)">
+
+          {{'GroupsAddEditPage.CreateGroup' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

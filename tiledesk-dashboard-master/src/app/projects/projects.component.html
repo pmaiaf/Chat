@@ -1,0 +1,500 @@
+<div class="row">
+  <div class="col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-9 col-xs-offset-3" style="right:25px;">
+    <nav class="navbar navbar-transparent navbar-absolute">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <!-- <button type="button" class="navbar-toggle" style="margin-top:-3px; color:#fff" data-toggle="collapse"
+            (click)="sidebarToggle()">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button> -->
+
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+            <!-- // ======= START - TEST - LOGOUT FROM FIREBASE ======= // -->
+            <!-- <li *ngIf="APP_IS_DEV_MODE == true" style="cursor:pointer">
+              <a (click)="testExpiredSessionFirebaseLogout()">
+                <i class="material-icons">lock_open</i>
+                FireBase Logout
+              </a>
+            </li> -->
+            <!-- // ======= ./END - TEST - LOGOUT FROM FIREBASE ======= // -->
+
+            <!--  ------------------------------------------------ -->
+            <!--  Dashboard language -->
+            <!--  ------------------------------------------------ -->
+            <li>
+              <a routerLink="/user-profile" fragment="language" style="cursor: pointer;">
+                <span class="tooltip-language-in-your-prjcts">
+                  <img [src]="flag_url" style="width: auto;height: 19px; position: relative;top: -1px;">
+
+                  <span class="tooltip-language-in-your-prjcts__tooltiptext"
+                    style="font-size:12px; top: 27px;text-transform:none; cursor: pointer; height: fit-content;vertical-align: middle;">
+                    <span *ngIf="!languageNotSupported">
+                      {{'TheDashboardIsTranslatedInto' | translate: tlangparams }}
+                    </span>
+                    <span *ngIf="languageNotSupported">
+                      {{'TheDashboardIsTranslatedIntoEnglish' | translate }}
+                    </span>
+                  </span>
+                </span>
+              </a>
+            </li>
+
+
+            <li class="dropdown">
+              <!-- class="dropdown-toggle" -->
+              <!-- margin-top:56px; display:block; text-align:right; padding-top:15px;padding-bottom:15px; padding-right:28px; color: #555555;" -->
+              <a data-toggle="dropdown" href="#"
+                style="display:block !important; margin-top:0px; opacity:100 !important">
+                <i class="material-icons open-user-profile-person-icon">person</i>
+                <!-- <p class="hidden-lg hidden-md">Profile</p> -->
+
+                <span class="tooltipx">
+                  <span *ngIf="user?.emailverified == false" class="notification"
+                    style="font-weight: 200; font-size:9px; right:11px!important; top:3px!important; position: absolute!important;">
+                    !
+                    <span class="tooltiptext">
+                      {{"NavBar.PendingVerification" | translate }}
+                    </span>
+                  </span>
+                </span>
+              </a>
+              <!-- float:right !important; right:0px!important; left:1px!important  -->
+              <ul class="dropdown-menu">
+                <div class="card card-profile" style="border:unset !important">
+                  <div class="card-avatar user-profile-avatar">
+                    <a *ngIf="user">
+
+
+                      <!-- --------------------------------------------------- -->
+                      <!-- USECASE uploadEngine Firebase -->
+                      <!-- --------------------------------------------------- -->
+                      <!-- (userProfileImageExist === true || userImageHasBeenUploaded === true) -->
+                      <img style="width:80px; height:80px" *ngIf="user?.hasImage && UPLOAD_ENGINE_IS_FIREBASE"
+                        class="user-img-in-dropdown"
+                        src="https://firebasestorage.googleapis.com/v0/b/{{storageBucket}}/o/profiles%2F{{user?._id}}%2Fphoto.jpg?alt=media"
+                        onerror="this.src='assets/img/no_image_user.png'" />
+
+
+                      <!-- --------------------------------------------------- -->
+                      <!-- USECASE uploadEngine Firebase -->
+                      <!-- --------------------------------------------------- -->
+                      <!-- (userProfileImageExist === true || userImageHasBeenUploaded === true) -->
+                      <img style="width:80px; height:80px" *ngIf="user?.hasImage && !UPLOAD_ENGINE_IS_FIREBASE "
+                        class="user-img-user-img-in-dropdown"
+                        src="{{baseUrl}}images?path=uploads%2Fusers%2F{{user?._id}}%2Fimages%2Fthumbnails_200_200-photo.jpg"
+                        onerror="this.src='assets/img/no_image_user.png'" />
+
+                      <!-- --------------------------------------------------- -->
+                      <!-- USECASE No profile image -->
+                      <!-- --------------------------------------------------- -->
+                      <img *ngIf="!user?.hasImage" class="user-img" src="assets/img/no_image_user.png" />
+
+
+                    </a>
+                  </div>
+
+                  <div class="content">
+
+                    <h4 class="card-title user-profile-fullname">
+                      <strong>
+                        {{ user?.firstname }} 
+                      </strong>
+                    </h4>
+                    <h4 class="card-title user-profile-email">
+                      {{ user?.email }} 
+                    </h4>
+
+                    <button class="btn btn-primary view-user-profile-btn" routerLink="/user-profile">
+                      <span style="font-size:0.8em"> {{ 'ProjectsPage.UserProfile' | translate }} </span>
+                    </button>
+                    <button class="btn btn-primary view-user-profile-btn" routerLink="/user-list">
+                      <span style="font-size:0.8em">Empresas na Plataforma </span>
+                    </button>
+                    <li class="divider"></li>
+                    <button type="submit" class="btn btn-white logout-user-profile-btn" (click)="openLogoutModal()">
+                      <!-- Log out -->
+                      {{ 'NavBar.LogOut' | translate }}
+                    </button>
+                  </div>
+
+                </div>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ------------============= PENDING EMAIL VERIFICATION MSG =============------------ -->
+  <!-- *ngIf="DETECTED_PROJECT_PAGE === true" -->
+  <span>
+    <div routerLink="/user-profile" *ngIf="user?.emailverified == false" data-notify="container"
+      class="alert alert-danger animated fadeInDown alert-pending-email-prjct-page" role="alert"
+      data-notify-position="top-center">
+      <!-- <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button> -->
+      <span data-notify="icon" class="notifications">
+        <i class="fa fa-exclamation-circle" style="font-size: 13px;position: relative;top: -1px;"></i>
+        <span
+          style="font-family: 'Poppins', sans-serif;font-weight: 400; display: inline; position: relative;top: -2px; font-size: 11px; padding-left: 5px;">
+          {{"NavBar.PendingVerification" | translate }}
+        </span>
+        <span class="tooltipx" style="display: inline-block; float: right;">
+          <span>
+            <i class="material-icons" style="position: relative;top: 2px; font-size:14px; color:#ffffff">
+              help_outline
+            </i>
+          </span>
+          <!-- display: inline-block -->
+          <span class="tooltiptext"
+            style="min-width: 231px;line-height: 1.1;min-height: 34px; top: -5px; right: 105%;  ">
+            {{ "NavBar.WhenPendingEmailVerification" | translate}}
+          </span>
+        </span>
+      </span>
+      <!-- <span data-notify="title" style="max-width: 100%;">{{"NavBar.SomeSystemAreDisabled" | translate }}</span>  -->
+    </div>
+  </span>
+
+</div>
+<!-- target="_blank" href="http://www.tiledesk.com" -->
+<a style="margin-top:3px; padding-left:30px; cursor: pointer;" class="navbar-brand">
+
+  <!-- <img style="width:100px" src="assets/img/tiledesk-logo.png"/> -->
+  <img [ngStyle]="{'width':companyLogoBlack_width}" [src]="companyLogoBlack_Url"
+    style="z-index: 1;position: relative;" />
+
+</a>
+
+
+<div class="main-content">
+
+  <!--  TEST EMAIL VERIFY -->
+  <!-- <div>
+    <a (click)="testVerifyEmail()">VERIFY EMAIL</a>
+   </div> -->
+
+
+  <!-- text-white bg-primary -->
+  <!-- [ngStyle]="{'background':pageBackgroundColor}" -->
+  <div class="pt-5 py-5 project_background">
+    <!-- // added for new style start -->
+    <span
+      style="height: 64px; position: absolute; width: 100%; left: 0%; top: 0px; background-color: rgba(66, 71, 112, 0.1);"></span>
+    <span
+      style="height: 64px; position: absolute; width: 40%; bottom: 0px; right: 12%; background: rgba(255, 255, 255, 0.45);"></span>
+    <span
+      style="height: 64px; position: absolute; width: 35%; bottom: -64px; right: 6%; background: rgba(50, 50, 93, 0.05);"></span>
+ 
+  </div>
+
+  <!-- // added for new style start -->
+  <div class="container">
+    <div class="row text-center" style="margin-bottom:90px ">
+      <div class="col-md-12 text-center align-self-center my-5">
+        <h1 class="display-1 head-title">
+          <!-- {{ 'ProjectsPage.Welcome' | translate }} {{ 'to' | translate}} tiledesk.  -->
+          {{ 'YourProjects' | translate }}
+        </h1>
+        <!-- <p class="head-sub-title" > {{ 'ProjectsPage.BuildYourCustomer_1' | translate }} <br> {{ 'ProjectsPage.BuildYourCustomer_2' | translate }}</p> -->
+      </div>
+    </div>
+  </div>
+  <!-- // added for new style end -->
+
+
+
+  <div class="container-fluid" style="max-width: 960px;">
+  
+    <div class="projects-cards" style="position: relative;top: -57px;">
+      <div class="row">
+        <div *ngIf="MT === true" class="col-lg-4 col-md-4 col-sm-6" style="cursor:pointer">
+
+          <!-- CARD ADD PROJECT -->
+          <!-- style="max-width: 256px;" -->
+          <!-- openCreateModal()  -->
+          <div id="create-prjct-card" class="card custom-card-box-shadow" (click)='goToCreateProject()'
+            style="border-radius:3px;">
+            <div class="card-content" style="height:203px;">
+              <!-- #55b9d1 -->
+              <h3 class="card-add-project-icon">
+                <i class="material-icons" style="font-size:48px">add</i>
+              </h3>
+              <h4 class="card-add-project-text">
+                {{ 'ProjectsPage.AddProject' | translate }}
+              </h4>
+            </div>
+          </div>
+
+        </div>
+
+        <loading-spinner *ngIf="showSpinner"></loading-spinner>
+
+        <span *ngIf="!showSpinner">
+
+          <div *ngIf="projects?.length === 0 && MT === false">
+            <div class="col-xs-4 col-xs-offset-4" style="cursor:pointer">
+
+              <div class="card custom-card-box-shadow" style="border-radius:3px">
+                <div class="card-content" style="height:203px">
+                  <!-- #55b9d1 -->
+                  <h3 class="card-add-project-icon">
+                    😱
+                  </h3>
+                  <h4 class="card-add-project-text">
+                    {{ 'NoProjects' | translate }}
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- [ngClass]="{'col-lg-4 col-md-4 col-sm-6' : projects?.length >= 1 && 'MT' === true, 'col-md-4 col-md-offset-4' : projects?.length === 1 && 'MT' === false}" -->
+          <div *ngFor="let project of projects" class="col-lg-4 col-md-4 col-sm-6" style="cursor:pointer">
+
+            <!-- CARDS FROM THE PROJECT 'FOR' -->
+            <!-- style="max-width: 256px;" display_loading(project?.id_project?._id);  -->
+            <div class="card custom-card-box-shadow"
+              [ngClass]="{'project-deleted-card' : project?.id_project?.status === 0, 'delete-image-bckground':project?.id_project?.status === 0}"
+              style="border-bottom-left-radius: 3px; border-bottom-right-radius: 3px;" (click)='goToHome(
+                project,
+                project?.id_project?._id, 
+                project?.id_project?.name, 
+                project?.id_project?.profile?.name, 
+                project?.id_project?.trialExpired, 
+                project?.id_project?.trialDaysLeft, 
+                project?.id_project?.status, 
+                project?.id_project?.activeOperatingHours)'>
+              <!-- <div class="card-header card-header-custom-bkgrnd-project"> </div> -->
+
+              <div class="card-content card-content-custom-height">
+                <h3 class="project-title"
+                  [ngClass]="{'project-deleted-card-text-color' : project?.id_project?.status === 0}">
+                  {{ project?.id_project?.name }}
+                </h3>
+
+                <p class="id-project"
+                  [ngClass]="{'project-deleted-card-text-color' : project?.id_project?.status === 0}">
+                  {{ project?.id_project?._id }}
+                </p>
+
+                <div *ngIf="project_plan_badge" class="project-plan-badge" [ngClass]="{'pro-badge':  project?.plan_badge_background_type === 'pro_badge',
+                 'enterprise-badge': project?.plan_badge_background_type === 'enterprise_badge', 
+                 'free-badge': project?.plan_badge_background_type === 'free_badge' }">
+                  {{ project?.prjct_profile_name }}
+                </div>
+
+                <h4 class="category project-user-role" style="margin-top:5px"
+                  [ngClass]="{'project-deleted-card-text-color' : project?.id_project?.status === 0}">
+                  {{ project?.role | translate}}
+
+                  <span id="pu-status-icon" class="pu-status-icon"
+                  [ngClass]="{
+                  'pu-status-icon-no-ppb': !project_plan_badge,  
+                  'is-user-online' : project?.ws_projct_user_available === true && (project?.ws_projct_user_profileStatus === '' || !project?.ws_projct_user_profileStatus), 
+                  'is-user-offline' : project?.ws_projct_user_available === false && (project?.ws_projct_user_profileStatus === '' || !project?.ws_projct_user_profileStatus), 
+                  'is-user-inactive': project?.ws_projct_user_available === false && project?.ws_projct_user_profileStatus=== 'inactive',
+                  'pu-status-icon--is-busy': project?.ws_projct_user_isBusy === true}">
+                  </span>
+
+                  <span class="project-for-panel--isBusy-icon-wpr" *ngIf="project?.ws_projct_user_isBusy === true">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="16px"
+                      viewBox="0 0 24 24" width="16px" fill="#FEB92C">
+                      <g>
+                        <path d="M0,0h24v24H0V0z" fill="none" />
+                      </g>
+                      <g>
+                        <path
+                          d="M11.99,2C6.47,2,2,6.48,2,12s4.47,10,9.99,10C17.52,22,22,17.52,22,12S17.52,2,11.99,2z M15.29,16.71L11,12.41V7h2v4.59 l3.71,3.71L15.29,16.71z" />
+                      </g>
+                    </svg>
+
+                    <span *ngIf="project?.ws_projct_user_isBusy === true"
+                    class="project-for-panel--isBusy-busy-text project-for-panel--text-pulse-animation">
+                    {{'Busy' | translate}}   </span>
+                  </span>
+                 
+            
+                </h4>
+
+                <div class="availabily-and-busy-wpr--prjcts-for-panel"  style="display: inline-block;" [ngClass]="{'availabily-and-busy-wpr--prjcts-for-panel-no-ppb': !project_plan_badge}">
+
+
+                  <div class="availabily---wpr--prjct-for-panel"
+                  (click)="$event.stopPropagation(); $event.stopImmediatePropagation(); $event.preventDefault();">
+                    <!-- <div class="onoffswitch--prjct-for-panel"
+                      (click)="$event.stopPropagation();changeAvailabilityState(project?.id_project?._id, project?.ws_projct_user_available)">
+                      <input type="checkbox" name="onoffswitch_{{project?.id_project?._id}}"
+                        class="onoffswitch-checkbox--prjct-for-panel"
+                        id="availabilityswitch_{{project?.id_project?._id}}" tabindex="0"
+                        [checked]="project?.ws_projct_user_available">
+                      <label class="onoffswitch-label--prjct-for-panel"
+                        for="availabilityswitch_{{project?.id_project?._id}}">
+                      </label>
+                    </div> -->
+
+                    <select class="select-pu-status" #selectStatus name="status_{{project?.id_project?._id}}" id="{{project?.id_project?._id}}"
+                    (change)=" changeAvailabilityState(project?.id_project?._id, selectStatus.value)" style="border: 1px solid #d9d9d9;background: #fff;
+                    border-radius: 4px;
+                    text-transform: capitalize;">
+                    
+                    <option value="available" 
+                     [selected]="project?.ws_projct_user_available === true && (project?.ws_projct_user_profileStatus === '' || !ws_projct_user_profileStatus?.profileStatus)"> 
+                       {{'Available' | translate}} 
+                    </option>
+
+                    <option value="unavailable"
+                     [selected]="project?.ws_projct_user_available === false && (project?.ws_projct_user_profileStatus === '' || !ws_projct_user_profileStatus?.profileStatus)">
+                      {{'Unavailable' | translate}} 
+                    </option>
+
+                    <option value="inactive" 
+                     [selected]="project?.ws_projct_user_available === false && project?.ws_projct_user_profileStatus === 'inactive'">
+                      {{'Inactive' | translate}}  
+                    </option>
+                  </select>
+
+                  </div>
+
+
+                  <!-- <div id="pu-status-icon" class="pu-status-icon"
+                  [ngClass]="{
+                  'is-user-online' : project?.ws_projct_user_available === true && (project?.ws_projct_user_profileStatus === '' || !project?.ws_projct_user_profileStatus), 
+                  'is-user-offline' : project?.ws_projct_user_available === false && (project?.ws_projct_user_profileStatus === '' || !project?.ws_projct_user_profileStatus), 
+                  'is-user-inactive': project?.ws_projct_user_available === false && project?.ws_projct_user_profileStatus=== 'inactive'}">
+                  </div> -->
+
+                  <!-- <span *ngIf="project?.ws_projct_user_available === true"
+                    class="availibility-status-text--prjct-for-panel"
+                    [ngClass]="{'online-text-color' : project?.ws_projct_user_available === true, 'offline-text-color' : project?.ws_projct_user_available === false}">
+                    {{'Available' | translate}}
+                  </span>
+
+                  <span *ngIf="project?.ws_projct_user_available === false"
+                    class="availibility-status-text--prjct-for-panel"
+                    [ngClass]="{'online-text-color' : project?.ws_projct_user_available === true, 'offline-text-color' : project?.ws_projct_user_available === false}">
+                    {{'Unavailable' | translate}}
+                  </span> -->
+
+                  <!-- <div class="project-for-panel--isBusy-icon-wpr" *ngIf="project?.ws_projct_user_isBusy === true">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="16px"
+                      viewBox="0 0 24 24" width="16px" fill="#FEB92C">
+                      <g>
+                        <path d="M0,0h24v24H0V0z" fill="none" />
+                      </g>
+                      <g>
+                        <path
+                          d="M11.99,2C6.47,2,2,6.48,2,12s4.47,10,9.99,10C17.52,22,22,17.52,22,12S17.52,2,11.99,2z M15.29,16.71L11,12.41V7h2v4.59 l3.71,3.71L15.29,16.71z" />
+                      </g>
+                    </svg>
+                  </div>
+                  <span *ngIf="project?.ws_projct_user_isBusy === true"
+                    class="project-for-panel--isBusy-busy-text project-for-panel--text-pulse-animation">
+                    {{'Busy' | translate}}
+                  </span> -->
+
+                </div>
+
+
+
+                <div id="{{'loading_'+ project?.id_project?._id}}" *ngIf="project?.is_selected === true">
+                  <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                  </div>
+                </div>
+
+
+
+                <!-- <div class="onoffswitch">
+                  <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" tabindex="0" checked>
+                  <label class="onoffswitch-label" for="myonoffswitch">
+                      <span class="onoffswitch-inner"></span>
+                      <span class="onoffswitch-switch"></span>
+                  </label>
+              </div> -->
+
+
+              </div>
+
+              <div class="card-footer">
+                <div [ngClass]="{'project-deleted-card-text-color' : project?.id_project?.status === 0}" class="stats"
+                  style="color:#7695a5">
+                  <i class="material-icons">date_range</i> {{ project?.id_project?.createdAt | date: 'dd/MM/yyyy'}}
+
+                  <!-- <button type="button" rel="tooltip" title="Modifica Progetto" class="btn btn-primary btn-simple btn-xs" (click)='goToEditAddPage_EDIT(project?._id)'> -->
+                  <!-- <i class="material-icons">edit</i> -->
+                  <!-- </button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+
+      </div>
+    </div>
+    <!-- /. row -->
+  </div>
+
+</div>
+
+
+
+
+<!-- MODAL - LOGOUT WINDOWS -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayLogoutModal}"
+  style="background-color: rgba(90,90,90,0.5);">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="onCloseModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h4 class="modal-title">
+          <!-- <img src="assets/img/tiledesk-solo-logo.png" width="21px"> -->
+          <!-- tiledesk Log Out  -->
+          {{ 'NavBar.TiledeskLogOut' | translate: tparams }}
+        </h4>
+      </div>
+
+      <div class="modal-body">
+        <p style="margin-top: 0px; text-align:center; color:#566787; font-size:16px; font-weight:400 ">
+          <!-- Are you sure you want to log out? -->
+          {{ "NavBar.AreYouSureYouWantToLogOut" | translate }}
+        </p>
+        <p *ngIf="myAvailabilityCount > 0" style="margin-bottom:0px; text-align:center;max-width: 500px; margin: auto;">
+          <i class="material-icons" style="display: block; color:#f44336">warning</i>
+          <span style="color:#f44336"> {{ "NavBar.AttentionYouAreAvailable" | translate }}
+            {{myAvailabilityCount}}
+            <span *ngIf="myAvailabilityCount === 1">{{ "NavBar.Project" | translate }}.</span>
+            <span *ngIf="myAvailabilityCount > 1">{{ "NavBar.Projects" | translate }}.</span>
+            {{ "NavBar.IfYouDoNotWantToReceiveRequests" | translate }}
+          </span>
+        </p>
+
+      </div>
+
+      <div class="modal-footer" style="text-align: center;">
+        <button class="btn btn-white" (click)="onCloseLogoutModalHandled()" style="padding:12px 16px; font-size:12px ">
+          {{ "Cancel" | translate}}
+        </button>
+        <button class="btn btn-primary" (click)="onLogoutModalHandled()" style="padding:12px 16px; font-size:12px ">
+          <!-- Log Out -->
+          {{ 'NavBar.LogOut' | translate }}
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

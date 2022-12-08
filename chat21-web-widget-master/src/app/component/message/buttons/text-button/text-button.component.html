@@ -1,0 +1,8 @@
+<div class="button-in-msg text" 
+[ngClass]="{'disabled': isConversationArchived}"
+title="{{button?.value}}"
+(click)="actionButtonText()" 
+(mouseover)="onMouseOver($event)" 
+(mouseout)="onMouseOut($event)">
+  {{button?.value}}
+</div>

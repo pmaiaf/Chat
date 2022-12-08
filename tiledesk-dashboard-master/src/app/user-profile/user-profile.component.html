@@ -1,0 +1,427 @@
+<!-- margin-top:6px;  -->
+<div class="navbar-brand" style="z-index: 1050;position: relative;padding-left:30px" [ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-64px' : '6px' }">
+    <i class="material-icons" style="vertical-align: middle !important; cursor: pointer;"
+        (click)="goBack()">keyboard_arrow_left</i>
+    <!-- Profilo -->
+    {{ "UserProfile.Profile" | translate }}
+</div>
+
+<ul class="bottom-nav" style="top: 5px;">
+    <li class="btn-with-border-effect li-active">
+        <a> {{ "UserProfile.Profile" | translate }} </a>
+    </li>
+    <li class="btn-with-border-effect border-from-center" (click)="goToChangePsw()">
+        <a>{{ "UserProfile.ChangePsw" | translate }} </a>
+    </li>
+    <li class="btn-with-border-effect border-from-center" (click)="goToAccountSettings()">
+        <a>{{ "Settings" | translate }} </a>
+    </li>
+    <li class="btn-with-border-effect border-from-center" (click)="goToNotificationSettings()">
+        <a>{{ "Notification" | translate }} </a>
+    </li>
+</ul>
+
+<div class="main-content" style="padding-top:0px">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card--no-border" style="padding-top: 0px;padding-bottom: 25px;">
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                            <ul class="nav nav-pills nav-pills-info custom"
+                                style="padding-left: 15px;padding-right: 15px;margin-bottom: 15px;">
+                                <li class="active">
+                                    <a data-toggle="tab">
+                                        {{ "UserProfile.Profile" | translate }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" (click)="goToChangePsw()" style="cursor: pointer">
+                                        {{ "UserProfile.ChangePsw" | translate }}
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div> -->
+
+                    <loading-spinner *ngIf="showSpinner"></loading-spinner>
+
+                    <!-- style="border-top:1px solid #eee" -->
+                    <div *ngIf="!showSpinner" class="card-content">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="card_title__underlined">
+                                    <span class="card_title__underline">
+                                        {{ "UserProfile.YourDetails" | translate }}
+                                    </span>
+                                </h3>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="section-subtitle" style="width: calc((100% / 3) + 372px);"> </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-sm-2 avatar_label">
+                                Avatar
+                            </label>
+                            <div class="col-sm-10">
+                                <div class="card-avatar" style="padding-bottom:15px; min-height: 85px;">
+                                    
+                                    <img *ngIf="userProfileImageExist === true || userImageHasBeenUploaded === true"
+                                        class="user-img user-profile-image" [src]="getUserProfileImage()"
+                                        onerror="this.src='assets/img/no_image_user.png'" />
+
+                                       <!-- <p>userProfileImageExist > {{ userProfileImageExist }}  </p>  
+                                       <p>userImageHasBeenUploaded > {{ userImageHasBeenUploaded}} </p>  
+                                       <p> fullname_initial > {{ user?.fullname_initial }} </p>  
+                                       <p>user_fillColour > {{user?.fillColour}} </p>   -->
+                                        <div  class="user-img user-profile-image"
+                                        *ngIf="userProfileImageExist === false && userImageHasBeenUploaded !== true"
+                                        [ngStyle]="{'background':  'linear-gradient(rgb(255,255,255) -125%,' + user?.fillColour + ')'}">
+                                        <span id="user-profile-altenative-user-avatar" class="user-profile-altenative-user-avatar">
+                                          {{ user?.fullname_initial }}
+                                        </span>
+                                      </div>
+
+                                    <!-- <img *ngIf="userProfileImageExist === false && userImageHasBeenUploaded !== true"
+                                        class="user-img user-profile-image" src="assets/img/no_image_user.png" /> -->
+
+     
+
+                                    <input #fileInputUserProfileImage class="inputfile" name="teammate-image-profile"
+                                        id="teammate-image-profile" type="file" (change)="upload($event)"
+                                        accept=".jpg, .JPEG, .png" />
+                                    <label class="btn btn-white" for="teammate-image-profile"
+                                        style="padding-left:15px; padding-right:15px; text-transform: none; color: #7695a5">
+                                        <span *ngIf="!showSpinnerInUploadImageBtn">
+                                            {{ "UserProfile.UploadImage" | translate }}
+                                        </span>
+                                        <span *ngIf="showSpinnerInUploadImageBtn">
+                                            {{ 'VisitorsPage.Loading' | translate }}
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </span>
+                                    </label>
+
+                                    <button class="btn btn-white delete-user-image tool_tip"
+                                        (click)="deleteUserProfileImage()" style="padding: 9px 15px;">
+                                        <span class="material-icons" style="font-size: 24px; color: #f44336">
+                                            delete_forever
+                                        </span>
+
+                                        <span class="bottom"
+                                            style="min-width: fit-content;padding: 5px;border-radius: 3px; text-transform: none;">
+                                            {{'RemovePhoto' | translate}}
+                                            <i></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-2">
+
+                            </label>
+                            <div class="col-sm-10" style="margin-bottom: 12px;">
+                                <span style="display: block;color: #7695a5; font-size: 12px; display: block;"> {{
+                                    "UserProfile.AddYourOwnPicture" | translate }}</span>
+                                <span style="color: #7695a5; font-size: 12px; display: block;">
+                                    {{ "UserProfile.PreferredSize" | translate }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-sm-2 custom-label">
+                                Nome da Empresa
+                            </label>
+                            <div class="col-sm-10">
+                                <input (input)="onEditFirstname($event.target.value)" [(ngModel)]="userFirstname"
+                                    class="" type="text" placeholder='{{ "UserProfile.Name" | translate }}'>
+                            </div>
+
+                            <label class="col-sm-2 custom-label">
+                                <!-- Cognome -->
+                               Nome
+                            </label>
+                            <div class="col-sm-10">
+                                <input (input)="onEditLastname($event.target.value)" [(ngModel)]="userLastname" class=""
+                                    type="text" placeholder='{{ "UserProfile.Lastname" | translate }}'>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-sm-2 custom-label">
+                                Email
+                            </label>
+                            <div class="col-sm-10">
+                                <input style="color:#808080" [(ngModel)]="user.email" class="" type="text"
+                                    placeholder="Email"
+                                    [ngClass]="{'pending-email-verification' : emailverified === false }" disabled>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-sm-2 custom-label">
+                                {{ 'UsersPage.Role' | translate }}
+                            </label>
+                            <div class="col-sm-10">
+                                <input style="color:#808080" [(ngModel)]="userRole" class="" type="text"
+                                    placeholder="{{ 'UsersPage.Role' | translate }}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-sm-2 custom-label">
+
+                                {{ "UserProfile.UserId" | translate }}
+                            </label>
+                            <div class="col-sm-10">
+                                <input style="color: #808080" [(ngModel)]="user._id" class="" type="text"
+                                    placeholder='{{ "UserProfile.UserId" | translate }}' disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span *ngIf="emailverified == false">
+                                <label class="col-sm-2"></label>
+                                <div class="col-sm-10" style="padding-top: 15px;">
+                                    <i class="material-icons"
+                                        style="vertical-align: middle; color:#f44336;">error_outline</i>
+                                    <span style="vertical-align: middle; color:#f44336;">
+                                        <!-- {{ "UserProfile.PendingEmailVerification" | translate }} -->
+                                        {{ "UserProfile.YourAccountIsPending" | translate }}
+
+                                    </span>
+                                    <span style="display: block; margin-left: 28px;">
+                                        <a (click)="resendVerificationEmail()"
+                                            style="cursor: pointer; color: #03a5e8">{{ "UserProfile.ClickHereToResend" |
+                                            translate }}
+                                        </a>
+                                    </span>
+                                </div>
+
+                            </span>
+                        </div>
+
+                        <!-- SPACER -->
+                        <div class="col-sm-12 spacer" style="height:15px"></div>
+
+                        <div class="row">
+                            <label class="col-sm-2"></label>
+                            <div class="col-sm-10 ">
+                                <button class="btn btn-primary" (click)="updateCurrentUserFirstnameLastname()"
+                                    [disabled]="!HAS_EDIT_FIRSTNAME && !HAS_EDIT_LASTNAME">
+                                    {{ "UserProfile.UpdateProfile" | translate }}
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!-- --------------------------------------------------------------- -->
+                        <!-- Language Preferences -->
+                        <!-- --------------------------------------------------------------- -->
+                        <div class="row language">
+                            <div class="col-md-12">
+                                <h3 class="card_title__underlined">
+                                    <span class="card_title__underline">
+                                        {{ "DashboardLanguage" | translate }}
+                                    </span>
+                                </h3>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="section-subtitle" style="width: calc((100% / 3) + 372px);"> </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="min-height:83px">
+                            <div class="col-md-12 automatic-dshbrd-lang">
+                                <div class="radio" style="margin-bottom: 2px;">
+                                    <label style="color: #7695a5;">
+                                        <input (change)="onSelectBrowserLangFromRadioBtn($event)" type="radio"
+                                            name="dashboardLanguage" value="browserlang"
+                                            [checked]="!HAS_SELECTED_PREFERRED_LANG">
+                                        {{'AutomaticDashboardLanguage' | translate }}
+                                    </label>
+                                </div>
+
+                                <!-- <div class="checkbox" style="margin-bottom: 2px;">
+                                    <label style="color: #7695a5;">
+                                        <input (change)="onSelectBrowserLangFromRadioBtn($event)" type="checkbox"
+                                            name="dashboardLanguage" [checked]="!HAS_SELECTED_PREFERRED_LANG">
+                                        {{'AutomaticDashboardLanguage' | translate }}
+                                    </label>
+                                </div> -->
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="browser-lang-wpr"
+                                    [ngClass]="{'browser-lang-disabled-wpr':HAS_SELECTED_PREFERRED_LANG }">
+
+                                   
+                                    <img [src]="flag_url"
+                                        style="width: 15px;height: 15px; position: relative;top: -2px;">
+                                
+                                        <span class="browser-lang"
+                                            [ngClass]="{'not-available-language': !i18n_for_this_brower_language_is_available}">
+                                            {{ browser_lang | translate}}
+                                        </span>
+                                        <span class="not-available-language-string"
+                                            *ngIf="!i18n_for_this_brower_language_is_available && hasSelectedBrowserLangRadioBtn && !HAS_SELECTED_PREFERRED_LANG">
+                                            ({{'LanguageIsNotAvailableDashboardWillBeTranslatedIntoEnglish'|translate}})
+                                        </span>
+                                        <span class="not-available-language-string"
+                                            *ngIf="!i18n_for_this_brower_language_is_available && !hasSelectedBrowserLangRadioBtn && !HAS_SELECTED_PREFERRED_LANG">
+                                            ({{'LanguageIsNotAvailableDashboardHasBeenTranslatedIntoEnglish'|translate}})
+                                        </span>
+                                   
+                                </div>
+                                <!-- <p>display_msg_refresh_page_for_selected_lang {{display_msg_refresh_page_for_selected_lang }}</p> 
+                                <p>hasSelectedPreferredLangRadioBtn {{hasSelectedPreferredLangRadioBtn }}</p>  -->
+                                <div *ngIf="display_msg_refresh_page_for_browser_lang && hasSelectedBrowserLangRadioBtn"
+                                    class="refresh-page" style="margin-top: 3px;">
+                                    {{'TheSettingsWillBeAppliedAfterRefreshingTheDashboard' | translate}}
+                                    <span style="color: #03a5e8;cursor: pointer;" (click)="refreshPage()">
+                                        {{'RefreshNow' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row" style="min-height: 102px;">
+                            <div class="col-md-12 preferred-dshbrd-lang">
+                                <!-- <label class="custom-label">
+                                    {{'PreferredDashboardLanguage' | translate }}
+                                </label> -->
+                                <div class="radio" style="margin-bottom: 6px;">
+                                    <label style="color: hsl(200, 21%, 55%);">
+                                        <input type="radio" value="preferredlang"
+                                            (change)="onSelectPreferredLangFromRadioBtn($event)"
+                                            name="dashboardLanguage" [checked]="HAS_SELECTED_PREFERRED_LANG">
+                                        {{'PreferredDashboardLanguage' | translate }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="preferred-lang-selection-wpr" style="margin-left: 35px; max-width: 365px;">
+                                    <ng-select [items]="dashboard_languages" bindLabel="name" bindValue="name"
+                                        [clearable]="false" [(ngModel)]="selected_dashboard_language"
+                                        [searchable]="false"
+                                        (change)="onSelectPreferredDsbrdLang(selected_dashboard_language)"
+                                        placeholder="{{'PreferredDashboardLanguage' | translate}}">
+                                        <ng-template ng-label-tmp let-item="item">
+                                            <img style="width: 15px;height: 15px;" height="15" width="15"
+                                                [src]="item.avatar" />
+                                            {{item.name | translate}}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item" let-index="index">
+                                            <img style="width: 15px;height: 15px;" height="15" width="15"
+                                                [src]="item.avatar" />
+                                            {{item.name | translate }}
+                                        </ng-template>
+
+                                    </ng-select>
+                                </div>
+                                <div *ngIf="display_msg_please_select_language" class="language-not-selected">
+                                    {{'PleaseSelectALanguage' | translate}}
+                                </div>
+
+                                <!-- <p>display_msg_refresh_page_for_selected_lang {{display_msg_refresh_page_for_selected_lang }}</p> 
+                               <p>hasSelectedPreferredLangRadioBtn {{hasSelectedPreferredLangRadioBtn }}</p>  -->
+                                <div *ngIf="display_msg_refresh_page_for_selected_lang && hasSelectedPreferredLangRadioBtn"
+                                    class="refresh-page">
+                                    {{'TheSettingsWillBeAppliedAfterRefreshingTheDashboard' | translate}}
+                                    <span style="color: #03a5e8;cursor: pointer;" (click)="refreshPage()">
+                                        {{'RefreshNow' | translate}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- <appdashboard-change-password></appdashboard-change-password> -->
+
+<!-- ============ INFO MODAL: UPDATING PROFILE IN PROGRESS ============ -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display': displayModalUpdatingUser}"
+    style="background-color: rgba(90,90,90,0.5);">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" (click)="closeModalUpdatingUser()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h4 class="modal-title">
+                    {{ "UserProfile.UpdateProfile" | translate }}
+                    <!-- <code>{{id_toDelete}}</code> -->
+                </h4>
+            </div>
+
+            <div class="modal-body" style="padding-right: 15px; padding-top:15px; padding-bottom:15px">
+
+                <span *ngIf="SHOW_CIRCULAR_SPINNER">
+                    <div class="loader" style="top:25%;">
+                        <svg class="circular" viewBox="25 25 50 50">
+                            <circle class="path" cx="50" cy="50" r="15" fill="none" stroke-width="2"
+                                stroke-miterlimit="10" />
+                        </svg>
+
+                    </div>
+                    <p style="margin-top: 60px; text-align: center; color: #566787; font-weight: 500">
+                        {{ "UserProfile.Processing" | translate }}
+                    </p>
+                </span>
+
+                <!-- IF THERE IS NO ERROR -->
+                <span *ngIf="!SHOW_CIRCULAR_SPINNER && !UPDATE_USER_ERROR ">
+
+                    <div style="text-align: center">
+                        <i class="material-icons" style="color:#70b665">done</i>
+                        <p style="color:#70b665; font-weight: 500">
+                            {{ "UserProfile.Completed" | translate }}
+                        </p>
+
+                    </div>
+                    <p style="margin-top:10px; text-align: center; color: #566787; font-weight: 500">
+                        {{ "UserProfile.UserSuccessfullyUpdated" | translate }}
+                    </p>
+                </span>
+
+                <!-- IF THERE IS AN ERROR -->
+                <span *ngIf="!SHOW_CIRCULAR_SPINNER && UPDATE_USER_ERROR">
+                    <div style="text-align: center ">
+                        <i class="material-icons" style="color:#ff5252">report_problem</i>
+                        <p style="color:#ff5252; font-weight: 500">
+                            <!-- {{ "UserProfile.Error" | translate }} -->
+                            {{ "Error" | translate }}
+                        </p>
+
+                    </div>
+                    <p style="margin-top:10px; text-align: center; color: #566787; font-weight: 500">
+                        {{ "UserProfile.AnErrorHasOccurred" | translate }}
+                    </p>
+                </span>
+            </div>
+
+            <div class="modal-footer" style="text-align: center;">
+                <button class="btn btn-primary" [disabled]="SHOW_CIRCULAR_SPINNER"
+                    (click)="closeModalUpdatingUserHandler()" style="padding:12px 16px;">
+                    {{ "UserProfile.Continue" | translate }}
+                </button>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
