@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
 var winston = require('../config/winston');
+var userListConstants = require("../models/userListConstants");
 
 var UserSchema = new Schema({
     _id: Schema.Types.ObjectId,
@@ -15,7 +16,6 @@ var UserSchema = new Schema({
         type: String,
         required: true,
         // https://stackoverflow.com/questions/12096262/how-to-protect-the-password-field-in-mongoose-mongodb-so-it-wont-return-in-a-qu
-        select: false 
     },
     firstname: {
         type: String,
@@ -25,24 +25,62 @@ var UserSchema = new Schema({
         type: String,
         // required: true
     },
-    emailverified: {
-        type: Boolean,
-        // required: true
-    },
+ 
     resetpswrequestid: {
         type: String,
     },
     signedInAt: {
-        type:Date
+        type: Date
     },
-
+    cnpj: {
+        type: String,
+        // required: true
+    },
+    endereco: {
+        type: String,
+        // required: true
+    },
+    bairro: {
+        type: String,
+        // required: true
+    },
+    cidade: {
+        type: String,
+        // required: true
+    },
+    estado: {
+        type: String,
+        // required: true
+    },
+    n: {
+        type: String
+    },
+    complemento: {
+        type: String
+    }, 
+    responsavel: {
+        type: String
+    }, 
+    emaildoresponsavel: {
+        type: String
+    }, 
+    telefone: {
+        type: String
+    }, 
+    nota: {
+        type: String
+    }, 
+    emailverified: {
+        type: Boolean,
+        // required: true
+    },
     // db.users.find({authUrl: {$exists : false }}).forEach(function(mydoc) {
     //     db.users.update({_id: mydoc._id}, {$set: {authUrl: Math.random().toString(36).substring(2) + Date.now().toString(36)}})
     //   })
 
     authUrl: {
         type: String,
-        index:true
+        index: true
     },
     attributes: {
         type: Object,
@@ -50,10 +88,11 @@ var UserSchema = new Schema({
     status: {
         type: Number,
         required: true,
-        default: 100,
+        default: userListConstants.NORMAL,
         index: true,
         // select: false
-    }, 
+    },
+  
     // authType: { // update db old data
     //     type: String,
     //     index:true,
@@ -64,9 +103,9 @@ var UserSchema = new Schema({
     //     ref: 'auth',
     //     //required: true
     //   },       
-    },{
-      timestamps: true
-    }
+}, {
+    timestamps: true
+}
 );
 
 // UserSchema.set('toJSON', {
@@ -107,8 +146,8 @@ UserSchema.methods.comparePassword = function (passw, cb) {
 
 UserSchema.virtual('fullName').get(function () {
     return (this.firstname || '') + ' ' + (this.lastname || '');
-  });
-  
+});
+
 
 //UserSchema.index({ email: 1, authType: 1 }, { unique: true }); 
 
@@ -122,6 +161,6 @@ var UserModel = mongoose.model('user', UserSchema);
 if (process.env.MONGOOSE_SYNCINDEX) {
     UserModel.syncIndexes();
     winston.info("UserModel syncIndexes")
-  }
+}
 
 module.exports = UserModel;

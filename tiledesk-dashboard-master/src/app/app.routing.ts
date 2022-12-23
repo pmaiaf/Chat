@@ -28,6 +28,7 @@ import { DepartmentsComponent } from './departments/departments.component';
 import { DepartmentEditAddComponent } from './department-edit-add/department-edit-add.component';
 
 import { ProjectsComponent } from './projects/projects.component';
+
 import { UsersComponent } from './users/users.component';
 
 // BOTS & FAQ
@@ -48,7 +49,10 @@ import { HistoryAndNortConvsComponent } from './ws_requests//history-and-nort-co
 // --------------------------------------------------------------------------------------------
 import { SigninComponent } from './auth/signin/signin.component';
 import { SignupComponent } from './auth/signup/signup.component';
-import { UserList } from './user-list/user-list.component';
+import { UserListComponent } from './user-list/user-list.component';
+import { UserListEditComponent } from './user-list-edit/user-list-edit.component';
+import { UserListPainel } from './user-list-painel/user-list-painel.component';
+
 import { UnauthorizedComponent } from './auth/unauthorized/unauthorized.component';
 import { UnauthorizedForPricingComponent } from './auth/unauthorized-for-pricing/unauthorized-for-pricing.component';
 import { UnauthorizedForProjectComponent } from './auth/unauthorized-for-project/unauthorized-for-project.component';
@@ -70,6 +74,7 @@ import { HoursComponent } from './hours/hours.component';
 import { ResetPswComponent } from './reset-psw/reset-psw.component';
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
 import { ContactEditComponent } from './contact-edit/contact-edit.component';
+
 import { ActivitiesComponent } from './activities/activities.component';
 
 // Andrea
@@ -135,6 +140,7 @@ const routes: Routes = [
 
   // PROJECTS IS THE NEW HOME
   { path: 'projects', component: ProjectsComponent, canActivate: [AuthGuard] },
+
   { path: '', redirectTo: 'projects', pathMatch: 'full' },
 
   // are used in the left panel of the chat
@@ -176,8 +182,10 @@ const routes: Routes = [
 
   { path: 'login', component: SigninComponent },
 
-  { path: 'user-list', component: UserList },
-  { path: 'user-list/:projectid/contact', component: UserList },
+  { path: 'user-list', component: UserListComponent, canActivate: [AuthGuard]},
+  { path: 'user-list/edit/:id', component: UserListEditComponent,  canActivate: [AuthGuard]},
+  { path: 'user-list/painel/:id', component: UserListPainel,  canActivate: [AuthGuard]},
+
 
   { path: 'signup', component: SignupComponent },
   { path: 'signup-on-invitation/:pendinginvitationemail', component: SignupComponent },

@@ -1,13 +1,16 @@
 import { Component, OnInit, HostListener, isDevMode } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AppConfigService } from '../../services/app-config.service';
-import { AuthService } from '../../core/auth.service';
-import { Router } from '@angular/router';
-import { NotifyService } from '../../core/notify.service';
+import { AppConfigService } from '../services/app-config.service';
+import { AuthService } from '../core/auth.service';
+import { UserListService } from 'app/services/user-list.service';
+
+
+import { Router, ActivatedRoute } from '@angular/router';
+import { NotifyService } from '../core/notify.service';
 
 // import brand from 'assets/brand/brand.json';
-import { BrandService } from '../../services/brand.service';
-import { LoggerService } from '../../services/logger/logger.service';
+import { BrandService } from '../services/brand.service';
+import { LoggerService } from '../services/logger/logger.service';
 import { Alert } from 'selenium-webdriver';
 
 type UserFields = 'email' | 'password';
@@ -15,11 +18,11 @@ type FormErrors = { [u in UserFields]: string };
 
 
 @Component({
-  selector: 'app-signin',
-  templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.scss']
+  selector: 'app-user-list-painel',
+  templateUrl: './user-list-painel.component.html',
+  styleUrls: ['./user-list-painel.component.scss']
 })
-export class SigninComponent implements OnInit {
+export class UserListPainel implements OnInit {
   // companyLogoBlack_Url = brand.company_logo_black__url;
   // companyLogoAllWithe_Url = brand.company_logo_allwhite__url;
   // company_name = brand.company_name;
@@ -68,6 +71,8 @@ export class SigninComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
+    private userListService: UserListService,
+    private route: ActivatedRoute,
     private router: Router,
     public appConfigService: AppConfigService,
     private notify: NotifyService,
@@ -92,7 +97,9 @@ export class SigninComponent implements OnInit {
 
 
     // this.logger.log('xxxx ', this.userForm)
+    this.logout();
     this.buildForm();
+    this.signin()
     this.getWindowWidthAndHeight();
 
 
@@ -258,6 +265,19 @@ export class SigninComponent implements OnInit {
     }
   }
 
+
+
+
+    logout() {
+      localStorage.removeItem('user')
+    }
+  
+
+
+
+
+
+
   signin() {
     this.showSpinnerInLoginBtn = true;
 
@@ -266,100 +286,84 @@ export class SigninComponent implements OnInit {
     const self = this;
 
 
-    this.auth.signin(this.userForm.value['email'], this.userForm.value['password'], (error, user) => {
-      if (!error) {
-        this.logger.log('[SIGN-IN] SSO (Signin) - user', user);
-
-        if (!isDevMode()) {
-          if (window['analytics']) {
-            try {
-              window['analytics'].page("Auth Page, Signin", {
-
-              });
-            } catch (err) {
-              this.logger.error('Signin page error', err);
-            }
-
-            try {
-              window['analytics'].identify(user._id, {
-                name: user.firstname + ' ' + user.lastname,
-                email: user.email,
-                logins: 5,
-
-              });
-            } catch (err) {
-              this.logger.error('track signin event error', err);
-            }
-            // Segments
-            try {
-              window['analytics'].track('Signed In', {
-                "username": user.firstname + ' ' + user.lastname,
-                "userId": user._id
-              });
-            } catch (err) {
-              this.logger.error('track signin event error', err);
+    this.userListService.loggedUser(this.route.snapshot.params['id']).subscribe((userLogged: any) => {
+   
+      this.auth.signinPainel(userLogged.email, userLogged.password, (error, user) => {
+        if (!error) {
+          this.logger.log('[SIGN-IN] SSO (Signin) - user', user);
+  
+          if (!isDevMode()) {
+            if (window['analytics']) {
+              try {
+                window['analytics'].page("Auth Page, Signin", {
+  
+                });
+              } catch (err) {
+                this.logger.error('Signin page error', err);
+              }
+  
+              try {
+                window['analytics'].identify(user._id, {
+                  name: user.firstname + ' ' + user.lastname,
+                  email: user.email,
+                  logins: 5,
+  
+                });
+              } catch (err) {
+                this.logger.error('track signin event error', err);
+              }
+              // Segments
+              try {
+                window['analytics'].track('Signed In', {
+                  "username": user.firstname + ' ' + user.lastname,
+                  "userId": user._id
+                });
+              } catch (err) {
+                this.logger.error('track signin event error', err);
+              }
             }
           }
-        }
-        if(user.status == 100){
-
-           this.router.navigate(['/projects']);
-          }else{
-           this.router.navigate(['/login'])
+  
+          if(user.status == 100){
+            this.router.navigate(['/projects']);
+           }else{
+            this.router.navigate(['/login'])
+           }
+  
+          // --------------------------------------------
+          // Run widget login
+          // --------------------------------------------
+          if (window && window['tiledesk_widget_login']) {
+            window['tiledesk_widget_login']();
           }
- 
-
-        // self.widgetReInit();
-
-        /**
-         * *** WIDGET - pass data to the widget function setTiledeskWidgetUser in index.html ***
-         */
-        //  self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) - userFullname', user.firstname + ' ' + user.lastname)
-        //  self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) - userEmail', user.email);
-        //  self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) - userId', user._id);
-
-        // setTimeout(() => {
-        //   try {
-        //     window['setTiledeskWidgetUser'](user.firstname + ' ' + user.lastname, user.email, user._id);
-        //   } catch (err) {
-        //     self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) error', err);
-        //   }
-        // }, 2000);
-
-
-        // --------------------------------------------
-        // Run widget login
-        // --------------------------------------------
-        if (window && window['tiledesk_widget_login']) {
-          window['tiledesk_widget_login']();
-        }
-
-
-      } else {
-        this.showSpinnerInLoginBtn = false;
-        this.logger.error('[SIGN-IN] 1. POST DATA ERROR', error);
-        // self.logger.error('[SIGN-IN] 2. POST DATA ERROR status', error.status);
-
-        if (error.status === 0) {
-
-          this.display = 'block';
-          this.signin_errormsg = 'Sorry, there was an error connecting to the server'
-          this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
+  
+  
         } else {
-          this.display = 'block';
-
-          this.signin_errormsg = error['error']['msg']
-
-          // this.logger.log('SIGNIN USER - POST REQUEST ERROR ', error);
-          // this.logger.log('SIGNIN USER - POST REQUEST BODY ERROR ', signin_errorbody);
-          this.logger.error('[SIGN-IN] SIGNIN USER - POST REQUEST MSG ERROR ', self.signin_errormsg);
-
-          this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
+          this.showSpinnerInLoginBtn = false;
+          this.logger.error('[SIGN-IN] 1. POST DATA ERROR', error);
+          // self.logger.error('[SIGN-IN] 2. POST DATA ERROR status', error.status);
+  
+          if (error.status === 0) {
+  
+            this.display = 'block';
+            this.signin_errormsg = 'Sorry, there was an error connecting to the server'
+            this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
+          } else {
+            this.display = 'block';
+  
+            this.signin_errormsg = error['error']['msg']
+  
+            // this.logger.log('SIGNIN USER - POST REQUEST ERROR ', error);
+            // this.logger.log('SIGNIN USER - POST REQUEST BODY ERROR ', signin_errorbody);
+            this.logger.error('[SIGN-IN] SIGNIN USER - POST REQUEST MSG ERROR ', self.signin_errormsg);
+  
+            this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
+          }
         }
-      }
-      // tslint:disable-next-line:no-debugger
-      // debugger
-    });
+        // tslint:disable-next-line:no-debugger
+        // debugger
+      })
+    })
 
   }
 
@@ -383,6 +387,8 @@ export class SigninComponent implements OnInit {
     window.open(url);
     // , '_blank'
   }
+
+
 
   goToResetPsw() {
     this.logger.log('[SIGN-IN] HAS CLICKED FORGOT PWS ');

@@ -12,7 +12,7 @@ import { BrandService } from '../../services/brand.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import moment from 'moment';
 
-type UserFields = 'email' | 'password' | 'firstName' | 'lastName' | 'terms';
+type UserFields = 'email' | 'password' | 'firstname' | 'cnpj' | 'endereco' | 'bairro' | 'cidade' | 'estado' | 'n' | 'complemento' | 'responsavel'|  'emaildoresponsavel' | 'telefone' | 'nota' | 'terms';
 type FormErrors = { [u in UserFields]: string };
 
 @Component({
@@ -58,13 +58,23 @@ export class SignupComponent implements OnInit, AfterViewInit {
   public_Key: string;
   MT: boolean;
   userForm: FormGroup;
-   newUser = false; // to toggle login or signup form
-   passReset = false; // set to true when password reset is triggered
+  newUser = false; // to toggle login or signup form
+  passReset = false; // set to true when password reset is triggered
   formErrors: FormErrors = {
     'email': '',
     'password': '',
-    'firstName': '',
-    'lastName': '',
+    'firstname': '',
+    'cnpj': '',
+    'endereco': '',
+    'bairro': '',
+    'cidade': '',
+    'estado': '',
+    'n': '',
+    'complemento': '',
+    'responsavel': '',
+   'emaildoresponsavel': '',
+    'telefone':'',
+    'nota':'',
     'terms': '',
   };
   validationMessages = {
@@ -79,11 +89,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
       'minlength': 'Password must be at least 6 characters long.',
       'maxlength': 'Password cannot be more than 25 characters long.',
     },
-    'firstName': {
+    'firstname': {
       'required': 'First Name is required.',
-    },
-    'lastName': {
-      'required': 'Last Name is required.',
     },
     'terms': {
       'required': 'Please accept Terms and Conditions and Privacy Policy',
@@ -129,14 +136,14 @@ export class SignupComponent implements OnInit, AfterViewInit {
             // }
           });
         } catch (err) {
-          this.logger.error('Signin page error',"Fudeu tudo");
+          this.logger.error('Signin page error', "Fudeu tudo");
         }
         try {
           window['analytics'].identify({
             createdAt: moment().format("YYYY-MM-DD hh:mm:ss")
           });
         } catch (err) {
-          this.logger.error('Signin identify error',"Fudeu tudo");
+          this.logger.error('Signin identify error', "Fudeu tudo");
         }
       }
     }
@@ -278,25 +285,33 @@ export class SignupComponent implements OnInit, AfterViewInit {
     this.auth.signup(
       this.userForm.value['email'],
       this.userForm.value['password'],
-      this.userForm.value['firstName'],
-      this.userForm.value['lastName'])
+      this.userForm.value['firstname'],
+      this.userForm.value['cnpj'],
+      this.userForm.value['endereco'],
+      this.userForm.value['bairro'],
+      this.userForm.value['cidade'],
+      this.userForm.value['estado'],
+      this.userForm.value['n'],
+      this.userForm.value['complemento'],
+      this.userForm.value['responsavel'],
+      this.userForm.value['emaildoresponsavel'],
+      this.userForm.value['telefone'],
+      this.userForm.value['nota'])
+         
       .subscribe((signupResponse) => {
-        this.logger.log('[SIGN-UP] Email ', this.userForm.value['email']);
-        this.logger.log('[SIGN-UP] Password ', this.userForm.value['password']);
-        this.logger.log('[SIGN-UP] Firstname ', this.userForm.value['firstName']);
-        this.logger.log('[SIGN-UP] Lastname ', this.userForm.value['lastName']);
-        this.logger.log('[SIGN-UP] POST DATA ', signupResponse);
+ console.log(signupResponse)
         if (signupResponse['success'] === true) {
           // this.router.navigate(['/welcome']);
           this.logger.log('[SIGN-UP] RES ', signupResponse);
-          const userEmail = signupResponse.user.email
+          const userEmail = signupResponse.user.cnpj
           this.logger.log('[SIGN-UP] RES USER EMAIL ', userEmail);
+        
           alert(userEmail)
           if (!isDevMode()) {
             if (window['analytics']) {
               try {
                 window['analytics'].identify(signupResponse.user._id, {
-                  name: signupResponse.user.firstname + ' ' + signupResponse.user.lastname,
+                  name: signupResponse.user.firstname,
                   email: signupResponse.user.email,
                   logins: 5,
                 });
@@ -307,11 +322,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
               try {
                 window['analytics'].track('Signed Up', {
                   "type": "organic",
-                  "first_name": signupResponse.user.firstname,
-                  "last_name": signupResponse.user.lastname,
+                  'userId': signupResponse.user._id,
+                  "firstname": signupResponse.user.firstname,
                   "email": signupResponse.user.email,
-                  "username": signupResponse.user.firstname + ' ' + signupResponse.user.lastname,
-                  'userId': signupResponse.user._id
+                  "cnpj": signupResponse.user.cnpj,
+                  "endereco": signupResponse.user.endereco,
+                  "bairro": signupResponse.user.bairro,
+                  "cidade": signupResponse.user.cidade,
+                  "estado": signupResponse.user.estado,
+                  "n": signupResponse.user.n,
+                  "complemento": signupResponse.user.complemento,
+                  "responsavel": signupResponse.user.responsavel,
+                  "emaildoresponsavel": signupResponse.user.emaildoresponsavel,
+                  "telefone": signupResponse.user.telefone,
+                  "nota": signupResponse.user.nota,
+
                   // "properties": {
 
                   // }
@@ -325,7 +350,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
           this.autoSignin(userEmail);
 
         } else {
-          this.logger.error('[SIGN-UP] ERROR CODE', signupResponse['code']);
+          this.logger.error('[SIGN-UP] ERROR CODE', signupResponse.user.email );
           this.showSpinnerInLoginBtn = false;
           this.display = 'block';
 
@@ -349,11 +374,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
           }
         }
       }, (error) => {
-
-        this.logger.error('[SIGN-UP] CREATE NEW USER - POST REQUEST ERROR ', "Fudeu tudo");
+        this.logger.error('[SIGN-UP] CREATE NEW USER - POST REQUEST ERROR ', error);
         this.showSpinnerInLoginBtn = false;
         this.display = 'block';
-        this.logger.error('[SIGN-UP] CREATE NEW USER - POST REQUEST ERROR STATUS',"Fudeu tudo");
 
         if (error.status === 422) {
           this.signin_errormsg = 'Form validation error. Please fill in every fields.';
@@ -434,13 +457,44 @@ export class SignupComponent implements OnInit, AfterViewInit {
       ]],
       'displayName': ['', []
       ],
-      'firstName': ['', [
+      'firstname': ['', [
         Validators.required,
       ]],
-      'lastName': ['',
-        [
-          Validators.required,
-        ]],
+      'cnpj': ['', [
+        Validators.required,
+      ]],
+
+      'endereco': ['', [
+        Validators.required,
+      ]],
+      'bairro': ['', [
+        Validators.required,
+      ]],
+      'cidade': ['', [
+        Validators.required,
+      ]],
+      'estado': ['', [
+        Validators.required,
+      ]],
+      'n': ['', [
+        Validators.required,
+      ]],
+      'complemento': ['', [
+        Validators.required,
+      ]],
+      'responsavel': ['', [
+        Validators.required,
+      ]],
+      'emaildoresponsavel': ['', [
+        Validators.required,
+      ]],
+      'telefone': ['', [
+        Validators.required,
+      ]],
+      'nota': ['', [
+        Validators.required,
+      ]],
+   
       'terms': ['',
         [
           Validators.required,
@@ -456,7 +510,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     const form = this.userForm;
     for (const field in this.formErrors) {
       // tslint:disable-next-line:max-line-length
-      if (Object.prototype.hasOwnProperty.call(this.formErrors, field) && (field === 'email' || field === 'password' || field === 'firstName' || field === 'lastName' || field === 'terms')) {
+      if (Object.prototype.hasOwnProperty.call(this.formErrors, field) && (field === 'email' || field === 'password' || field === 'firstName' || field === 'cnpj' || field === 'endereco' || field === 'bairro' || field === 'cidade' || field === 'n' || field === 'complemento' || field === 'terms')) {
         // clear previous error message (if any)
         this.formErrors[field] = '';
         const control = form.get(field);

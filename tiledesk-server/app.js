@@ -104,6 +104,7 @@ var users = require('./routes/users');
 var usersUtil = require('./routes/users-util');
 var publicRequest = require('./routes/public-request');
 var userRequest = require('./routes/user-request');
+var userList = require('./routes/user-list')
 var publicAnalytics = require('./routes/public-analytics');
 var pendinginvitation = require('./routes/pending-invitation');
 var jwtroute = require('./routes/jwt');
@@ -401,6 +402,7 @@ if (process.env.DISABLE_TRANSCRIPT_VIEW_PAGE ) {
 
 // project internal auth check. TODO check security issues?
 app.use('/projects',project);
+app.use('/user-list', userList)
 
 channelManager.use(app);
 
@@ -464,6 +466,7 @@ app.use('/:projectid/project_users', project_user);
 
 //passport double check this and the next
 app.use('/:projectid/requests', [passport.authenticate(['basic', 'jwt'], { session: false }), validtoken, roleChecker.hasRoleOrTypes('guest', ['bot','subscription'])], userRequest);
+
 
 app.use('/:projectid/requests', [passport.authenticate(['basic', 'jwt'], { session: false }), validtoken, roleChecker.hasRoleOrTypes('agent', ['bot','subscription'])], request);
 

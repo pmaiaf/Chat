@@ -279,7 +279,7 @@ router.get('/:leadid', function (req, res) {
     if (err) {
       return res.status(500).send({ success: false, msg: 'Error getting object.' });
     }
-    if (!lead) {
+    if (!lead) {page
       return res.status(404).send({ success: false, msg: 'Object not found.' });
     }
     res.json(lead);

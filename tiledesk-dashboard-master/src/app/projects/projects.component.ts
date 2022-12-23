@@ -18,6 +18,9 @@ import { WsRequestsService } from '../services/websocket/ws-requests.service';
 import { LoggerService } from '../services/logger/logger.service';
 import { TranslateService } from '@ngx-translate/core';
 import { tranlatedLanguage } from 'app/utils/util';
+import { UserListService } from '../services/user-list.service';
+import { User } from '../models/user-model';
+
 @Component({
   selector: 'projects',
   templateUrl: './projects.component.html',
@@ -63,7 +66,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   timeStamp: any;
   myAvailabilityCount: number;
   subscription: Subscription;
-
+  users: User[];
   storageBucket: string;
   baseUrl: string;
 
@@ -83,6 +86,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private router: Router,
     private auth: AuthService,
+    private userListService: UserListService,
     private element: ElementRef,
     private usersService: UsersService,
     private uploadImageService: UploadImageService,
@@ -111,7 +115,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.getProjectsAndSaveInStorage();
     this.getLoggedUserAndCheckProfilePhoto();
 
-    // this.checkUserImageUploadIsComplete();
     // this.checkUserImageExist();
 
 
@@ -504,6 +507,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         project['prjct_profile_name'] = this.prjct_profile_name
       });
   }
+
+
+  
+
+
   /**
    * GET PROJECTS AND SAVE IN THE STORAGE: PROJECT ID - PROJECT NAME - USE ROLE   */
   getProjectsAndSaveInStorage() {

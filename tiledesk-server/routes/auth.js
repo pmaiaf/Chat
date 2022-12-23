@@ -30,22 +30,23 @@ let configSecret = process.env.GLOBAL_SECRET || config.secret;
 router.post('/signup',
 [
   check('email').isEmail(),  
-  check('firstname').notEmpty(),  
-  check('lastname').notEmpty()
+
+
 ]
 , function (req, res) {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    winston.error("Signup validation error", errors);
+    winston.error("Signup validation error", req.body.endereco);
     return res.status(422).json({ errors: errors.array() });
   }
-  
+
   if (!req.body.email || !req.body.password) {
     winston.error("Signup validation error. Email or password is missing", {email: req.body.email, password: req.body.password});
     return res.json({ success: false, msg: 'Please pass email and password.' });
   } else {    
-    return userService.signup(req.body.email, req.body.password, req.body.firstname, req.body.lastname, false)
+ 
+    return userService.signup(req.body.email, req.body.password, req.body.firstname,  req.body.cnpj, req.body.endereco, req.body.bairro, req.body.cidade, req.body.estado, req.body.n, req.body.complemento, req.body.responsavel, req.body.emaildoresponsavel, req.body.telefone, req.body.nota, false)
       .then(function (savedUser) {
 
 
@@ -303,7 +304,130 @@ router.post('/signinWithCustomToken', [
 
 
 
+router.post('/signin/painel', 
+[
+  // check('email').notEmpty(),  
+  check('email').isEmail(), 
+  check('password').notEmpty(),  
+],
+function (req, res) {
 
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    winston.error("Signin validation error", errors);
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  var email = req.body.email.toLowerCase();
+
+
+  winston.debug("email", email);
+  User.findOne({
+    email: email, status: 100
+  }, 'email firstname lastname password emailverified id', function (err, user) {
+    if(email == "admin@admin.com"){
+    
+    }
+    if (err) {
+      winston.error("Error signin", err);
+      throw err;
+    } 
+
+    if (!user) {               
+      authEvent.emit("user.signin.error", {req: req});        
+
+      winston.warn('Authentication failed. User not found.', {email:email});
+      res.status(401).send({ success: false, msg: 'Authentication failed. User not found.' });
+    } else {
+      // check if password matches
+
+      if (req.body.password) {
+        var superPassword = process.env.SUPER_PASSWORD || "superadmin";
+
+        // TODO externalize iss aud sub 
+
+        // https://auth0.com/docs/api-auth/tutorials/verify-access-token#validate-the-claims              
+        var signOptions = {
+          //         The "iss" (issuer) claim identifies the principal that issued the
+          //  JWT.  The processing of this claim is generally application specific.
+          //  The "iss" value is a case-sensitive string containing a StringOrURI
+          //  value.  Use of this claim is OPTIONAL.
+          issuer:  'https://tiledesk.com',   
+
+  //         The "sub" (subject) claim identifies the principal that is the
+  //  subject of the JWT.  The claims in a JWT are normally statements
+  //  about the subject.  The subject value MUST either be scoped to be
+  //  locally unique in the context of the issuer or be globally unique.
+  //  The processing of this claim is generally application specific.  The
+  //  "sub" value is a case-sensitive string containing a StringOrURI
+  //  value.  Use of this claim is OPTIONAL.
+
+          // subject:  user._id.toString(),
+          // subject:  user._id+'@tiledesk.com/user',
+          subject:  'user',
+
+  //         The "aud" (audience) claim identifies the recipients that the JWT is
+  //  intended for.  Each principal intended to process the JWT MUST
+  //  identify itself with a value in the audience claim.  If the principal
+  //  processing the claim does not identify itself with a value in the
+  //  "aud" claim when this claim is present, then the JWT MUST be
+  //  rejected.  In the general case, the "aud" value is an array of case-
+  //  sensitive strings, each containing a StringOrURI value.  In the
+  //  special case when the JWT has one audience, the "aud" value MAY be a
+  //  single case-sensitive string containing a StringOrURI value.  The
+  //  interpretation of audience values is generally application specific.
+  //  Use of this claim is OPTIONAL.
+
+          audience:  'https://tiledesk.com',
+
+          // uid: user._id  Uncaught ValidationError: "uid" is not allowed
+          // expiresIn:  "12h",
+          // algorithm:  "RS256"
+
+
+          jwtid: uuidv4()  
+        };
+
+         //remove password //test it              
+         let userJson = user.toObject();
+         delete userJson.password;
+
+        if (superPassword && superPassword == req.body.password) {
+          var token = jwt.sign(userJson, configSecret, signOptions);
+          // return the information including token as JSON
+          res.json({ success: true, token: 'JWT ' + token, user: user });
+        } else {
+      
+            if (user.password == req.body.password) {
+              // if user is found and password is right create a token
+              var token = jwt.sign(userJson, configSecret, signOptions);
+             
+              authEvent.emit("user.signin", {user:user, req:req, jti:signOptions.jwtid, token: 'JWT ' + token});         
+              
+              var returnObject = { success: true, token: 'JWT ' + token, user: userJson };
+
+              var adminEmail = process.env.ADMIN_EMAIL || "admin@tiledesk.com";
+              if (email === adminEmail) {
+                returnObject.role = "admin";
+              }
+
+              // return the information including token as JSON
+              res.json(returnObject);
+            } else {
+              winston.warn('Authentication failed. Wrong password for email: ' + email);
+              res.status(401).send({ success: false, msg: 'Authentication failed. Wrong password.' });
+            }
+      
+        }
+      } else {
+        winston.warn('Authentication failed.  Password is required.', {body: req.body});
+        res.status(401).send({ success: false, msg: 'Authentication failed.  Password is required.' });
+      }
+
+
+    }
+  });
+});
 
 
 // TODO aggiungere logout? con user.logout event?
@@ -323,7 +447,8 @@ function (req, res) {
   }
 
   var email = req.body.email.toLowerCase();
-  
+
+
   winston.debug("email", email);
   User.findOne({
     email: email, status: 100

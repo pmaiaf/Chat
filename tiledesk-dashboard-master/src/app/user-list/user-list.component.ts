@@ -1,8 +1,11 @@
-import { AppConfigService } from './../services/app-config.service';
+import { AppConfigService } from '../services/app-config.service';
 // tslint:disable:max-line-length
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ContactsService } from '../services/contacts.service';
+import { UserListService } from '../services/user-list.service';
+
 import { User } from '../models/user-model';
+
 import { Contact } from '../models/contact-model';
 import { Project } from '../models/project-model';
 import { Router } from '@angular/router';
@@ -15,12 +18,13 @@ import { ProjectPlanService } from '../services/project-plan.service';
 import { Subscription } from 'rxjs';
 import { LoggerService } from '../services/logger/logger.service';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Subject } from 'rxjs';
 
 declare const $: any;
 const swal = require('sweetalert');
 
 @Component({
-  selector: 'appdashboard-user-list',
+  selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
@@ -29,7 +33,7 @@ const swal = require('sweetalert');
 
 
 
-export class UserList implements OnInit, OnDestroy, AfterViewInit {
+export class UserListComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
@@ -38,6 +42,12 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', '#f1c40f', '#e67e22',
     '#e74c3c', '#95a5a6', '#f39c12', '#d35400', '#c0392b', '#bdc3c7', '#7f8c8d'
   ];
+
+
+
+
+  users: User[];
+
 
   prjct_name: string;
   prjct_profile_name: string;
@@ -55,7 +65,6 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
   queryString: string;
   projectId: string;
 
-  contacts: Contact[];
 
   fullName: string;
 
@@ -84,16 +93,14 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
   lastnameCurrentValue: string;
   deleteLeadSuccessNoticationMsg: string;
   deleteLeadErrorNoticationMsg: string;
- userFirstname: string;
-  userLastname: string;
-  userEmail: string;
-  userId: string;
+
+
   subscription: Subscription;
 
   CURRENT_USER: any;
   CURRENT_USER_ID: string
 
-  
+
   subscription_is_active: any;
   subscription_end_date: Date;
   trial_expired: boolean;
@@ -110,14 +117,14 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
   done_msg: string;
   pleaseTryAgain: string;
   contactWasSuccessfullyDeleted: string;
-
+  private unsubscribe$: Subject<any> = new Subject<any>();
   deleteContact_msg: string;
   youCannotDeleteThisContact: string
   contactHasBeenMovedToTheTrash: string;
   moveContactToTrash_msg: string;
   moveToTrash_msg: string;
   countOfActiveContacts: number;
-  users: User[];
+
   CHAT_BASE_URL: string;
   id_request: string;
   payIsVisible: boolean;
@@ -128,29 +135,24 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private auth: AuthService,
     private notify: NotifyService,
-    private usersService: UsersService,
+    private userListService: UserListService,
     private translate: TranslateService,
-    private prjctPlanService: ProjectPlanService,
     private appConfigService: AppConfigService,
     private logger: LoggerService
   ) { }
 
 
-  
+
   ngOnInit() {
 
     this.getTranslation();
     this.getOSCODE();
-    // this.auth.checkRoleForCurrentProject();
-    this.getContacts();
-    this.getCurrentProject();
-    this.getProjectUserRole();
-    this.getProjectPlan();
+    this.getAllUsers();
+
 
     this.CHAT_BASE_URL = this.appConfigService.getConfig().CHAT_BASE_URL;
 
     // this.getTrashedContactsCount();
-    // this.getActiveContactsCount();
 
     // ----------------------------------------
     //  Bootstrap 3.0 - Keep Dropdown Open
@@ -169,7 +171,7 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
       this.isChromeVerGreaterThan100 = isChromeVerGreaterThan100;
     })
   }
-  
+
 
   getOSCODE() {
     this.public_Key = this.appConfigService.getConfig().t2y12PruGU9wUtEGzBJfolMIgK;
@@ -296,45 +298,11 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     //  elemSearchField.innerHTML = 'res';
   }
 
-  getProjectPlan() {
-    this.subscription = this.prjctPlanService.projectPlan$.subscribe((projectProfileData: any) => {
-      this.logger.log('[CONTACTS-COMP] getProjectPlan project Profile Data', projectProfileData)
-      if (projectProfileData) {
 
-        this.prjct_profile_type = projectProfileData.profile_type;
-        this.subscription_is_active = projectProfileData.subscription_is_active;
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+}
 
-        this.subscription_end_date = projectProfileData.subscription_end_date;
-        this.trial_expired = projectProfileData.trial_expired
-
-        this.buildPlanName(projectProfileData.profile_name, this.browserLang, this.prjct_profile_type);
-      }
-    }, error => {
-
-      this.logger.error('[CONTACTS-COMP] - getProjectPlan - ERROR', error);
-    }, () => {
-
-      this.logger.log('[CONTACTS-COMP] - getProjectPlan * COMPLETE')
-
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  buildPlanName(planName: string, browserLang: string, planType: string) {
-    if (planType === 'payment') {
-      this.getPaidPlanTranslation(planName)
-      // if (browserLang === 'it') {
-      //   this.prjct_profile_name = 'Piano ' + planName;
-      //   return this.prjct_profile_name
-      // } else if (browserLang !== 'it') {
-      //   this.prjct_profile_name = planName + ' Plan';
-      //   return this.prjct_profile_name
-      // }
-    }
-  }
 
   getPaidPlanTranslation(project_profile_name) {
     this.translate.get('PaydPlanName', { projectprofile: project_profile_name })
@@ -345,78 +313,10 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  getCurrentProject() {
-    this.auth.project_bs.subscribe((project) => {
-
-      if (project) {
-        this.projectId = project._id
-        // this.logger.log('[CONTACTS-COMP] project ID from AUTH service subscription  ', this.projectId)
-      }
-    });
-  }
-  getLoggedUser() {
-    this.auth.user_bs.subscribe((user) => {
-      this.logger.log('[USERS] LOGGED USER GET IN USERS-COMP - USER', user)
-      if (user) {
-        this.CURRENT_USER = user;
-        this.CURRENT_USER_ID = user._id;
-        this.logger.log(
-          '[USERS] LOGGED USER GET IN USERS-COMP - Current USER ID ',
-          this.CURRENT_USER_ID,
-        )
-      }
-    })
-  }
-
-  openDeleteModal(
- 
-    userID: string,
-    userFirstname: string,
-    userLastname: string,
-  ) {
-
-    this.userId = userID
-    this.userFirstname = userFirstname
-    this.userLastname = userLastname
-
-    this.logger.log(
-      '[USERS] OPEN DELETE MODAL - PROJECT-USER with ID ',
-
-      ' - (Firstname: ',
-      userFirstname,
-      '; Lastname: ',
-      userLastname,
-      ')',
-    )
-  }
 
 
 
-  getProjectUserRole() {
-    this.usersService.project_user_role_bs.subscribe((user_role) => {
-      const current_user_role = user_role;
-      this.logger.log('[CONTACTS-COMP] - SUBSCRIBE PROJECT_USER_ROLE_BS ', current_user_role);
-      if (current_user_role) {
-        this.logger.log('[CONTACTS-COMP] - PROJECT USER ROLE ', current_user_role);
-        if (current_user_role === 'agent') {
-          this.IS_CURRENT_USER_AGENT = true;
-          this.logger.log('[CONTACTS-COMP] - PROJECT USER ROLE - IS CURRENT USER AGENT? ', this.IS_CURRENT_USER_AGENT);
-        } else {
-          this.IS_CURRENT_USER_AGENT = false;
-          this.logger.log('[CONTACTS-COMP] - PROJECT USER ROLE - IS CURRENT USER AGENT? ', this.IS_CURRENT_USER_AGENT);
-        }
 
-
-        if (current_user_role === 'owner') {
-          this.IS_CURRENT_USER_OWNER = true;
-          this.logger.log('[CONTACTS-COMP] - PROJECT USER ROLE - IS CURRENT USER OWNER? ', this.IS_CURRENT_USER_OWNER);
-        } else {
-          this.IS_CURRENT_USER_OWNER = false;
-          this.logger.log('[CONTACTS-COMP] - PROJECT USER ROLE - IS CURRENT USER OWNER? ', this.IS_CURRENT_USER_OWNER);
-        }
-      }
-    });
-  }
 
   decreasePageNumber() {
     const decreasePageNumberBtn = <HTMLElement>document.querySelector('.decrease-page-number-btn');
@@ -425,7 +325,8 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     this.pageNo -= 1;
 
     this.logger.log('[CONTACTS-COMP] - DECREASE PAGE NUMBER ', this.pageNo);
-    this.getContacts()
+    this.getAllUsers();
+
   }
 
   increasePageNumber() {
@@ -434,7 +335,8 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
 
     this.pageNo += 1;
     this.logger.log('[CONTACTS-COMP]  - INCREASE PAGE NUMBER ', this.pageNo);
-    this.getContacts()
+    this.getAllUsers();
+
   }
 
   search() {
@@ -503,7 +405,8 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     this.queryString = 'full_text=' + this.fullTextValue + '&email=' + this.selectedContactEmailValue;
     this.logger.log('[CONTACTS-COMP] - SEARCH - QUERY STRING ', this.queryString);
 
-    this.getContacts();
+    this.getAllUsers();
+
 
 
     // let search_params_to_dislay_in_fulltext = ''
@@ -563,6 +466,11 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+
+
+
+
+  
   clearFullText() {
 
     if (this.searchInYourContactsPlaceholder === "ADVANCED SEARCH") {
@@ -586,7 +494,7 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     this.queryString = '';
     this.logger.log('[CONTACTS-COMP] - CLEAR SEARCH - QUERY STRING ', this.queryString);
 
-    this.getContacts();
+    this.getAllUsers();
   }
 
   clearSearch() {
@@ -599,122 +507,48 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     this.fullText = '';
     this.selectedContactEmail = '';
     this.queryString = '';
-    this.getContacts();
+    this.getAllUsers();
   }
 
-  /**
-   * GET CONTACTS  */
-  getContacts() {
-    this.getTrashedContactsCount();
-    this.getActiveContactsCount();
 
-    this.showSpinner = true;
-    this.contactsService.getLeadsActiveOrTrashed(this.queryString, this.pageNo, this.hasClickedTrashed).subscribe((leads_object: any) => {
-      this.logger.log('[CONTACTS-COMP] - GET LEADS RESPONSE ', leads_object);
 
-      this.contacts = leads_object['leads'];
-      this.logger.log('[CONTACTS-COMP] - CONTACTS LIST ', this.contacts);
+  getAllUsers() {
 
-      const contactsCount = leads_object['count'];
-      this.logger.log('[CONTACTS-COMP] - CONTACTS COUNT ', contactsCount);
+    this.userListService.getUsers().subscribe((users: any) => {
 
-      this.displayHideFooterPagination(contactsCount);
-
-      const contactsPerPage = leads_object['perPage'];
-      this.logger.log('[CONTACTS-COMP] - N° OF CONTACTS X PAGE ', contactsCount);
-
-      const totalPagesNo = contactsCount / contactsPerPage;
-      this.logger.log('[CONTACTS-COMP] - TOTAL PAGES NUMBER', totalPagesNo);
-
-      this.totalPagesNo_roundToUp = Math.ceil(totalPagesNo);
-      this.logger.log('[CONTACTS-COMP] - TOTAL PAGES No ROUND TO UP ', this.totalPagesNo_roundToUp);
-
-      this.generateAvatarFromNameAndGetIfContactIsAuthenticated(this.contacts);
-    }, (error) => {
-      this.logger.error('[CONTACTS-COMP] - GET LEADS - ERROR  ', error);
       this.showSpinner = false;
-    }, () => {
-      this.logger.log('[CONTACTS-COMP] - GET LEADS * COMPLETE *');
-      this.showSpinner = false;
-    });
-  }
+      if (users) {
+        this.users = users;
+        this.users.forEach(userInd => {
+          if (userInd._id) {
+            const usr: User = {
+              _id: userInd._id,
+              email: userInd.email,
+              firstname: userInd.firstname
+            }
 
-  generateAvatarFromNameAndGetIfContactIsAuthenticated(contacts_list) {
-    contacts_list.forEach(contact => {
-      if (contact) {
-        // const id_contact = contact._id
-        const leadid = contact.lead_id
-        this.logger.log('[CONTACTS-COMP] - * leadid *', leadid);
-
-        // let initial = '';
-        // let fillColour = '';
-
-        let newInitials = '';
-        let newFillColour = '';
-        if (contact.fullname) {
-          const name = contact.fullname;
-          // this.logger.log('!!!!! CONTACTS - NAME OF THE CONTACT ', name);
-
-          // initial = name.charAt(0).toUpperCase();
-          // // this.logger.log('!!!!! CONTACTS - INITIAL OF NAME OF THE CONTACT ', initial);
-          // const charIndex = initial.charCodeAt(0) - 65
-          // const colourIndex = charIndex % 19;
-          // // this.logger.log('!!!!! CONTACTS - COLOUR INDEX ', colourIndex);
-          // fillColour = this.colours[colourIndex];
-          // // this.logger.log('!!!!! CONTACTS - NAME INITIAL ', initial, ' COLOUR INDEX ', colourIndex, 'FILL COLOUR ', fillColour);
-
-          // NEW - FULL NAME INITIAL AS DISPLAYED IN THE WIDGET
-          newInitials = avatarPlaceholder(name);
-          newFillColour = getColorBck(name)
-
-
-        } else {
-
-          // initial = 'n.a.';
-          // fillColour = '#eeeeee';
-          newInitials = 'N/A';
-          newFillColour = '#6264a7';
-
-        }
-
-
-
-        contact.avatar_fill_colour = newFillColour;
-        contact.name_initial = newInitials
-        contact.contact_is_verified = this.CONTACT_IS_VERIFIED
-
-        this.getProjectUserById(contact, leadid)
-        // for (const c of contacts_list) {
-
-        //   if (c._id === id_contact) {
-        //     // this.logger.log('!!!! CONTACTS  - c._id ', c._id, 'id_contact ', id_contact)
-        //     c.avatar_fill_colour = newFillColour;
-        //     c.name_initial = newInitials
-        //     c.contact_is_verified = this.CONTACT_IS_VERIFIED
-        //   }
-        // }
+            localStorage.setItem(userInd.email, JSON.stringify(usr));
+          }
+        });
       }
+    }, error => {
+      this.showSpinner = false;
+      this.logger.error('[Users-COMP] - GET LEADS - ERROR  ', error)
+    }, () => {
+      this.logger.log('[PROJECTS] - GET PROJECTS * COMPLETE *')
     });
   }
 
-  getProjectUserById(contact, leadid) {
-    this.usersService.getProjectUserById(leadid).subscribe((projectUser: any) => {
 
 
-      this.logger.log('[CONTACTS-COMP] - GET PROJECT USER BY LEAD ID RES  ', projectUser);
-      // this.logger.log('[CONTACTS-COMP] - GET PROJECT USER BY LEAD ID projectUser[0]  ', projectUser[0]);
-      // this.logger.log('[CONTACTS-COMP] - GET PROJECT USER BY LEAD ID projectUser[0] isAuthenticated ', projectUser[0]['isAuthenticated']);
-      // this.CONTACT_IS_VERIFIED = projectUser[0]['isAuthenticated']
-      // this.logger.log('[CONTACTS-COMP] - GET PROJECT USER BY LEAD ID CONTACT_IS_VERIFIED ', this.CONTACT_IS_VERIFIED);
-      contact.contact_is_verified = projectUser[0]['isAuthenticated']
-    },
-      (error) => {
-        this.logger.error('[CONTACTS-COMP] - GET PROJECT USER BY LEAD ID ERR  ', error);
-      },
-      () => {
-        this.logger.log('[CONTACTS-COMP] - GET PROJECT USER BY LEAD ID * COMPLETE *');
-      });
-  }
+
+
+
+
+
+
+
+
 
   // --------------------------------------------------
   // TRASH FOREVER METHODS
@@ -725,7 +559,7 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     this.selectedContactEmail = '';
     this.queryString = '';
     this.hasClickedTrashed = true
-    this.getContacts()
+    this.getAllUsers();
   }
 
 
@@ -735,118 +569,26 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     this.selectedContactEmail = '';
     this.queryString = '';
     this.hasClickedTrashed = false;
-    this.getContacts();
+    this.getAllUsers();
   }
 
-  getTrashedContactsCount() {
-    this.contactsService.getLeadsTrashed().subscribe((trashedleads: any) => {
-      this.logger.log('[CONTACTS-COMP] - GET TRASHED LEADS RESPONSE ', trashedleads)
-      if (trashedleads) {
-        this.trashedContanctCount = trashedleads.count
-      }
-    }, (error) => {
-      this.logger.error('[CONTACTS-COMP] - GET TRASHED LEADS - ERROR ', error);
-    }, () => {
-      this.logger.log('[CONTACTS-COMP] - GET TRASHED LEADS * COMPLETE *');
-    });
-  }
-
-  getActiveContactsCount() {
-    this.contactsService.getLeadsActive().subscribe((activeleads: any) => {
-      this.logger.log('[CONTACTS-COMP] - GET ACTIVE LEADS RESPONSE ', activeleads)
-      if (activeleads) {
-        this.countOfActiveContacts = activeleads['count'];
-      }
-    }, (error) => {
-      this.logger.error('[CONTACTS-COMP] - GET ACTIVE LEADS - ERROR ', error);
-    }, () => {
-      this.logger.log('[CONTACTS-COMP] - GET ACTIVE LEADS * COMPLETE *');
-    });
-  }
-
-  deleteContactForever(contactid: string) {
-    this.contactsService.getRequestsByRequesterId(contactid, 0)
-      .subscribe((requests_object: any) => {
-        this.logger.log('[CONTACTS-COMP]  deleteContactForever requests_object', requests_object);
-
-        const request_count = requests_object.count
-        this.logger.log('[CONTACTS-COMP]  deleteContactForever request_count', request_count);
-        if (request_count !== 0) {
-
-          swal({
-            title: this.deleteContact_msg,
-            text: this.youCannotDeleteThisContact,
-            icon: "info",
-            button: true,
-            dangerMode: false,
-          })
-        } else {
-
-          this.logger.log('[CONTACTS-COMP]  deleteContactForever ', contactid)
-
-          swal({
-            title: this.areYouSure + "?",
-            text: this.contactWillBePermanentlyDeleted,
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-          })
-            .then((willDelete) => {
-              if (willDelete) {
-                this.logger.log('[CONTACTS-COMP] swal willDelete', willDelete)
-
-                this.contactsService.deleteLeadForever(contactid).subscribe((res: any) => {
-                  this.logger.log('[CONTACTS-COMP] in swal deleteRequest res ', res)
-
-                }, (error) => {
-                  this.logger.error('[CONTACTS-COMP] in swal deleteRequest res - ERROR ', error);
-
-                  swal(this.errorDeleting, this.pleaseTryAgain, {
-                    icon: "error",
-                  });
-
-                }, () => {
-                  this.logger.log('[CONTACTS-COMP] in swal deleteRequest res* COMPLETE *');
-
-                  swal(this.done_msg + "!", this.contactWasSuccessfullyDeleted, {
-                    icon: "success",
-                  }).then((okpressed) => {
-                    this.getContacts();
-                    // this.getTrashedContacts();
-                  });
-
-                });
-              } else {
-                this.logger.log('[CONTACTS-COMP] swal willDelete', willDelete)
-                // swal("Your imaginary file is safe!");
-              }
-            });
-        }
-      })
-  }
+ 
 
   // --------------------------------------------------
   // MOVE TO TRASH
   // --------------------------------------------------
-  moveContactToTrash(contactid: string, fullName: string) {
-    // this.logger.log('!!!!! CONTACTS - ON MODAL DELETE OPEN -> USER ID ', id);
-
-    // this.displayDeleteModal = 'block';
-
-    // this.id_toDelete = id;
-    // this.fullName_toDelete = fullName;
+  moveUserToTrash(contactid: string, fullName: string) {
 
     if (fullName) {
       this.translate.get('MoveTheContactToTheTrash', { contactname: fullName }).subscribe((text: string) => {
         this.moveContactToTrash_msg = text
+    
       })
     } else {
       this.translate.get('MoveTheContactToTheTrashNoName').subscribe((text: string) => {
         this.moveContactToTrash_msg = text
       })
     }
-
-    this.logger.log('[CONTACTS-COMP] - moveContactToTrash ', this.moveContactToTrash_msg);
 
     swal({
       title: this.moveToTrash_msg,
@@ -857,80 +599,42 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     })
       .then((willDelete) => {
         if (willDelete) {
-          this.logger.log('[CONTACTS-COMP] swal willDelete', willDelete)
-
-          this.contactsService.deleteLead(contactid).subscribe((res: any) => {
-            this.logger.log('[CONTACTS-COMP] in swal deleteRequest res ', res)
+          this.userListService.deleteUser(contactid).subscribe((res: any) => {
 
           }, (error) => {
-            this.logger.error('[CONTACTS-COMP] in swal deleteRequest res - ERROR ', error);
-
+            console.log(error)
             swal(this.errorDeleting, this.pleaseTryAgain, {
               icon: "error",
             });
-
           }, () => {
-            this.logger.log('[CONTACTS-COMP] in swal deleteRequest res* COMPLETE *');
-
             swal(this.done_msg + "!", this.contactHasBeenMovedToTheTrash, {
               icon: "success",
             }).then((okpressed) => {
-              this.getContacts();
+              this.getAllUsers();
             });
-
           });
-        } else {
-          this.logger.log('[CONTACTS-COMP] swal willDelete', willDelete)
-          // swal("Your imaginary file is safe!");
         }
       });
   }
 
-  restore_contact(contactid: string) {
-    this.contactsService.restoreLead(contactid)
-      .subscribe((lead: any) => {
-        this.logger.log('[CONTACTS-COMP] - RESTORE CONTACT RES ', lead);
-
-      }, (error) => {
-        this.logger.error('[CONTACTS-COMP] - RESTORE CONTACT - ERROR ', error);
-        // =========== NOTIFY ERROR ===========
-        // this.notify.showNotification(this.deleteLeadErrorNoticationMsg, 4, 'report_problem');
-      }, () => {
-        this.logger.log('[CONTACTS-COMP] - RESTORE CONTACT * COMPLETE *');
-        // =========== NOTIFY SUCCESS===========
-        this.getContacts();
-        // this.notify.showNotification(this.deleteLeadSuccessNoticationMsg, 2, 'done');
-      });
-
-  }
 
   // CLOSE MODAL WITHOUT SAVE THE UPDATES OR WITHOUT CONFIRM THE DELETION
   onCloseDeleteModal() {
     this.displayDeleteModal = 'none';
   }
 
-  /**
-   * DELETE CONTACT (WHEN THE 'CONFIRM' BUTTON IN MODAL IS CLICKED)  */
-  deleteContact() {
-    this.displayDeleteModal = 'none';
 
-    this.contactsService.deleteLead(this.id_toDelete)
+
+  restore_contact(contactid: string) {
+    this.userListService.restoreUser(contactid)
       .subscribe((lead: any) => {
-        this.logger.log('[CONTACTS-COMP] - DELETE CONTACT RES ', lead);
+        console.log(lead)
 
-        // RE-RUN GET CONTACT TO UPDATE THE TABLE
-
-        this.ngOnInit();
       }, (error) => {
-        this.logger.error('[CONTACTS-COMP] - DELETE REQUEST - ERROR ', error);
-        // =========== NOTIFY ERROR ===========
-        // this.notify.showNotification('An error occurred while deleting contact', 4, 'report_problem');
-        this.notify.showNotification(this.deleteLeadErrorNoticationMsg, 4, 'report_problem');
+        console.log(error)
       }, () => {
-        this.logger.log('[CONTACTS-COMP] - DELETE REQUEST * COMPLETE *');
-        // =========== NOTIFY SUCCESS===========
-        // this.notify.showNotification('Contact successfully deleted', 2, 'done');
-        this.notify.showNotification(this.deleteLeadSuccessNoticationMsg, 2, 'done');
+        this.getAllUsers();
+        // this.notify.showNotification(this.deleteLeadSuccessNoticationMsg, 2, 'done');
       });
 
   }
@@ -1023,18 +727,18 @@ export class UserList implements OnInit, OnDestroy, AfterViewInit {
     window.open(url, '_blank');
   }
 
-  goToContactDetails(requester_id) {
-    this.router.navigate(['user-list/' + this.projectId + '/contact', requester_id]);
-  }
 
 
-  goToEditContact(requester_id) {
-    this.router.navigate(['project/' + this.projectId + '/contact/edit', requester_id]);
+
+  goToUserPanel(id) {
+
+    this.router.navigate(['user-list/' + 'painel/' + id]);
+  }
+  goToEditUser(id) {
+
+    this.router.navigate(['user-list/' + 'edit/' + id]);
   }
 
-  goToVisitors() {
-    this.router.navigate(['project/' + this.projectId + '/visitors']);
-  }
 
 
   toggleAdvancedOption() {

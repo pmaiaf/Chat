@@ -94,48 +94,90 @@
           <h2 style="font-family: 'Montserrat', sans-serif; font-weight:400">
             {{ 'CreateAFreeAccount' | translate}}
           </h2>
- 
+
         </div>
         <div class="login-container" style="padding-top: 15px;">
 
           <form [formGroup]="userForm" (ngSubmit)="signup()" autocomplete="off">
 
-            <label for="firstName">
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <label for="email">Email <span style="color:#ff5252">*</span></label>
+            <input type="email" class="input" formControlName="email" required autocomplete="off" autocorrect="off"
+              autocapitalize="off" spellcheck="false">
+
+            <label for="password">Password <span style="color:#ff5252">*</span></label>
+            <input type="text" id="password" class="input secure" formControlName="password" required>
+            <div *ngIf="formErrors.password" class="is-danger" translate>
+              {{ formErrors.password }}
+            </div>
+
+
+
+            <label for="firstname">
               <!-- First Name -->
               {{ "Nome da Empresa" | translate }} <span style="color:#ff5252">*</span>
             </label>
-            <input type="text" id="firstName" class="input" formControlName="firstName" required>
-
-            <div *ngIf="formErrors.firstName" class="is-danger" translate>
-              {{ formErrors.firstName }}
+            <input type="text" id="firstname" class="input" formControlName="firstname" required>
+            <div *ngIf="formErrors.firstname" class="is-danger" translate>
+              {{ formErrors.firstname }}
             </div>
 
-            <label for="lastName">
-              {{ "Nome" | translate }} <span style="color:#ff5252">*</span>
-            </label>
-            <input type="text" id="lastName" class="input" formControlName="lastName" required>
-          
-            <div *ngIf="formErrors.lastName" class="is-danger">
-              {{ formErrors.lastName }}
-            </div>
 
-            <label for="email">Email <span style="color:#ff5252">*</span></label>
-            <!-- id="email" -->
-            <!-- [readonly]="SKIP_WIZARD"   [ngClass]="{'gray-bckgnd' : SKIP_WIZARD}" -->
-            <input type="email" class="input" formControlName="email" required autocomplete="off" autocorrect="off"
+
+
+            <label for="cnpj">CNPJ <span style="color:#ff5252">*</span></label>
+            <input type="text" id="cnpj" class="input" formControlName="cnpj" required autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false">
+
+            <label for="endereco">Endereço <span style="color:#ff5252">*</span></label>
+            <input type="text" id="endereco" class="input" formControlName="endereco" required autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false">
+
+
+            <label for="bairro">Bairro <span style="color:#ff5252">*</span></label>
+            <input type="text" id="bairro" class="input" formControlName="bairro" required autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false">
+
+
+            <label for="cidade">Cidade <span style="color:#ff5252">*</span></label>
+            <input type="text" id="cidade" class="input" formControlName="cidade" required autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false">
+
+            <label for="estado">Estado <span style="color:#ff5252">*</span></label>
+            <input type="text" id="estado" class="input" formControlName="estado" required autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false">
+
+            <label for="n">Número° <span style="color:#ff5252">*</span></label>
+            <input type="text" id="n" class="input" formControlName="n" required autocomplete="off" autocorrect="off"
               autocapitalize="off" spellcheck="false">
+
+            <label for="complemento">Complemento <span style="color:#ff5252">*</span></label>
+            <input type="text" id="complemento" class="input" formControlName="complemento" required autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false">
+
+              <label for="responsavel">Reponsável <span style="color:#ff5252">*</span></label>
+              <input type="text" id="responsavel" class="input" formControlName="responsavel" required autocomplete="off"
+                autocorrect="off" autocapitalize="off" spellcheck="false">
+  
+              <label for="emaildoresponsavel">Email do Reponsável <span style="color:#ff5252">*</span></label>
+              <input type="text" id="emaildoresponsavel" class="input" formControlName="emaildoresponsavel" required autocomplete="off"
+                autocorrect="off" autocapitalize="off" spellcheck="false">
+  
+              <label for="telefone">Telefone <span style="color:#ff5252">*</span></label>
+              <input type="text" id="telefone" class="input" formControlName="telefone" required autocomplete="off" autocorrect="off"
+                autocapitalize="off" spellcheck="false">
+  
+              <label for="nota">Observação <span style="color:#ff5252">*</span></label>
+              <input type="text" id="nota" class="input" formControlName="nota" required autocomplete="off"
+                autocorrect="off" autocapitalize="off" spellcheck="false">
+
+
 
             <div *ngIf="formErrors.email" class="is-danger" translate>
               {{ formErrors.email }}
             </div>
 
-            <label for="password">Password <span style="color:#ff5252">*</span></label>
-            <input type="text" id="password" class="input secure" formControlName="password" required>
-
-
-            <div *ngIf="formErrors.password" class="is-danger" translate>
-              {{ formErrors.password }}
-            </div>
 
             <!-- TERMS AND CONDITION -->
 
@@ -164,10 +206,11 @@
             <button type="submit" class="btn signup-button" [disabled]="!userForm.valid">
               <span *ngIf="!showSpinnerInLoginBtn">
 
-                {{ "SignUp" | translate }}
+                Criar Conta
               </span>
               <span *ngIf="showSpinnerInLoginBtn"> <i class="fa fa-spinner fa-spin"></i></span>
             </button>
+         
 
             <div class="left-panel-signin-link" style="margin-top:16px; text-align: center">
               <a routerLink="/login" style="color: #666666; font-size: 1.1em">
@@ -186,4 +229,3 @@
 
   </div>
 </div>
-

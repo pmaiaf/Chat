@@ -129,7 +129,7 @@ export class ContactsService {
       })
     };
 
-    const url = this.SERVER_BASE_PATH + this.projectId + '/leads';
+    const url = this.SERVER_BASE_PATH + this.projectId + '/active';
     this.logger.log('[CONTACTS-SERV] - GET ACIVE CONTACTS URL', url);
 
     return this.httpClient
@@ -400,7 +400,7 @@ export class ContactsService {
     };
 
     const url = this.SERVER_BASE_PATH + this.projectId + '/requests?lead=' + requesterid + '&page=' + pagenumber + '&status=all' + '&no_populate=true';
-    this.logger.log('[CONTACTS-SERV] - GET REQUESTS BY REQUESTER ID - URL ', url);
+ 
     return this.httpClient
       .get(url, httpOptions)
       .pipe(

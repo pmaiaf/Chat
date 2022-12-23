@@ -5,7 +5,7 @@ import { LoggerService } from './services/logger/logger.service';
 import { HomeService } from './services/home.service';
 import { ActivitiesService } from './activities/activities-service/activities.service';
 
-
+import { ProjectsComponentAdmin } from './projectAdmin/projects.component';
 // import { LoggerInstance } from './services/logger/LoggerInstance';
 import { MapRequestComponent } from './map-request/map-request.component';
 import { MetricsComponent } from './analytics/metrics/metrics.component';
@@ -18,7 +18,9 @@ import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
 import { AppComponent } from './app.component';
 
+import { UserListComponent } from './user-list/user-list.component'
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserListPainel } from './user-list-painel/user-list-painel.component';
 
 import { UiModule } from './ui/shared/ui.module';
 
@@ -41,6 +43,9 @@ import { DepartmentsComponent } from './departments/departments.component';
 import { FaqService } from './services/faq.service';
 
 import { ProjectsComponent } from './projects/projects.component';
+import { UserListService } from './services/user-list.service';
+import { UserListEditComponent } from './user-list-edit/user-list-edit.component';
+
 import { UsersComponent } from './users/users.component';
 
 // BOTS & FAQ
@@ -381,6 +386,8 @@ const appInitializerFn = (appConfig: AppConfigService, brandService: BrandServic
 
 @NgModule({
   declarations: [
+    ProjectsComponentAdmin,
+    UserListPainel,
     OnlynumberDirective,
     AppComponent,
     UserProfileComponent,
@@ -397,6 +404,8 @@ const appInitializerFn = (appConfig: AppConfigService, brandService: BrandServic
     DepartmentEditAddComponent,
     ProjectEditAddComponent,
     // RequestsListHistoryComponent,
+    UserListEditComponent,
+    UserListComponent,
     SigninComponent,
     SignupComponent,
     UnauthorizedComponent,
@@ -533,7 +542,8 @@ const appInitializerFn = (appConfig: AppConfigService, brandService: BrandServic
     SidebarClaimsComponent, 
     NetworkOfflineComponent, 
     HomePromoBannerComponent, 
-    TemplatesComponent
+    TemplatesComponent,
+
   ],
   imports: [
     TooltipModule.forRoot(CutomTooltipOptions as TooltipOptions),
@@ -616,6 +626,7 @@ const appInitializerFn = (appConfig: AppConfigService, brandService: BrandServic
     WsRequestsService,
     WsMsgsService,
     AppStoreService,
+    UserListService,
     WebSocketJs,
     UsersService,
     ContactsService,
