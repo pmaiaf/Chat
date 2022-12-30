@@ -239,14 +239,12 @@ Proprietário
                 Criar Empresa
               </button>
             </div>
-            
-            <div class="card-footer" style="border-color: #e8f0f5 !important;">
-              <button type="submit" #editleadbtn class="btn btn-primary" routerLink="login"
-                [disabled]="!EMAIL_IS_VALID">
-               Logar 
-              </button>
-            </div>
           </form>
+          <div class="card-footer" style="border-color: #e8f0f5 !important;">
+            <button  class="btn btn-primary" (click)="goToSigninPage()">
+             Logar 
+            </button>
+          </div>
         </div>
       </div>
       <!-- /. end col-md-8 -->
