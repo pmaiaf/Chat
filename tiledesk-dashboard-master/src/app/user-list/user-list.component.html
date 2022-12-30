@@ -192,17 +192,16 @@
                       <!-- <span style="font-weight: 400;margin-right: 16px;">
                     {{ contacts?.length }} {{ 'Contacts' | translate }} {{ '_Active' | translate}}
                   </span> -->
-                      <button style="padding: 6px 14px; margin-top: 0px; margin-bottom: 0px;"
-                        class="btn btn-primary btn-simple export-to-csv-btn" (click)="exportContactsToCsv()">
-                        {{ 'ExportToCSV' | translate }}
-                        <span class="material-icons">
-                          save_alt
-                        </span>
-                      </button>
+                  
 
-                       <b>Status = 1000 (Ativo)</b> / <b>Status = 100 (Desativado)</b>
+                       <b>Status = 100 (Ativo)</b> / <b>Status = 1000 (Desativado)</b>
                     </span>
 
+                    <button style="padding: 9px 30px; margin-bottom: 0px;margin-top: 7px;" pull-right
+                    type="submit" class="btn btn-primary searchbtn" router-link="/user-list/signup">
+                    <!-- <span class="glyphicon glyphicon-search" aria-hidden="true" style="color:#7695a5"></span> -->
+                   Adicionar Empresa
+                  </button>
 
                     <!--  <button style="padding: 9px 30px;margin-bottom:0px" class="btn btn-default"
                   (click)="closeTrashContacts()">

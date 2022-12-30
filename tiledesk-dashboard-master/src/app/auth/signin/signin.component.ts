@@ -4,7 +4,8 @@ import { AppConfigService } from '../../services/app-config.service';
 import { AuthService } from '../../core/auth.service';
 import { Router } from '@angular/router';
 import { NotifyService } from '../../core/notify.service';
-
+import { ProjectService } from '../../services/project.service';
+import { Project } from '../../models/project-model';
 // import brand from 'assets/brand/brand.json';
 import { BrandService } from '../../services/brand.service';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -40,7 +41,8 @@ export class SigninComponent implements OnInit {
   display = 'none';
 
   userForm: FormGroup;
-
+  projects: Project[];
+  showSpinner = true;
 
   public_Key: string;
   SUP: boolean = true;
@@ -72,7 +74,8 @@ export class SigninComponent implements OnInit {
     public appConfigService: AppConfigService,
     private notify: NotifyService,
     public brandService: BrandService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private projectService: ProjectService
   ) {
     const brand = brandService.getBrand();
 
@@ -90,7 +93,6 @@ export class SigninComponent implements OnInit {
     // this.redirectIfLogged();
     // this.widgetReInit()
 
-
     // this.logger.log('xxxx ', this.userForm)
     this.buildForm();
     this.getWindowWidthAndHeight();
@@ -103,8 +105,8 @@ export class SigninComponent implements OnInit {
     const storedUser = localStorage.getItem('user')
 
     if (storedUser) {
-      this.logger.log('[SIGN-IN] - REDIRECT TO DASHBORD IF USER IS LOGGED-IN - STORED USER', storedUser);
-      this.router.navigate(['/projects']);
+
+      this.router.navigate(['/create-new-project']);
     }
 
   }
@@ -216,6 +218,8 @@ export class SigninComponent implements OnInit {
   }
 
 
+
+
   buildForm() {
     this.userForm = this.fb.group({
       'email': ['', [
@@ -259,17 +263,18 @@ export class SigninComponent implements OnInit {
   }
 
   signin() {
+
+    console.log("Antes de entrar na auth")
     this.showSpinnerInLoginBtn = true;
 
     this.auth.showExpiredSessionPopup(true);
-    // this.auth.emailLogin(
+
     const self = this;
 
 
     this.auth.signin(this.userForm.value['email'], this.userForm.value['password'], (error, user) => {
+      console.log("Depois de entrar na auth")
       if (!error) {
-        this.logger.log('[SIGN-IN] SSO (Signin) - user', user);
-
         if (!isDevMode()) {
           if (window['analytics']) {
             try {
@@ -301,64 +306,59 @@ export class SigninComponent implements OnInit {
             }
           }
         }
-        if(user.status == 100){
 
-           this.router.navigate(['/projects']);
-          }else{
-           this.router.navigate(['/login'])
+        this.projectService.getProjects().subscribe((projects: any) => {
+          this.showSpinner = false;
+
+          this.projects = projects;
+          console.log(this.projects)
+          if (this.projects && this.projects.length == 0) {
+            this.router.navigate(['/create-new-project']);
           }
- 
+          else {
+            this.projects.forEach(project => {
+              if (project.id_project) {
+                const _id = project.id_project._id;
+                console.log(_id, user)
+                if(user.email == "admin@tiledesk.com"){
+                  this.router.navigate([`/projects`]);
+                }
+                if (user.status == 100 ) {
+                  this.router.navigate([`/project/${_id}/home`]);
+                } else {
+                  this.router.navigate(['/login'])
+                }
+              }
+            });
 
-        // self.widgetReInit();
-
-        /**
-         * *** WIDGET - pass data to the widget function setTiledeskWidgetUser in index.html ***
-         */
-        //  self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) - userFullname', user.firstname + ' ' + user.lastname)
-        //  self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) - userEmail', user.email);
-        //  self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) - userId', user._id);
-
-        // setTimeout(() => {
-        //   try {
-        //     window['setTiledeskWidgetUser'](user.firstname + ' ' + user.lastname, user.email, user._id);
-        //   } catch (err) {
-        //     self.logger.log('[SIGN-IN] SetTiledeskWidgetUserSignin (Signin) error', err);
-        //   }
-        // }, 2000);
+            console.log("Depois do foreach")
+          }
+        });
 
 
-        // --------------------------------------------
-        // Run widget login
-        // --------------------------------------------
+
+
         if (window && window['tiledesk_widget_login']) {
           window['tiledesk_widget_login']();
         }
 
-
       } else {
         this.showSpinnerInLoginBtn = false;
-        this.logger.error('[SIGN-IN] 1. POST DATA ERROR', error);
-        // self.logger.error('[SIGN-IN] 2. POST DATA ERROR status', error.status);
 
         if (error.status === 0) {
 
           this.display = 'block';
-          this.signin_errormsg = 'Sorry, there was an error connecting to the server'
+
           this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
         } else {
           this.display = 'block';
 
           this.signin_errormsg = error['error']['msg']
 
-          // this.logger.log('SIGNIN USER - POST REQUEST ERROR ', error);
-          // this.logger.log('SIGNIN USER - POST REQUEST BODY ERROR ', signin_errorbody);
-          this.logger.error('[SIGN-IN] SIGNIN USER - POST REQUEST MSG ERROR ', self.signin_errormsg);
 
           this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
         }
       }
-      // tslint:disable-next-line:no-debugger
-      // debugger
     });
 
   }

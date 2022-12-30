@@ -19,14 +19,14 @@ export const environment = {
   appsUrl: 'CHANGEIT',
   promoBannerUrl: 'CHANGEIT',
   firebase: {
-    apiKey: "AIzaSyDCjkIAJgq_soUSPuuOiCDRhT4ulgnGgMY",
-    authDomain: "panel-keep.firebaseapp.com",
-    databaseURL: "https://panel-keep-default-rtdb.firebaseio.com",
-    projectId: "panel-keep",
-    storageBucket: "panel-keep.appspot.com",
-    messagingSenderId: "639644894720",
-    appId: "1:639644894720:web:cb35d11c9b059983557ae5",
-    measurementId: "G-RH71RP8H4T"
+    apiKey: "AIzaSyDZMCCIJxitPgtPp8vCkEvMWhI_tLJbBnk",
+    authDomain: "tiledesk-72cea.firebaseapp.com",
+    databaseURL: "https://tiledesk-72cea-default-rtdb.firebaseio.com",
+    projectId: "tiledesk-72cea",
+    storageBucket: "tiledesk-72cea.appspot.com",
+    messagingSenderId: "365484654966",
+    appId: "1:365484654966:web:fec268405217f59dfd3a57",
+    measurementId: "G-95PWC8EJBL"
   }
 };
 

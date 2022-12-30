@@ -5,13 +5,13 @@ import { LoggerService } from './services/logger/logger.service';
 import { HomeService } from './services/home.service';
 import { ActivitiesService } from './activities/activities-service/activities.service';
 
-import { ProjectsComponentAdmin } from './projectAdmin/projects.component';
+import { ProjectsComponentAdmin } from './projectDash/projects.component';
 // import { LoggerInstance } from './services/logger/LoggerInstance';
 import { MapRequestComponent } from './map-request/map-request.component';
 import { MetricsComponent } from './analytics/metrics/metrics.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-
+import {UserListSignupComponent} from '../app/user-list-signup/user-list-signup.component'
 
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app.routing';
@@ -456,6 +456,7 @@ const appInitializerFn = (appConfig: AppConfigService, brandService: BrandServic
     WsSharedComponent,
     WsTrainBotComponent,
     WidgetMultilanguageComponent,
+    UserListSignupComponent,
     BaseTranslationComponent,
     WidgetSharedComponent,
     WidgetSetUpBaseComponent,

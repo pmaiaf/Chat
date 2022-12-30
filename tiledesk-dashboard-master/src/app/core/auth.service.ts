@@ -571,6 +571,7 @@ export class AuthService {
    * @param password
    */
   signin(email: string, password: string, callback) {
+    console.log("To no service")
     const self = this
 
     const httpOptions = {
@@ -581,113 +582,34 @@ export class AuthService {
     };
 
     const body = { email: email, password: password }
-    this.logger.log('[AUTH-SERV] - SIGNIN POST REQUEST BODY ', body)
+
 
     const url = this.SIGNIN_BASE_URL
-    this.logger.log('[AUTH-SERV] - SIGNIN URL ', url)
+
 
     return this._httpClient
       .post(url, JSON.stringify(body), httpOptions)
       .toPromise()
       .then((res) => {
-        this.logger.log('[AUTH-SERV] SIGNIN RES: ', res)
         const jsonRes = res
         const user: User = jsonRes['user']
-
         if (user) {
           // used in signOut > removeInstanceId
           this.userId = user._id
         }
 
-        // ASSIGN THE RETURNED TOKEN TO THE USER OBJECT
         user.token = jsonRes['token']
-
-        // PUBLISH THE USER OBJECT
         this.user_bs.next(user)
-
-        // SET USER IN LOCAL STORAGE
         localStorage.setItem('user', JSON.stringify(user))
-        localStorage.setItem('chat_sv5__tiledeskToken', user.token) // x autologin of Chat ionic
+        callback(null, user)
 
-        this.logger.log('[AUTH-SERV] > USER ', user)
 
-        ///////////////////
-        this.logger.log('[AUH-SERV] SSO - LOGIN 1. POST DATA ', jsonRes)
-        if (jsonRes['success'] === true) {
-          this.logger.log(
-            '[AUTH-SERV] SSO - LOGIN getConfig firebaseAuth',
-            this.appConfigService.getConfig().firebaseAuth,
-          )
-
-          if (this.appConfigService.getConfig().firebaseAuth === true) {
-            this.logger.log('[AUTH-SERV] SSO - LOGIN - WORKS WITH FIREBASE ')
-
-            this.chat21CreateFirebaseCustomToken(jsonRes['token']).subscribe(
-              (fbtoken: string) => {
-                // this.firebaseSignin(email, password).subscribe(fbtoken => {
-                this.logger.log('[AUTH-SERV] SSO - LOGIN 2. FIREBASE SIGNIN RESPO ', fbtoken)
-
-                if (fbtoken) {
-                  // Firebase Sign in using custom token
-                  // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
-
-                  // this.logger.log('[AUTH-SERV] SSO - LOGIN - 3. FIREBASE CUSTOM AUTH setPersistence ');
-
-                  firebase
-                    .auth()
-                    .signInWithCustomToken(fbtoken)
-                    .then((firebase_user) => {
-                      this.logger.log('[AUTH-SERV] SSO - LOGIN - 4. FIREBASE CUSTOM AUTH DATA ', firebase_user)
-
-                      if (this.appConfigService.getConfig().pushEngine === 'firebase') {
-                        // if (!this.APP_IS_DEV_MODE && this.FCM_Supported === true) {
-                        this.getPermission()
-                        // } else {
-                        //   this.logger.log('[AUTH-SERV] SSO - Unable to get permission FCM_Supported because of ', this.FCM_Supported , 'but APP_IS_DEV_MODE ', this.APP_IS_DEV_MODE);
-                        // }
-                      }
-
-                      callback(null, user)
-                    })
-                    .catch((error) => {
-                      // return error;
-                      callback(error)
-                      // Handle Errors here.
-                      // const errorCode = error.code;
-                      this.logger.error('[AUTH-SERV] SSO - LOGIN - FIREBASE CUSTOM AUTH ERROR CODE ', error)
-                    })
-                } else {
-                  callback({
-                    code: '4569',
-                    message: 'Error token not generated',
-                  })
-                }
-              },
-            )
-          } else {
-            this.logger.log('[AUTH-SERV] SSO - LOGIN - FIREBASE- AUTH false - !!!! SIGNIN WITHOUT FIREBASE CUSTOM TOKEN ')
-
-            if (this.appConfigService.getConfig().pushEngine === 'firebase') {
-              this.getPermission()
-            }
-
-            callback(null, user)
-          } // ./end condition for X FIREBASE- AUTH
-        } else {
-          this.logger.error('[AUTH-SERV] SSO - LOGIN - POST REQUEST ERROR jsonRes[success] NOT IS === true')
-          callback({ code: jsonRes['code'], message: jsonRes['message'] })
-        }
       })
-      .catch((error) => {
-        this.logger.error('[AUTH-SERV] SSO - LOGIN - SIGNIN POST REQUEST ERROR', error)
-        callback(error)
-      })
+
   }
 
 
 
-
-  
   /**
    * NODEJS SIGN-IN: SIGN-IN THE USER AND CREATE THE 'OBJECT USER' INCLUDED THE RETURNED (FROM SIGNIN) JWT TOKEN
    * NODEJS FIREBASE SIGN-IN: GET FIREBASE TOKEN THEN USED FOR
@@ -708,8 +630,8 @@ export class AuthService {
     const body = { email: email, password: password }
 
 
-    const url = this.SIGNIN_BASE_URL +'/painel'
-    
+    const url = this.SIGNIN_BASE_URL + '/painel'
+
 
     return this._httpClient
       .post(url, JSON.stringify(body), httpOptions)
@@ -732,80 +654,9 @@ export class AuthService {
 
         // SET USER IN LOCAL STORAGE
         localStorage.setItem('user', JSON.stringify(user))
-        localStorage.setItem('chat_sv5__tiledeskToken', user.token) // x autologin of Chat ionic
+        callback(null, user)
 
-        this.logger.log('[AUTH-SERV] > USER ', user)
 
-        ///////////////////
-        this.logger.log('[AUH-SERV] SSO - LOGIN 1. POST DATA ', jsonRes)
-        if (jsonRes['success'] === true) {
-          this.logger.log(
-            '[AUTH-SERV] SSO - LOGIN getConfig firebaseAuth',
-            this.appConfigService.getConfig().firebaseAuth,
-          )
-
-          if (this.appConfigService.getConfig().firebaseAuth === true) {
-            this.logger.log('[AUTH-SERV] SSO - LOGIN - WORKS WITH FIREBASE ')
-
-            this.chat21CreateFirebaseCustomToken(jsonRes['token']).subscribe(
-              (fbtoken: string) => {
-                // this.firebaseSignin(email, password).subscribe(fbtoken => {
-                this.logger.log('[AUTH-SERV] SSO - LOGIN 2. FIREBASE SIGNIN RESPO ', fbtoken)
-
-                if (fbtoken) {
-                  // Firebase Sign in using custom token
-                  // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
-
-                  // this.logger.log('[AUTH-SERV] SSO - LOGIN - 3. FIREBASE CUSTOM AUTH setPersistence ');
-
-                  firebase
-                    .auth()
-                    .signInWithCustomToken(fbtoken)
-                    .then((firebase_user) => {
-                      this.logger.log('[AUTH-SERV] SSO - LOGIN - 4. FIREBASE CUSTOM AUTH DATA ', firebase_user)
-
-                      if (this.appConfigService.getConfig().pushEngine === 'firebase') {
-                        // if (!this.APP_IS_DEV_MODE && this.FCM_Supported === true) {
-                        this.getPermission()
-                        // } else {
-                        //   this.logger.log('[AUTH-SERV] SSO - Unable to get permission FCM_Supported because of ', this.FCM_Supported , 'but APP_IS_DEV_MODE ', this.APP_IS_DEV_MODE);
-                        // }
-                      }
-
-                      callback(null, user)
-                    })
-                    .catch((error) => {
-                      // return error;
-                      callback(error)
-                      // Handle Errors here.
-                      // const errorCode = error.code;
-                      this.logger.error('[AUTH-SERV] SSO - LOGIN - FIREBASE CUSTOM AUTH ERROR CODE ', error)
-                    })
-                } else {
-                  callback({
-                    code: '4569',
-                    message: 'Error token not generated',
-                  })
-                }
-              },
-            )
-          } else {
-            this.logger.log('[AUTH-SERV] SSO - LOGIN - FIREBASE- AUTH false - !!!! SIGNIN WITHOUT FIREBASE CUSTOM TOKEN ')
-
-            if (this.appConfigService.getConfig().pushEngine === 'firebase') {
-              this.getPermission()
-            }
-
-            callback(null, user)
-          } // ./end condition for X FIREBASE- AUTH
-        } else {
-          this.logger.error('[AUTH-SERV] SSO - LOGIN - POST REQUEST ERROR jsonRes[success] NOT IS === true')
-          callback({ code: jsonRes['code'], message: jsonRes['message'] })
-        }
-      })
-      .catch((error) => {
-        this.logger.error('[AUTH-SERV] SSO - LOGIN - SIGNIN POST REQUEST ERROR', error)
-        callback(error)
       })
   }
 

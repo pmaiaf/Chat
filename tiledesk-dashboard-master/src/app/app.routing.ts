@@ -43,6 +43,7 @@ import { TemplatesComponent } from './bots/templates/templates.component';
 import { ProjectEditAddComponent } from './project-edit-add/project-edit-add.component';
 // import { RequestsListHistoryComponent } from './requests-list-history/requests-list-history.component';
 import { HistoryAndNortConvsComponent } from './ws_requests//history-and-nort-convs/history-and-nort-convs.component';
+import {UserListSignupComponent} from './user-list-signup/user-list-signup.component'
 
 // --------------------------------------------------------------------------------------------
 // AUTH PAGES
@@ -185,6 +186,7 @@ const routes: Routes = [
   { path: 'user-list', component: UserListComponent, canActivate: [AuthGuard]},
   { path: 'user-list/edit/:id', component: UserListEditComponent,  canActivate: [AuthGuard]},
   { path: 'user-list/painel/:id', component: UserListPainel,  canActivate: [AuthGuard]},
+  { path: 'user-list/signup',component: UserListSignupComponent, canActivate: [AuthGuard]},
 
 
   { path: 'signup', component: SignupComponent },
