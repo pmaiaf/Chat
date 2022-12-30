@@ -3,7 +3,7 @@
   [ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-64px' : '6px' }">
   <i *ngIf="HIDE_GO_BACK_BTN === false" class="material-icons"
     style="vertical-align: middle !important; cursor: pointer;" (click)="goBack()">keyboard_arrow_left</i>
-  Editar Empresa
+  Criar Empresa
 </div>
 
 <div class="main-content" style="padding-top: 0px">
@@ -237,6 +237,13 @@ Proprietário
               <button type="submit" #editleadbtn class="btn btn-primary" (click)="signup()"
                 [disabled]="!EMAIL_IS_VALID">
                 Criar Empresa
+              </button>
+            </div>
+            
+            <div class="card-footer" style="border-color: #e8f0f5 !important;">
+              <button type="submit" #editleadbtn class="btn btn-primary" routerLink="login"
+                [disabled]="!EMAIL_IS_VALID">
+               Logar 
               </button>
             </div>
           </form>

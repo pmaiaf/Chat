@@ -129,6 +129,7 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.logout();
     this.getBrowserVersion()
     this.redirectIfLogged();
     this.buildForm();
@@ -318,7 +319,7 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
           // this.router.navigate(['/welcome']);
      
           const userEmail = signupResponse.user.cnpj
-          swal('Empresa criada com sucesso' + "!", "Aperte na seta acima para voltar", {
+          swal('Empresa criada com sucesso' + "!", "Aperte no botão ao lado de criar empresa para logar!", {
             icon: "success",
           }), (error) =>{
             swal('Houve um erro ao criar a empresa!', 'Tente novamente.', {
@@ -571,6 +572,10 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
       }
     }
   }
+  logout() {
+    localStorage.removeItem('user')
+  }
+
 
   dismissAlert() {
     this.logger.log('[SIGN-UP] DISMISS ALERT CLICKED')
