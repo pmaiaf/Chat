@@ -404,7 +404,7 @@ function (req, res) {
              
               authEvent.emit("user.signin", {user:user, req:req, jti:signOptions.jwtid, token: 'JWT ' + token});         
               
-              var returnObject = { success: true, token: 'JWT ' + token, user: userJson };
+              var returnObject = { success: true, token: 'JWT ' + token, user: userJson};
 
               var adminEmail = process.env.ADMIN_EMAIL || "admin@tiledesk.com";
               if (email === adminEmail) {

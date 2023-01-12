@@ -1,27 +1,31 @@
-import { Component, OnInit, AfterViewInit, isDevMode } from '@angular/core';
+import { Component, OnInit, AfterViewInit, isDevMode, Input } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../../core/auth.service';
+import { AuthService } from '../core/auth.service';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
-import { NotifyService } from '../../core/notify.service';
-import { AppConfigService } from '../../services/app-config.service';
-import { UserListService } from '../../services/user-list.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+import { ActivatedRoute } from '@angular/router';
+import { NotifyService } from '../core/notify.service';
+import { AppConfigService } from '../services/app-config.service';
+const swal = require('sweetalert');
 // import brand from 'assets/brand/brand.json';
-import { BrandService } from '../../services/brand.service';
-import { LoggerService } from '../../services/logger/logger.service';
+import { BrandService } from '../services/brand.service';
+import { LoggerService } from '../services/logger/logger.service';
+import { UserListService } from '../services/user-list.service';
+
 import moment from 'moment';
 
-type UserFields = 'email' | 'password' | 'firstname' | 'cnpj' | 'endereco' | 'bairro' | 'cidade' | 'estado' | 'n' | 'complemento' | 'responsavel'|  'emaildoresponsavel' | 'telefone' | 'nota' | 'terms';
+type UserFields = 'email' | 'password' | 'firstname' | 'cnpj' | 'endereco' | 'bairro' | 'cidade' | 'estado' | 'n' | 'complemento' | 'responsavel' | 'emaildoresponsavel' | 'telefone' | 'nota' | 'terms';
 type FormErrors = { [u in UserFields]: string };
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss']
+  selector: 'app-user-list-signup',
+  templateUrl: './user-list-signup.component.html',
+  styleUrls: ['./user-list-signup.component.scss']
 })
-export class SignupComponent implements OnInit, AfterViewInit {
+export class UserListSignupComponent implements OnInit, AfterViewInit {
 
 
   // tparams = brand;
@@ -52,10 +56,14 @@ export class SignupComponent implements OnInit, AfterViewInit {
   SKIP_WIZARD: boolean;
   currentLang: string;
   pendingInvitationEmail: string;
-
+  HIDE_GO_BACK_BTN: boolean;
+  EMAIL_IS_VALID = true;
+  HAS_EDIT_FULLNAME = false;
+  HAS_EDIT_EMAIL = false;
+  showSpinner = false;
   hide_left_panel: boolean;
   bckgndImageSize = 60 + '%'
-
+  isChromeVerGreaterThan100: boolean;
   public_Key: string;
   MT: boolean;
   userForm: FormGroup;
@@ -73,9 +81,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
     'n': '',
     'complemento': '',
     'responsavel': '',
-   'emaildoresponsavel': '',
-    'telefone':'',
-    'nota':'',
+    'emaildoresponsavel': '',
+    'telefone': '',
+    'nota': '',
     'terms': '',
   };
   validationMessages = {
@@ -98,7 +106,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
     },
   };
   constructor(
+    public _httpclient: HttpClient,
+
     private userListService: UserListService,
+
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
@@ -107,7 +118,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private notify: NotifyService,
     public appConfigService: AppConfigService,
     public brandService: BrandService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    public location: Location
+
   ) {
 
     const brand = brandService.getBrand();
@@ -124,6 +137,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+
+    this.logout();
+    this.getBrowserVersion()
     this.redirectIfLogged();
     this.buildForm();
     this.getBrowserLang();
@@ -187,21 +203,13 @@ export class SignupComponent implements OnInit, AfterViewInit {
     this.checkCurrentUrlAndSkipWizard();
   }
 
-  redirectIfLogged() {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      this.logger.log('[SIGN-UP] - REDIRECT TO DASHBORD IF USER IS LOGGED-IN - STORED USER', storedUser);
-      this.router.navigate(['/projects']);
-    }
-  }
-
   getData(val) {
 
 
     this.userListService.getData(val).subscribe((restoredData) => {
 
       this.userForm = this.fb.group({
-        'firstname': [`${restoredData.estabelecimento.razao_social}`, [
+        'firstname': [`${restoredData.razao_social}`, [
           Validators.required,
         ]],
 
@@ -230,6 +238,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
     })
 
   }
+
+  getBrowserVersion() {
+    this.auth.isChromeVerGreaterThan100.subscribe((isChromeVerGreaterThan100: boolean) => {
+      this.isChromeVerGreaterThan100 = isChromeVerGreaterThan100;
+      //  console.log("[BOT-CREATE] isChromeVerGreaterThan100 ",this.isChromeVerGreaterThan100);
+    })
+  }
+  redirectIfLogged() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      this.logger.log('[SIGN-UP] - REDIRECT TO DASHBORD IF USER IS LOGGED-IN - STORED USER', storedUser);
+      this.router.navigate(['/projects']);
+    }
+  }
+
 
   getWindowWidthAndHeight() {
     this.logger.log('[SIGN-UP] - ACTUAL INNER WIDTH ', window.innerWidth);
@@ -335,16 +358,21 @@ export class SignupComponent implements OnInit, AfterViewInit {
       this.userForm.value['emaildoresponsavel'],
       this.userForm.value['telefone'],
       this.userForm.value['nota'])
-         
+
       .subscribe((signupResponse) => {
- console.log(signupResponse)
+
         if (signupResponse['success'] === true) {
           // this.router.navigate(['/welcome']);
-          this.logger.log('[SIGN-UP] RES ', signupResponse);
+
           const userEmail = signupResponse.user.cnpj
-          this.logger.log('[SIGN-UP] RES USER EMAIL ', userEmail);
-        
-          alert(userEmail)
+          swal('Empresa criada com sucesso' + "!", "Aperte no botão ao lado de criar empresa para logar!", {
+            icon: "success",
+          }), (error) => {
+            swal('Houve um erro ao criar a empresa!', 'Tente novamente.', {
+              icon: "error",
+            })
+          }
+
           if (!isDevMode()) {
             if (window['analytics']) {
               try {
@@ -385,10 +413,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
             }
           }
 
+
           this.autoSignin(userEmail);
 
         } else {
-          this.logger.error('[SIGN-UP] ERROR CODE', signupResponse.user.email );
+          this.logger.error('[SIGN-UP] ERROR CODE', signupResponse.user.email);
           this.showSpinnerInLoginBtn = false;
           this.display = 'block';
 
@@ -429,7 +458,31 @@ export class SignupComponent implements OnInit, AfterViewInit {
       });
   }
 
+  emailChange(event) {
+    this.logger.log('[CONTACT-EDIT] - EDITING EMAIL ', event);
+    this.logger.log('[CONTACT-EDIT] - EDITING EMAIL length ', event.length);
 
+
+    this.EMAIL_IS_VALID = this.validateEmail(event)
+    this.logger.log('[CONTACT-EDIT] - EMAIL IS VALID ', this.EMAIL_IS_VALID);
+
+    if (event.length === 0) {
+      this.EMAIL_IS_VALID = true;
+    }
+  }
+
+  validateEmail(email) {
+    // tslint:disable-next-line:max-line-length
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    return re.test(String(email).toLowerCase());
+  }
+
+
+  goBack() {
+    this.location.back();
+
+  }
   autoSignin(userEmail: string) {
     // this.auth.emailLogin(
     const self = this;
@@ -532,7 +585,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
       'nota': ['', [
         Validators.required,
       ]],
-   
+
       'terms': ['',
         [
           Validators.required,
@@ -565,6 +618,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
       }
     }
   }
+  logout() {
+    localStorage.removeItem('user')
+  }
+
 
   dismissAlert() {
     this.logger.log('[SIGN-UP] DISMISS ALERT CLICKED')

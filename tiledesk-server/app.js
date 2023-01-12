@@ -265,8 +265,10 @@ app.use(passport.initialize());
 
 
 //ATTENTION. If you use AWS Api Gateway you need also to configure the cors policy https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-cors-console.html
-app.use(cors());
-app.options('*', cors());
+
+  app.use(cors());
+  app.options("*", cors());
+
 
 // const customRedisRateLimiter = require("./rateLimiter").customRedisRateLimiter;
 // app.use(customRedisRateLimiter);

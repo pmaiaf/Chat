@@ -20,10 +20,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { tranlatedLanguage } from 'app/utils/util';
 @Component({
   selector: 'projects',
-  templateUrl: './projects.component.html',
+  templateUrl: './project.componentDash.html',
   styleUrls: ['./projects.component.scss']
 })
-export class ProjectsComponent implements OnInit, OnDestroy {
+export class ProjectsComponentAdmin implements OnInit, OnDestroy {
   // companyLogoBlack_Url = brand.company_logo_allwhite__url
   // pageBackgroundColor = brand.recent_project_page.background_color;
 

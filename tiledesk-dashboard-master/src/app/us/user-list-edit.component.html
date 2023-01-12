@@ -1,0 +1,280 @@
+<!-- margin-top:6px; -->
+<div class="navbar-brand" style="z-index: 1050;position: relative; padding-left:30px"
+  [ngStyle]="{'margin-top':isChromeVerGreaterThan100 === true ? '-64px' : '6px' }">
+  <i *ngIf="HIDE_GO_BACK_BTN === false" class="material-icons"
+    style="vertical-align: middle !important; cursor: pointer;" (click)="goBack()">keyboard_arrow_left</i>
+  Editar Empresa
+</div>
+
+<div class="main-content" style="padding-top: 0px">
+  <div class="container-fluid">
+
+    <div class="row">
+
+      <div class="col-md-12">
+        <div class="card card--no-border" style="padding-top: 25px;">
+          <loading-spinner *ngIf="showSpinner"></loading-spinner>
+          <!--  -->
+          <form [formGroup]="userForm"  (ngSubmit)="editContact()">
+            <div *ngIf="!showSpinner" class="card-content">
+
+
+
+              <!-- 
+              // ---------------------------------------
+              // Email
+              // --------------------------------------- -->
+              <div  class="row">
+                <label for="email" class="col-sm-2 custom-label">
+                  Email
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input name="email" id="email" formControlName="email" [(ngModel)]="email" (ngModelChange)="emailChange($event)" class="input"
+                    type="text" [ngClass]="{'invalid-email' : !EMAIL_IS_VALID}" style="margin-bottom:3px"
+                    placeholder={{email}}>
+
+                  <span *ngIf="!EMAIL_IS_VALID" style="color: #f44336; font-size: 12px;">
+                    {{ "EnterValidEmail" | translate }}
+                  </span>
+                </div>
+              </div>
+
+
+
+
+
+
+              <!-- 
+              // ---------------------------------------
+              // Full name
+              // --------------------------------------- -->
+              <!-- (ngModelChange)="fullnameChange($event)" -->
+              <div class="row">
+                <label for="firstname" class="col-sm-2  custom-label">
+                  Empresa
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input name="firstname" id="firstname" formControlName="firstname" [(ngModel)]="firstname" class="input" type="text"
+                    placeholder={{firstname}}>
+                </div>
+              </div>
+
+              <!-- 
+
+
+              // ---------------------------------------
+              // Company
+              // --------------------------------------- -->
+              <div class="row">
+                <label for="cnpj" class="col-sm-2  custom-label">
+                  CNPJ
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input id="cnpj" formControlName="cnpj" name="cnpj" [(ngModel)]="cnpj" class="input" type="text" placeholder={{cnpj}}>
+                </div>
+              </div>
+
+              <!-- 
+              // ---------------------------------------------------------
+              // Address section
+              // --------------------------------------------------------- -->
+              <div class="row">
+                <div class="col-md-12 col-12-section-title">
+                  <h3 class="card_title__underlined">
+                    <span class="card_title__underline">
+                      {{ "Address" | translate }}
+                    </span>
+                    <span class="card_title__gray_underline">
+                    </span>
+                  </h3>
+                </div>
+              </div>
+
+              <!-- 
+              // ---------------------------------------
+              // Street address
+              // --------------------------------------- -->
+              <div class="row">
+                <label for="endereco" class="col-sm-2  custom-label">
+                  Endereço
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input id="endereco" formControlName="endereco" name="endereco" [(ngModel)]="endereco" class="input" type="text" placeholder={{endereco}}>
+                </div>
+              </div>
+
+              <!-- 
+              // ---------------------------------------
+              // City
+              // --------------------------------------- -->
+              <div class="row">
+                <label for="bairro" class="col-sm-2  custom-label">
+                  Bairro
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input id="bairro" formControlName="bairro" name="bairro" [(ngModel)]="bairro" class="input" type="text" placeholder={{bairro}}>
+                </div>
+              </div>
+
+              <!-- 
+              // ---------------------------------------
+              // State
+              // --------------------------------------- -->
+              <div class="row">
+                <label for="cidade" class="col-sm-2  custom-label">
+                  Cidade
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input id="cidade" formControlName="cidade" name="cidade" [(ngModel)]="cidade" class="input" type="text" placeholder={{cidade}}>
+                </div>
+              </div>
+
+              <!-- 
+              // ---------------------------------------
+              // Postal code / Zip
+              // --------------------------------------- -->
+              <div class="row">
+                <label for="estado" class="col-sm-2  custom-label">
+                  Estado
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input id="estado" formControlName="estado"  name="estado" [(ngModel)]="estado" class="input" type="text" placeholder={{estado}}>
+                </div>
+              </div>
+
+              <!-- 
+              // ---------------------------------------
+              // Country
+              // --------------------------------------- -->
+              <div class="row">
+                <label for="n" class="col-sm-2  custom-label">
+                  Númeroº
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input id="n" formControlName="n" name="n" [(ngModel)]="n" class="input" type="text" placeholder={{n}}>
+                </div>
+              </div>
+              <div class="row">
+                <label for="complemento" class="col-sm-2  custom-label">
+                  Complemento
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input id="complemento" formControlName="complemento" name="complemento" [(ngModel)]="complemento" class="input" type="text"
+                    placeholder={{complemento}}>
+                </div>
+              </div>
+
+              <!-- 
+              // ---------------------------------------------------------
+              // Phone Number section
+              // --------------------------------------------------------- -->
+              <!-- 
+              // ---------------------------------------
+              // Street address
+              // --------------------------------------- -->
+              <div class="row">
+                <div class="col-md-12 col-12-section-title">
+                  <h3 class="card_title__underlined">
+                    <span class="card_title__underline">
+Proprietário
+                    </span>
+                    <span class="card_title__gray_underline">
+                    </span>
+                  </h3>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <label for="responsavel" class="col-sm-2  custom-label">
+                  Reponsável
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input  id="responsavel" formControlName="responsavel" name="responsavel" [(ngModel)]="responsavel" class="input" type="text" placeholder={{responsavel}}>
+                </div>
+              </div>
+              <div class="row">
+                <label for="emaildoresponsavel" class="col-sm-2  custom-label">
+                  Email do Responsável
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input  id="emaildoresponsavel" formControlName="emaildoresponsavel" name="emaildoresponsavel" [(ngModel)]="emaildoresponsavel" class="input" type="text"
+                    placeholder={{emaildoresponsavel}}>
+                </div>
+              </div>
+              <div class="row">
+                <label for="telefone" class="col-sm-2  custom-label">
+                  Telefone
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input  id="telefone" formControlName="telefone" name="telefone" [(ngModel)]="telefone" class="input" type="text" placeholder={{telefone}}>
+                </div>
+              </div>
+              <div class="row">
+                <label for="nota" class="col-sm-2  custom-label">
+                  Observação
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input  id="nota" formControlName="nota" name="nota" [(ngModel)]="nota" class="input" type="text"
+                    placeholder={{nota}}>
+                </div>
+              </div>
+
+
+            </div> <!-- ./ card-content-->
+            <!-- !HAS_EDIT_FULLNAME && !HAS_EDIT_EMAIL ||  -->
+
+            <div class="card-footer" style="border-color: #e8f0f5 !important;">
+              <button type="submit" #editleadbtn class="btn btn-primary" (click)="editContact()"
+                [disabled]="!EMAIL_IS_VALID">
+                Atualizar Empresa
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- /. end col-md-8 -->
+
+      <!-- ------------============ RIGHT SIDEBAR ============------------ -->
+      <!-- <div class="col-md-4">
+        <div class="card" style="padding-top:8px;">
+          <div class="card-content" style="padding-top: 0px;">
+            <h4 class="card-title" style="text-transform: none; color: #566787; font-weight:400; margin-bottom: 16px;  border-bottom: 1px solid #ddd; padding-bottom: 15px; ">
+              {{ "ContactDetails" | translate }}
+            </h4>
+
+            <p style="margin-bottom: 3px">
+              <strong>
+                {{ "Created" | translate }}
+              </strong>
+            </p>
+            <p style="color:#999999">
+              {{ contact_details?.createdAt | date: 'd/M/y HH:mm' }}
+            </p>
+
+            <p style="margin-bottom: 3px">
+              <strong>
+                {{ "Name" | translate }}
+              </strong>
+            </p>
+            <p style="color:#999999">
+              {{ contact_details?.fullname }}
+            </p>
+
+            <p style="margin-bottom: 3px">
+              <strong>
+                Email
+              </strong>
+            </p>
+            <p style="color:#999999">
+              {{ contact_details?.email }}
+            </p>
+ 
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+
+  </div>
+</div>

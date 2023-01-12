@@ -120,19 +120,16 @@ export class AutologinComponent implements OnInit {
   }
 
   ssoLogin(JWT, route, storedJWT) {
-    this.logger.log('[AUTOLOGIN] SSO - ssoLogin getCurrentAuthenticatedUser route ', route);
-    this.logger.log('[AUTOLOGIN] SSO - ssoLogin getCurrentAuthenticatedUser JWT ', JWT);
-    this.logger.log('[AUTOLOGIN] SSO - ssoLogin getCurrentAuthenticatedUser storedJWT ', storedJWT);
 
     if (JWT !== storedJWT) {
-      this.logger.log('[AUTOLOGIN] SSO - ssoLogin getCurrentAuthenticatedUser stored chat_sv5__tiledeskToken is equal to params JWT ');
+
       this.logout();
     } else {
       this.logger.log('[AUTOLOGIN] SSO - ssoLogin getCurrentAuthenticatedUser stored chat_sv5__tiledeskToken is NOT equal to params JWT ');
     }
 
     this.sso.getCurrentAuthenticatedUser(JWT).subscribe(auth_user => {
-      this.logger.log('[AUTOLOGIN] SSO - ssoLogin getCurrentAuthenticatedUser RES ', auth_user);
+    
 
       const user = { firstname: auth_user['firstname'], lastname: auth_user['lastname'], _id: auth_user['_id'], email: auth_user['email'], emailverified: auth_user['emailverified'], token: JWT }
       this.logger.log('[AUTOLOGIN] SSO - ssoLogin getCurrentAuthenticatedUser user ', user);
@@ -144,8 +141,7 @@ export class AutologinComponent implements OnInit {
 
       this.router.navigate([route]);
 
-      this.logger.log('[AUTOLOGIN] SSO - ssoLogin JWT before to get permsission ', JWT)
-      this.logger.log('[AUTOLOGIN] SSO - ssoLogin storedJWT before to get permsission ', storedJWT)
+     
       if (JWT !== storedJWT) {
         if (this.appConfigService.getConfig().pushEngine === 'firebase') {
           // !this.APP_IS_DEV_MODE && 

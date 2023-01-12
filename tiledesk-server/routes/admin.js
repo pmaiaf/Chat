@@ -10,7 +10,7 @@ var roleChecker = require('../middleware/has-role');
 
 
 router.get('/', function (req, res) {
-
+s
     
     res.render('admin-get', { title: 'Environment config', 
         FIREBASE_PRIVATE_KEY:process.env.FIREBASE_PRIVATE_KEY,

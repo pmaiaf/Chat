@@ -238,11 +238,6 @@ export class AuthGuard implements CanActivate {
     // (in AUTH SERVICE ) RESET PROJECT_BS AND REMOVE ITEM PROJECT FROM STORAGE WHEN THE USER GO TO PROJECTS PAGE
     this.auth.hasClickedGoToProjects();
 
-    // this.project = null
-
-    // this.subscription.unsubscribe();
-    // this.unsubscribe$.next();
-    // this.unsubscribe$.complete();  
   }
 
 

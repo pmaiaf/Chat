@@ -89,6 +89,28 @@ export class UserListService {
 
   }
 
+// ---------------------------------------------
+  // @ Delete lead (move to trash)
+  // ---------------------------------------------
+  /**
+    * DELETE PROJECT
+    * @param val 
+    */
+  public getData(val): Observable<any>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json', 
+       'Acess-Control- Allow-Origin': '*',
+       "Acess-Control-Allow-Methods": "GET",
+       "Acess-Control-Allor-Headers": "Content-Type, Authorization"
+    })
+    };
+
+    return this._httpclient
+      .get(`https://receitaws.com.br/v1/cnpj/${val}`, httpOptions)
+
+  }
+
   // ---------------------------------------------
   // @ Delete lead (move to trash)
   // ---------------------------------------------
@@ -96,7 +118,7 @@ export class UserListService {
     * DELETE PROJECT
     * @param id 
     */
-  public deleteUser(id: string) {
+  public deleteUser(id: string)  {
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -123,9 +145,7 @@ export class UserListService {
 
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-
-      })
+        'Content-Type': 'application/json',      })
     };
 
     const url = this.UserList_URL + 'forever/' + id;

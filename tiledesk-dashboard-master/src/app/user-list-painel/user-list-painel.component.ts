@@ -3,11 +3,11 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angula
 import { AppConfigService } from '../services/app-config.service';
 import { AuthService } from '../core/auth.service';
 import { UserListService } from 'app/services/user-list.service';
-
+import { ProjectService } from '../services/project.service';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotifyService } from '../core/notify.service';
-
+import { Project } from '../models/project-model';
 // import brand from 'assets/brand/brand.json';
 import { BrandService } from '../services/brand.service';
 import { LoggerService } from '../services/logger/logger.service';
@@ -31,8 +31,8 @@ export class UserListPainel implements OnInit {
   companyLogoAllWithe_Url: string;
   company_name: string;
   company_site_url: string;
-
-
+  projects: Project[];
+  showSpinner = true;
   showSpinnerInLoginBtn = false;
 
   hide_left_panel: boolean;
@@ -69,6 +69,7 @@ export class UserListPainel implements OnInit {
   };
 
   constructor(
+    private projectService: ProjectService,
     private fb: FormBuilder,
     private auth: AuthService,
     private userListService: UserListService,
@@ -89,15 +90,10 @@ export class UserListPainel implements OnInit {
   }
 
   ngOnInit() {
+    this.logout();
     this.getOSCODE();
 
 
-    // this.redirectIfLogged();
-    // this.widgetReInit()
-
-
-    // this.logger.log('xxxx ', this.userForm)
-    this.logout();
     this.buildForm();
     this.signin()
     this.getWindowWidthAndHeight();
@@ -105,13 +101,16 @@ export class UserListPainel implements OnInit {
 
   }
 
+
+
+
   redirectIfLogged() {
 
     const storedUser = localStorage.getItem('user')
 
     if (storedUser) {
       this.logger.log('[SIGN-IN] - REDIRECT TO DASHBORD IF USER IS LOGGED-IN - STORED USER', storedUser);
-      this.router.navigate(['/projects']);
+      this.router.navigate(['/create-new-project']);
     }
 
   }
@@ -268,10 +267,10 @@ export class UserListPainel implements OnInit {
 
 
 
-    logout() {
-      localStorage.removeItem('user')
-    }
-  
+  logout() {
+    localStorage.removeItem('user')
+  }
+
 
 
 
@@ -287,27 +286,28 @@ export class UserListPainel implements OnInit {
 
 
     this.userListService.loggedUser(this.route.snapshot.params['id']).subscribe((userLogged: any) => {
-   
+
       this.auth.signinPainel(userLogged.email, userLogged.password, (error, user) => {
+
         if (!error) {
           this.logger.log('[SIGN-IN] SSO (Signin) - user', user);
-  
+
           if (!isDevMode()) {
             if (window['analytics']) {
               try {
                 window['analytics'].page("Auth Page, Signin", {
-  
+
                 });
               } catch (err) {
                 this.logger.error('Signin page error', err);
               }
-  
+
               try {
                 window['analytics'].identify(user._id, {
                   name: user.firstname + ' ' + user.lastname,
                   email: user.email,
                   logins: 5,
-  
+
                 });
               } catch (err) {
                 this.logger.error('track signin event error', err);
@@ -323,40 +323,73 @@ export class UserListPainel implements OnInit {
               }
             }
           }
-  
-          if(user.status == 100){
-            this.router.navigate(['/projects']);
-           }else{
-            this.router.navigate(['/login'])
-           }
-  
+
+          this.projectService.getProjects().subscribe((projects: any) => {
+            this.showSpinner = false;
+
+            this.projects = projects;
+
+            if (this.projects && this.projects.length != 0) {
+
+              this.projects.forEach(project => {
+
+
+                if (project.id_project._id) {
+                  const _id = project.id_project._id;
+
+                  if (userLogged.email == "admin@tiledesk.com") {
+
+                    this.router.navigate([`/projects`]);
+                  }
+
+                  if (userLogged.status == 100) {
+                    console.log("To aqui Status", _id)
+                    this.router.navigate([`/project/${_id}/home`]);
+                  }
+                  else {
+                    this.router.navigate(['/login'])
+                  }
+                }
+              });
+
+            }
+            else {
+
+              this.router.navigate(['/create-new-project']);
+
+
+            }
+          });
+
+
+
           // --------------------------------------------
           // Run widget login
           // --------------------------------------------
           if (window && window['tiledesk_widget_login']) {
             window['tiledesk_widget_login']();
           }
-  
-  
+
+
         } else {
           this.showSpinnerInLoginBtn = false;
           this.logger.error('[SIGN-IN] 1. POST DATA ERROR', error);
           // self.logger.error('[SIGN-IN] 2. POST DATA ERROR status', error.status);
-  
+
           if (error.status === 0) {
-  
+
             this.display = 'block';
             this.signin_errormsg = 'Sorry, there was an error connecting to the server'
             this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
           } else {
             this.display = 'block';
-  
+
             this.signin_errormsg = error['error']['msg']
-  
+
             // this.logger.log('SIGNIN USER - POST REQUEST ERROR ', error);
             // this.logger.log('SIGNIN USER - POST REQUEST BODY ERROR ', signin_errorbody);
             this.logger.error('[SIGN-IN] SIGNIN USER - POST REQUEST MSG ERROR ', self.signin_errormsg);
-  
+
             this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
           }
         }

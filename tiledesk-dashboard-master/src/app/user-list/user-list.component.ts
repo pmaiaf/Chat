@@ -738,7 +738,9 @@ export class UserListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.router.navigate(['user-list/' + 'edit/' + id]);
   }
-
+  goToSignUp(){
+    this.router.navigate(['user-list/' + 'signup']);
+  }
 
 
   toggleAdvancedOption() {

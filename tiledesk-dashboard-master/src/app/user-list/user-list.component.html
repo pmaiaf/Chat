@@ -54,80 +54,7 @@
                   </div> -->
 
 
-            <form #myForm="ngForm" novalidate class="search-form">
-              <!-- test start -->
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="input-group">
-
-                    <!-- // SEARCH FULL-TEXT BTN -->
-                    <span class="input-group-btn" style="padding-right: 2px;">
-                      <button class="custom-input-group---btn" type="submit">
-                        <i class="fa fa-search fa-search-btn" (click)="search()"
-                          style="color:grey; font-size: 18px;"></i>
-                      </button>
-                    </span>
-                    <!-- (keyup.enter)="search()"  (focus)="onFocusSearchField()" {{ 'SearchYourContacts' | translate }} placeholder=" {{fullTextSearchPlaholder}}" -->
-                    <div class="search_field_wrap">
-                      <input (keyup.enter)="search()" id="search_field" name="fullText"
-                        (focus)="onfocusFullTextSearchField($event)" [(ngModel)]="fullText" autocomplete="off"
-                        class="search-field"
-                        [placeholder]="hasClickedTrashed === false ? searchInYourContactsPlaceholder : searchInTrashPlaceholder">
-                    </div>
-                    <!-- // CLEAR SEARCH FULL-TEXT BTN -->
-                    <!-- *ngIf="fullText?.length > 0 && showAdvancedSearchOption === false" -->
-                    <span *ngIf="fullText?.length > 0 || selectedContactEmail?.length > 0" class="input-group-btn"
-                      style="padding-right: 2px;">
-                      <button class="custom-input-group---btn" type="button">
-                        <i class="fa fa-times fa-clear-search-btn" (click)="clearFullText()"
-                          style="color:grey; font-size: 18px;"></i>
-                      </button>
-                    </span>
-
-                    <!-- // OPEN ADVANCED OPTION BTN NOTE: the class "dropdown keep-open" Keep Dropdown Open -->
-                    <span id="dropdown_input_group_btn" class="input-group-btn dropdown keep-open"
-                      style="padding-left: 2px;position: static;">
-                      <button class="custom-input-group---btn dropdown-toggle" id="dropdown_btn" type="button"
-                        data-toggle="dropdown">
-                        <i class="fa fa-caret-down fa-advanced-option-btn" style="color:grey; font-size: 18px;"></i>
-                      </button>
-
-                      <!-- 
-                      // -------------------------------------------------------
-                      // Dropdown
-                      // ------------------------------------------------------- -->
-                      <ul class="dropdown-menu dropdown-menu-right" style="left: 0;padding: 15px; margin-top: 3px;"
-                        (click)="$event.stopPropagation()">
-
-                        <li>
-                          <!-- <form> (keyup.enter)="search()" -->
-                          <div class="col-sm-8">
-                            <div class="form-group" style="margin-top: 6px;">
-                              <input (keyup.enter)="search()" style="margin-top:2px;border-radius:5px!important"
-                                class="form-control" name="contactEmail" autocomplete="off"
-                                [(ngModel)]="selectedContactEmail" placeholder="{{ 'SearchByEmail' | translate }}">
-                            </div>
-                          </div>
-
-                          <div class="col-sm-4" style="text-align: right;">
-                            <button style="padding: 9px 30px; margin-bottom: 0px;margin-top: 7px;" pull-right
-                              type="submit" class="btn btn-primary searchbtn" (click)="search()">
-                              <!-- <span class="glyphicon glyphicon-search" aria-hidden="true" style="color:#7695a5"></span> -->
-                              {{'Search'|translate}}
-                            </button>
-                          </div>
-                        </li>
-                      </ul>
-                    </span>
-                  </div><!-- /input-group -->
-                </div>
-
-              </div>
-              <!-- test end -->
-
-
-
-            </form>
+           
           </div>
         </div>
       </div>
@@ -148,7 +75,7 @@
 
                 <i style="vertical-align: middle; color:rgba(32, 33, 36, 0.54); padding-left: 10px;"
                   class="material-icons">contacts</i>
-                <span style="padding-left: 8px;">{{'Contacts'| translate}} </span>
+                <span style="padding-left: 8px;">{{'Empresas na Plataforma'| translate}} </span>
 
                
               </li>
@@ -192,17 +119,16 @@
                       <!-- <span style="font-weight: 400;margin-right: 16px;">
                     {{ contacts?.length }} {{ 'Contacts' | translate }} {{ '_Active' | translate}}
                   </span> -->
-                      <button style="padding: 6px 14px; margin-top: 0px; margin-bottom: 0px;"
-                        class="btn btn-primary btn-simple export-to-csv-btn" (click)="exportContactsToCsv()">
-                        {{ 'ExportToCSV' | translate }}
-                        <span class="material-icons">
-                          save_alt
-                        </span>
-                      </button>
+                  
 
-                       <b>Status = 1000 (Ativo)</b> / <b>Status = 100 (Desativado)</b>
+                       <b>Status = 100 (Ativo)</b> / <b>Status = 1000 (Desativado)</b>
                     </span>
 
+                    <button style="padding: 9px 30px; margin-bottom: 0px;margin-top: 7px;"
+                     class="btn btn-primary searchbtn"  (click)="goToSignUp()">
+                    <!-- <span class="glyphicon glyphicon-search" aria-hidden="true" style="color:#7695a5"></span> -->
+                   Adicionar Empresa
+                  </button>
 
                     <!--  <button style="padding: 9px 30px;margin-bottom:0px" class="btn btn-default"
                   (click)="closeTrashContacts()">
