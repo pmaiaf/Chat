@@ -215,7 +215,7 @@
         <!--  ------------------------------------------------ -->
         <!--  ------ PROJECTS  DROPDOWN ------ -->
         <!--  ------------------------------------------------ -->
-        <li *ngIf="project">
+        <li *ngIf="user?.email == 'admin@tiledesk.com'">
           <a href="#" class="dropdown-toggle project-dropdown" data-toggle="dropdown">
             <i id="navbar-dropdown" class="material-icons" style="margin-right: 3px;">keyboard_arrow_down</i>
             <span style="text-transform: none"> {{ project.name }} </span>

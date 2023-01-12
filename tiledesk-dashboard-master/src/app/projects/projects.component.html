@@ -114,10 +114,12 @@
                       <span style="font-size:0.8em"> {{ 'ProjectsPage.UserProfile' | translate }} </span>
                     </button>
 
-                    
-                    <button  class="btn btn-primary view-user-profile-btn" routerLink="/user-list">
-                      <span style="font-size:0.8em">Empresas na Plataforma </span>
-                    </button>
+                  
+                      <button *ngIf="user?.email == 'admin@tiledesk.com'" class="btn btn-primary view-user-profile-btn" routerLink="/user-list">
+                        <span style="font-size:0.8em">Empresas na Plataforma </span>
+                      </button>
+              
+                
                  
                     <li class="divider"></li>
                     <button type="submit" class="btn btn-white logout-user-profile-btn" (click)="openLogoutModal()">

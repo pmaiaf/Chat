@@ -7,6 +7,8 @@ import { NotifyService } from '../../core/notify.service';
 import { ProjectService } from '../../services/project.service';
 import { Project } from '../../models/project-model';
 // import brand from 'assets/brand/brand.json';
+import { UserListService } from 'app/services/user-list.service';
+
 import { BrandService } from '../../services/brand.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { Alert } from 'selenium-webdriver';
@@ -68,6 +70,8 @@ export class SigninComponent implements OnInit {
   };
 
   constructor(
+    private userListService: UserListService,
+
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
@@ -273,92 +277,104 @@ export class SigninComponent implements OnInit {
 
 
     this.auth.signin(this.userForm.value['email'], this.userForm.value['password'], (error, user) => {
-      console.log("Depois de entrar na auth")
-      if (!error) {
-        if (!isDevMode()) {
-          if (window['analytics']) {
-            try {
-              window['analytics'].page("Auth Page, Signin", {
 
-              });
-            } catch (err) {
-              this.logger.error('Signin page error', err);
-            }
+      this.userListService.loggedUser(user._id).subscribe((userLogged: any) => {
 
-            try {
-              window['analytics'].identify(user._id, {
-                name: user.firstname + ' ' + user.lastname,
-                email: user.email,
-                logins: 5,
 
-              });
-            } catch (err) {
-              this.logger.error('track signin event error', err);
-            }
-            // Segments
-            try {
-              window['analytics'].track('Signed In', {
-                "username": user.firstname + ' ' + user.lastname,
-                "userId": user._id
-              });
-            } catch (err) {
-              this.logger.error('track signin event error', err);
-            }
-          }
-        }
+        console.log("Depois de entrar na auth")
+        if (!error) {
+          if (!isDevMode()) {
+            if (window['analytics']) {
+              try {
+                window['analytics'].page("Auth Page, Signin", {
 
-        this.projectService.getProjects().subscribe((projects: any) => {
-          this.showSpinner = false;
-
-          this.projects = projects;
-          console.log(this.projects)
-          if (this.projects && this.projects.length == 0) {
-            this.router.navigate(['/create-new-project']);
-          }
-          else {
-            this.projects.forEach(project => {
-              if (project.id_project) {
-                const _id = project.id_project._id;
-                console.log(_id, user)
-                if(user.email == "admin@tiledesk.com"){
-                  this.router.navigate([`/projects`]);
-                }
-                if (user.status == 100 ) {
-                  this.router.navigate([`/project/${_id}/home`]);
-                } else {
-                  this.router.navigate(['/login'])
-                }
+                });
+              } catch (err) {
+                this.logger.error('Signin page error', err);
               }
-            });
 
-            console.log("Depois do foreach")
+              try {
+                window['analytics'].identify(user._id, {
+                  name: user.firstname + ' ' + user.lastname,
+                  email: user.email,
+                  logins: 5,
+
+                });
+              } catch (err) {
+                this.logger.error('track signin event error', err);
+              }
+              // Segments
+              try {
+                window['analytics'].track('Signed In', {
+                  "username": user.firstname + ' ' + user.lastname,
+                  "userId": user._id
+                });
+              } catch (err) {
+                this.logger.error('track signin event error', err);
+              }
+            }
           }
-        });
+
+          this.projectService.getProjects().subscribe((projects: any) => {
+            this.showSpinner = false;
+
+            this.projects = projects;
+
+            if (this.projects && this.projects.length != 0) {
+
+              this.projects.forEach(project => {
 
 
+                if (project.id_project._id) {
+                  const _id = project.id_project._id;
+
+                  if (userLogged.email == "admin@tiledesk.com") {
+
+                    this.router.navigate([`/projects`]);
+                  }
+
+                  if (userLogged.status == 100) {
+                 
+                    this.router.navigate([`/project/${_id}/home`]);
+                  }
+                  else {
+                    this.router.navigate(['/login'])
+                  }
+                }
+              });
+
+            }
+            else {
+
+              this.router.navigate(['/create-new-project']);
 
 
-        if (window && window['tiledesk_widget_login']) {
-          window['tiledesk_widget_login']();
-        }
+            }
+          });
 
-      } else {
-        this.showSpinnerInLoginBtn = false;
 
-        if (error.status === 0) {
+          if (window && window['tiledesk_widget_login']) {
+            window['tiledesk_widget_login']();
+          }
 
-          this.display = 'block';
-
-          this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
         } else {
-          this.display = 'block';
+          this.showSpinnerInLoginBtn = false;
 
-          this.signin_errormsg = error['error']['msg']
+          if (error.status === 0) {
+
+            this.display = 'block';
+
+            this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
+          } else {
+            this.display = 'block';
+
+            this.signin_errormsg = error['error']['msg']
 
 
-          this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
+            this.notify.showToast(self.signin_errormsg, 4, 'report_problem')
+          }
         }
-      }
+      })
     });
 
   }

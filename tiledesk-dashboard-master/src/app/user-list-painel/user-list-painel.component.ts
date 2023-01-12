@@ -305,7 +305,7 @@ export class UserListPainel implements OnInit {
               try {
                 window['analytics'].identify(user._id, {
                   name: user.firstname + ' ' + user.lastname,
-                  email: user.email, 
+                  email: user.email,
                   logins: 5,
 
                 });
@@ -326,34 +326,42 @@ export class UserListPainel implements OnInit {
 
           this.projectService.getProjects().subscribe((projects: any) => {
             this.showSpinner = false;
-  
+
             this.projects = projects;
-            console.log(this.projects)
-            if (this.projects && this.projects.length == 0) {
-              this.router.navigate(['/create-new-project']);
-            }
-            else {
+
+            if (this.projects && this.projects.length != 0) {
+
               this.projects.forEach(project => {
-                if (project.id_project) {
+
+
+                if (project.id_project._id) {
                   const _id = project.id_project._id;
-                  console.log(_id, user)
-  
-                  if(user.email == "admin@tiledesk.com"){
+
+                  if (userLogged.email == "admin@tiledesk.com") {
+
                     this.router.navigate([`/projects`]);
                   }
-                  if (user.status == 100 ) {
-          
+
+                  if (userLogged.status == 100) {
+                    console.log("To aqui Status", _id)
                     this.router.navigate([`/project/${_id}/home`]);
-                  } else {
+                  }
+                  else {
                     this.router.navigate(['/login'])
                   }
                 }
               });
-  
-              console.log("Depois do foreach")
+
+            }
+            else {
+
+              this.router.navigate(['/create-new-project']);
+
+
             }
           });
-  
+
+
 
           // --------------------------------------------
           // Run widget login

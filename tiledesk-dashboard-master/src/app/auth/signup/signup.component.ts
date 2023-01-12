@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { NotifyService } from '../../core/notify.service';
 import { AppConfigService } from '../../services/app-config.service';
+import { UserListService } from '../../services/user-list.service';
 
 // import brand from 'assets/brand/brand.json';
 import { BrandService } from '../../services/brand.service';
@@ -97,6 +98,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     },
   };
   constructor(
+    private userListService: UserListService,
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
@@ -191,6 +193,42 @@ export class SignupComponent implements OnInit, AfterViewInit {
       this.logger.log('[SIGN-UP] - REDIRECT TO DASHBORD IF USER IS LOGGED-IN - STORED USER', storedUser);
       this.router.navigate(['/projects']);
     }
+  }
+
+  getData(val) {
+
+
+    this.userListService.getData(val).subscribe((restoredData) => {
+
+      this.userForm = this.fb.group({
+        'firstname': [`${restoredData.estabelecimento.razao_social}`, [
+          Validators.required,
+        ]],
+
+
+        'endereco': [`${restoredData.estabelecimento.logradouro}`, [
+          Validators.required,
+        ]],
+        'bairro': [`${restoredData.estabelecimento.bairro}`, [
+          Validators.required,
+        ]],
+        'cidade': [`${restoredData.estabelecimento.cidade.nome}`, [
+          Validators.required,
+        ]],
+        'estado': [`${restoredData.estabelecimento.estado.nome}`, [
+          Validators.required,
+        ]],
+        'n': [`${restoredData.estabelecimento.numero}`, [
+          Validators.required,
+        ]],
+        'complemento': [`${restoredData.estabelecimento.complemento}`, [
+          Validators.required,
+        ]],
+      });
+      this.userForm.valueChanges.subscribe((data) => this.onValueChanged(data));
+      this.onValueChanged(); // reset validation messages
+    })
+
   }
 
   getWindowWidthAndHeight() {

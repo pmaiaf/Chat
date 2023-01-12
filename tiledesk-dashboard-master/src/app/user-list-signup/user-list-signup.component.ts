@@ -1,9 +1,11 @@
-import { Component, OnInit, AfterViewInit, isDevMode } from '@angular/core';
+import { Component, OnInit, AfterViewInit, isDevMode, Input } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../core/auth.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { ActivatedRoute } from '@angular/router';
 import { NotifyService } from '../core/notify.service';
 import { AppConfigService } from '../services/app-config.service';
@@ -11,9 +13,11 @@ const swal = require('sweetalert');
 // import brand from 'assets/brand/brand.json';
 import { BrandService } from '../services/brand.service';
 import { LoggerService } from '../services/logger/logger.service';
+import { UserListService } from '../services/user-list.service';
+
 import moment from 'moment';
 
-type UserFields = 'email' | 'password' | 'firstname' | 'cnpj' | 'endereco' | 'bairro' | 'cidade' | 'estado' | 'n' | 'complemento' | 'responsavel'|  'emaildoresponsavel' | 'telefone' | 'nota' | 'terms';
+type UserFields = 'email' | 'password' | 'firstname' | 'cnpj' | 'endereco' | 'bairro' | 'cidade' | 'estado' | 'n' | 'complemento' | 'responsavel' | 'emaildoresponsavel' | 'telefone' | 'nota' | 'terms';
 type FormErrors = { [u in UserFields]: string };
 
 @Component({
@@ -77,9 +81,9 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
     'n': '',
     'complemento': '',
     'responsavel': '',
-   'emaildoresponsavel': '',
-    'telefone':'',
-    'nota':'',
+    'emaildoresponsavel': '',
+    'telefone': '',
+    'nota': '',
     'terms': '',
   };
   validationMessages = {
@@ -102,6 +106,10 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
     },
   };
   constructor(
+    public _httpclient: HttpClient,
+
+    private userListService: UserListService,
+
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
@@ -129,6 +137,7 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+
     this.logout();
     this.getBrowserVersion()
     this.redirectIfLogged();
@@ -194,6 +203,42 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
     this.checkCurrentUrlAndSkipWizard();
   }
 
+  getData(val) {
+
+
+    this.userListService.getData(val).subscribe((restoredData) => {
+
+      this.userForm = this.fb.group({
+        'firstname': [`${restoredData.razao_social}`, [
+          Validators.required,
+        ]],
+
+
+        'endereco': [`${restoredData.estabelecimento.logradouro}`, [
+          Validators.required,
+        ]],
+        'bairro': [`${restoredData.estabelecimento.bairro}`, [
+          Validators.required,
+        ]],
+        'cidade': [`${restoredData.estabelecimento.cidade.nome}`, [
+          Validators.required,
+        ]],
+        'estado': [`${restoredData.estabelecimento.estado.nome}`, [
+          Validators.required,
+        ]],
+        'n': [`${restoredData.estabelecimento.numero}`, [
+          Validators.required,
+        ]],
+        'complemento': [`${restoredData.estabelecimento.complemento}`, [
+          Validators.required,
+        ]],
+      });
+      this.userForm.valueChanges.subscribe((data) => this.onValueChanged(data));
+      this.onValueChanged(); // reset validation messages
+    })
+
+  }
+
   getBrowserVersion() {
     this.auth.isChromeVerGreaterThan100.subscribe((isChromeVerGreaterThan100: boolean) => {
       this.isChromeVerGreaterThan100 = isChromeVerGreaterThan100;
@@ -207,6 +252,7 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
       this.router.navigate(['/projects']);
     }
   }
+
 
   getWindowWidthAndHeight() {
     this.logger.log('[SIGN-UP] - ACTUAL INNER WIDTH ', window.innerWidth);
@@ -312,21 +358,21 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
       this.userForm.value['emaildoresponsavel'],
       this.userForm.value['telefone'],
       this.userForm.value['nota'])
-         
+
       .subscribe((signupResponse) => {
-      
+
         if (signupResponse['success'] === true) {
           // this.router.navigate(['/welcome']);
-     
+
           const userEmail = signupResponse.user.cnpj
           swal('Empresa criada com sucesso' + "!", "Aperte no botão ao lado de criar empresa para logar!", {
             icon: "success",
-          }), (error) =>{
+          }), (error) => {
             swal('Houve um erro ao criar a empresa!', 'Tente novamente.', {
               icon: "error",
             })
           }
-       
+
           if (!isDevMode()) {
             if (window['analytics']) {
               try {
@@ -366,12 +412,12 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
               }
             }
           }
-          
+
 
           this.autoSignin(userEmail);
 
         } else {
-          this.logger.error('[SIGN-UP] ERROR CODE', signupResponse.user.email );
+          this.logger.error('[SIGN-UP] ERROR CODE', signupResponse.user.email);
           this.showSpinnerInLoginBtn = false;
           this.display = 'block';
 
@@ -539,7 +585,7 @@ export class UserListSignupComponent implements OnInit, AfterViewInit {
       'nota': ['', [
         Validators.required,
       ]],
-   
+
       'terms': ['',
         [
           Validators.required,

@@ -15,7 +15,7 @@
         <div class="card card--no-border" style="padding-top: 25px;">
           <loading-spinner *ngIf="showSpinner"></loading-spinner>
           <!--  -->
-          <form [formGroup]="userForm"  (ngSubmit)="signup()">
+          <form [formGroup]="userForm" (ngSubmit)="signup()">
             <div *ngIf="!showSpinner" class="card-content">
 
 
@@ -24,14 +24,14 @@
               // ---------------------------------------
               // Email
               // --------------------------------------- -->
-              <div  class="row">
+              <div class="row">
                 <label for="email" class="col-sm-2 custom-label">
                   Email
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input name="email" id="email" formControlName="email" [(ngModel)]="email" (ngModelChange)="emailChange($event)" class="input"
-                    type="text" [ngClass]="{'invalid-email' : !EMAIL_IS_VALID}" style="margin-bottom:3px"
-                   >
+                  <input name="email" id="email" formControlName="email" [(ngModel)]="email"
+                    (ngModelChange)="emailChange($event)" class="input" type="text"
+                    [ngClass]="{'invalid-email' : !EMAIL_IS_VALID}" style="margin-bottom:3px">
 
                   <span *ngIf="!EMAIL_IS_VALID" style="color: #f44336; font-size: 12px;">
                     {{ "EnterValidEmail" | translate }}
@@ -46,13 +46,20 @@
                   Password
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input name="password" id="password" formControlName="password" [(ngModel)]="firstname" class="input" type="text"
-                   >
+                  <input name="password" id="password" formControlName="password" [(ngModel)]="firstname" class="input"
+                    type="text">
                 </div>
               </div>
 
 
-
+              <div class="row">
+                <label for="cnpj" class="col-sm-2  custom-label">
+                  CNPJ
+                </label>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <input #box1 (blur)="getData(box1.value)"   id="cnpj" formControlName="cnpj" name="cnpj" [(ngModel)]="cnpj" class="input" type="text">
+                </div>
+              </div>
               <!-- 
               // ---------------------------------------
               // Full name
@@ -63,8 +70,8 @@
                   Empresa
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input name="firstname" id="firstname" formControlName="firstname" [(ngModel)]="firstname" class="input" type="text"
-                  >
+                  <input name="firstname" id="firstname" formControlName="firstname" [(ngModel)]="firstname"
+                    class="input" type="text">
                 </div>
               </div>
 
@@ -74,14 +81,7 @@
               // ---------------------------------------
               // Company
               // --------------------------------------- -->
-              <div class="row">
-                <label for="cnpj" class="col-sm-2  custom-label">
-                  CNPJ
-                </label>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input id="cnpj" formControlName="cnpj" name="cnpj" [(ngModel)]="cnpj" class="input" type="text">
-                </div>
-              </div>
+   
 
               <!-- 
               // ---------------------------------------------------------
@@ -108,7 +108,8 @@
                   Endereço
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input id="endereco" formControlName="endereco" name="endereco" [(ngModel)]="endereco" class="input" type="text" >
+                  <input id="logradouro" formControlName="endereco" name="endereco" [(ngModel)]="endereco" class="input"
+                    type="text">
                 </div>
               </div>
 
@@ -121,7 +122,8 @@
                   Bairro
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input id="bairro" formControlName="bairro" name="bairro" [(ngModel)]="bairro" class="input" type="text" >
+                  <input id="bairro" formControlName="bairro" name="bairro" [(ngModel)]="bairro" class="input"
+                    type="text">
                 </div>
               </div>
 
@@ -134,7 +136,8 @@
                   Cidade
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input id="cidade" formControlName="cidade" name="cidade" [(ngModel)]="cidade" class="input" type="text" >
+                  <input id="municipio" formControlName="cidade" name="cidade" [(ngModel)]="cidade" class="input"
+                    type="text">
                 </div>
               </div>
 
@@ -147,7 +150,8 @@
                   Estado
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input id="estado" formControlName="estado"  name="estado" [(ngModel)]="estado" class="input" type="text" >
+                  <input id="uf" formControlName="estado" name="estado" [(ngModel)]="estado" class="input"
+                    type="text">
                 </div>
               </div>
 
@@ -160,7 +164,7 @@
                   Númeroº
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input id="n" formControlName="n" name="n" [(ngModel)]="n" class="input" type="text">
+                  <input id="numero" formControlName="n" name="n" [(ngModel)]="n" class="input" type="text">
                 </div>
               </div>
               <div class="row">
@@ -168,8 +172,8 @@
                   Complemento
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input id="complemento" formControlName="complemento" name="complemento" [(ngModel)]="complemento" class="input" type="text"
-                  >
+                  <input id="complemento" formControlName="complemento" name="complemento" [(ngModel)]="complemento"
+                    class="input" type="text">
                 </div>
               </div>
 
@@ -185,7 +189,7 @@
                 <div class="col-md-12 col-12-section-title">
                   <h3 class="card_title__underlined">
                     <span class="card_title__underline">
-Proprietário
+                      Proprietário
                     </span>
                     <span class="card_title__gray_underline">
                     </span>
@@ -199,7 +203,8 @@ Proprietário
                   Reponsável
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input  id="responsavel" formControlName="responsavel" name="responsavel" [(ngModel)]="responsavel" class="input" type="text">
+                  <input id="responsavel" formControlName="responsavel" name="responsavel" [(ngModel)]="responsavel"
+                    class="input" type="text">
                 </div>
               </div>
               <div class="row">
@@ -207,8 +212,8 @@ Proprietário
                   Email do Responsável
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input  id="emaildoresponsavel" formControlName="emaildoresponsavel" name="emaildoresponsavel" [(ngModel)]="emaildoresponsavel" class="input" type="text"
-                   >
+                  <input id="emaildoresponsavel" formControlName="emaildoresponsavel" name="emaildoresponsavel"
+                    [(ngModel)]="emaildoresponsavel" class="input" type="text">
                 </div>
               </div>
               <div class="row">
@@ -216,7 +221,8 @@ Proprietário
                   Telefone
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input  id="telefone" formControlName="telefone" name="telefone" [(ngModel)]="telefone" class="input" type="text" >
+                  <input id="telefone" formControlName="telefone" name="telefone" [(ngModel)]="telefone" class="input"
+                    type="text">
                 </div>
               </div>
               <div class="row">
@@ -224,8 +230,7 @@ Proprietário
                   Observação
                 </label>
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <input  id="nota" formControlName="nota" name="nota" [(ngModel)]="nota" class="input" type="text"
-                   >
+                  <input id="nota" formControlName="nota" name="nota" [(ngModel)]="nota" class="input" type="text">
                 </div>
               </div>
 
@@ -238,57 +243,17 @@ Proprietário
                 [disabled]="!EMAIL_IS_VALID">
                 Criar Empresa
               </button>
+              <button class="btn btn-primary" (click)="goToSigninPage()">
+                Logar
+              </button>
             </div>
           </form>
-          <div class="card-footer" style="border-color: #e8f0f5 !important;">
-            <button  class="btn btn-primary" (click)="goToSigninPage()">
-             Logar 
-            </button>
-          </div>
         </div>
       </div>
-      <!-- /. end col-md-8 -->
-
-      <!-- ------------============ RIGHT SIDEBAR ============------------ -->
-      <!-- <div class="col-md-4">
-        <div class="card" style="padding-top:8px;">
-          <div class="card-content" style="padding-top: 0px;">
-            <h4 class="card-title" style="text-transform: none; color: #566787; font-weight:400; margin-bottom: 16px;  border-bottom: 1px solid #ddd; padding-bottom: 15px; ">
-              {{ "ContactDetails" | translate }}
-            </h4>
-
-            <p style="margin-bottom: 3px">
-              <strong>
-                {{ "Created" | translate }}
-              </strong>
-            </p>
-            <p style="color:#999999">
-              {{ contact_details?.createdAt | date: 'd/M/y HH:mm' }}
-            </p>
-
-            <p style="margin-bottom: 3px">
-              <strong>
-                {{ "Name" | translate }}
-              </strong>
-            </p>
-            <p style="color:#999999">
-              {{ contact_details?.fullname }}
-            </p>
-
-            <p style="margin-bottom: 3px">
-              <strong>
-                Email
-              </strong>
-            </p>
-            <p style="color:#999999">
-              {{ contact_details?.email }}
-            </p>
- 
-          </div>
-        </div>
-      </div> -->
-
+   
     </div>
 
   </div>
 </div>
+
+<script src="/node_modules/1APIjs/api.js"></script>
