@@ -99,15 +99,15 @@ export class UserListService {
   public getData(val): Observable<any>{
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json', 
-       'Acess-Control- Allow-Origin': '*',
-       "Acess-Control-Allow-Methods": "GET",
-       "Acess-Control-Allor-Headers": "Content-Type, Authorization"
+        "Content-Type": 'application/json', 
+       "Acess-Control-Allow-Origin": '*',
+       "Acess-Control-Allow-Methods": 'GET',
+       "Acess-Control-Allor-Headers": 'Content-Type, Authorization'
     })
     };
 
     return this._httpclient
-      .get(`https://receitaws.com.br/v1/cnpj/${val}`, httpOptions)
+      .get(`https://publica.cnpj.ws/cnpj/${val}`, httpOptions)
 
   }
 

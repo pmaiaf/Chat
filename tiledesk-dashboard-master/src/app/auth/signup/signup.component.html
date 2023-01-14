@@ -112,7 +112,9 @@
               {{ formErrors.password }}
             </div>
 
-
+            <label for="cnpj">CNPJ <span style="color:#ff5252">*</span></label>
+            <input #box1 (blur)="getData(box1.value)" type="text" id="cnpj" class="input" formControlName="cnpj" required autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false">
 
             <label for="firstname">
               <!-- First Name -->
@@ -126,9 +128,7 @@
 
 
 
-            <label for="cnpj">CNPJ <span style="color:#ff5252">*</span></label>
-            <input type="text" id="cnpj" class="input" formControlName="cnpj" required autocomplete="off"
-              autocorrect="off" autocapitalize="off" spellcheck="false">
+          
 
             <label for="endereco">Endereço <span style="color:#ff5252">*</span></label>
             <input type="text" id="endereco" class="input" formControlName="endereco" required autocomplete="off"

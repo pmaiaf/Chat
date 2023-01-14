@@ -201,7 +201,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     this.userListService.getData(val).subscribe((restoredData) => {
 
       this.userForm = this.fb.group({
-        'firstname': [`${restoredData.estabelecimento.razao_social}`, [
+        'firstname': [`${restoredData.razao_social}`, [
           Validators.required,
         ]],
 

@@ -224,7 +224,7 @@
           <!-- CARD ADD PROJECT -->
           <!-- style="max-width: 256px;" -->
           <!-- openCreateModal()  -->
-          <div id="create-prjct-card" class="card custom-card-box-shadow" (click)='goToCreateProject()'
+          <div *ngIf="user?.email == 'admin@tiledesk.com'" id="create-prjct-card" class="card custom-card-box-shadow" (click)='goToCreateProject()'
             style="border-radius:3px;">
             <div class="card-content" style="height:203px;">
               <!-- #55b9d1 -->

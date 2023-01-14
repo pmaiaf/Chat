@@ -1491,6 +1491,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, AfterContentCheck
     });
   }
 
+  goToUserList(){
+    this.router.navigate(['user-list'])
+  }
+
   openLogoutModal() {
     this.displayLogoutModal = 'block';
     this.auth.hasOpenedLogoutModal(true);

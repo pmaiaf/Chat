@@ -259,6 +259,15 @@
             </li>
             <li class="divider"></li>
 
+            <li id="navbar_create_prjct" *ngIf="MT === true" (click)="goToUserList()">
+              <a style="cursor: pointer">
+                <i class="material-icons"
+                  style="padding-right: 5px; margin-bottom: 2px; font-size: 20px">view_list </i>
+                {{ 'Empresas na Plataforma' | translate }}
+              </a>
+            </li>
+            <li class="divider"></li>
+
             <!--  ------------------------------------------------ -->
             <!--  RECENT PROJECTS -->
             <!--  ------------------------------------------------ -->
